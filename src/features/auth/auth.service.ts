@@ -91,4 +91,11 @@ export const AuthenticationService = {
       throw mapAxiosErrorToAppError(error);
     }
   },
+  logOut: async (): Promise<void> => {
+    try {
+      await customAxios.post(`${PATH}/logout`);
+    } catch (error: unknown) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
 };
