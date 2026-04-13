@@ -72,7 +72,9 @@ api.interceptors.response.use(
       }
 
       try {
-        const { clearAuth } = await import('@/core/common/state').then((m) => m.default.getState());
+        const { clearAuth } = await import('@/features/auth/auth.state').then((m) =>
+          m.default.getState(),
+        );
         clearAuth();
       } catch (err) {
         // best-effort only

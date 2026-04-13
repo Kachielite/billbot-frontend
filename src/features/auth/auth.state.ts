@@ -2,11 +2,10 @@ import { create } from 'zustand/react';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import zustandStorage from '@/core/common/utils/zustandStorage';
 import ENV from '@/core/common/constants/env';
-import { IAuth } from '@/features/auth/auth.interface';
 
 type TokenStore = {
-  token: Omit<IAuth, 'user'> | null;
-  setToken: (value: Omit<IAuth, 'user'>) => void;
+  token: string | null;
+  setToken: (value: string | null) => void;
   clearAuth: () => void;
 };
 
@@ -14,7 +13,7 @@ const useAuthStore = create<TokenStore>()(
   persist(
     (set) => ({
       token: null,
-      setToken: (value: Omit<IAuth, 'user'>) => {
+      setToken: (value: string | null) => {
         set({ token: value });
         // Sync with storage immediately for axios interceptor
         zustandStorage.setItem('auth-token', JSON.stringify(value));
