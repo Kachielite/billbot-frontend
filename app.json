@@ -4,10 +4,10 @@
     "slug": "billbot-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./src/core/assets/icons/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./src/core/assets/icons/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,15 +18,15 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./src/core/assets/icons/android-icon-foreground.png",
+        "backgroundImage": "./src/core/assets/icons/android-icon-background.png",
+        "monochromeImage": "./src/core/assets/icons/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.kachielite.billbotfrontend"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/core/assets/icons/favicon.png"
     }
   }
 }
