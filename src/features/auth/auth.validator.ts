@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const GoogleAuthSchema = z.object({
   idToken: z.string().nonempty('Google token is required'),
@@ -12,5 +12,6 @@ export const AppleAuthSchema = z.object({
       familyName: z.string().optional(),
     })
     .optional(),
-  email: z.email('Valid email is required'),
+  // Apple only returns email on first consent; subsequent logins may not include it.
+  email: z.email('Valid email is required').optional(),
 });

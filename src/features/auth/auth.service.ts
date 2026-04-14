@@ -19,6 +19,11 @@ const BASE_URL = ENV.BASE_URL;
 export const AuthenticationService = {
   loginApple: async (): Promise<IAuth> => {
     try {
+      const isAppleSignInAvailable = await AppleAuthentication.isAvailableAsync();
+      if (!isAppleSignInAvailable) {
+        throw new Error('Apple Sign-In is not available on this device.');
+      }
+
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
@@ -26,19 +31,27 @@ export const AuthenticationService = {
         ],
       });
 
+      if (!credential.identityToken) {
+        throw new Error('Apple Sign-In did not return an identity token.');
+      }
+
       const request: AppleAuthRequest = {
-        identityToken: credential.identityToken as string,
-        fullName: {
-          givenName: credential.fullName?.givenName as string,
-          familyName: credential.fullName?.familyName as string,
-        },
-        email: credential.email as string,
+        identityToken: credential.identityToken,
+        ...(credential.fullName
+          ? {
+              fullName: {
+                givenName: credential.fullName.givenName ?? undefined,
+                familyName: credential.fullName.familyName ?? undefined,
+              },
+            }
+          : {}),
+        ...(credential.email ? { email: credential.email } : {}),
       };
 
       const response = await axios.post<AuthResponse>(`${BASE_URL}${PATH}/apple`, request);
       return mapAuthResponseToAuth(response.data);
     } catch (error) {
-      console.log('Apple Sign-In error:', error);
+      // Surface native Apple auth failures as app errors (e.g. cancellation/invalid state).
       throw mapAxiosErrorToAppError(error);
     }
   },
@@ -57,7 +70,6 @@ export const AuthenticationService = {
       const response = await axios.post<AuthResponse>(`${BASE_URL}${PATH}/google`, request);
       return mapAuthResponseToAuth(response.data);
     } catch (error) {
-      console.log('Google Sign-In error:', error);
       const createErrorObj = (message: string) => ({
         status: 400,
         error: {

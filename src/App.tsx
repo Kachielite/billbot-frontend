@@ -10,6 +10,7 @@ import {
   MaterialDarkTheme,
   MaterialLightTheme,
 } from '@react-navigation/native';
+import ToastProvider from 'toastify-react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,12 +32,10 @@ export default function App() {
     android: isDarkMode ? MaterialDarkTheme : MaterialLightTheme,
   });
 
-  console.log('Current theme:', currentTheme);
-  console.log('theme:', theme);
-
   return (
     <QueryClientProvider client={queryClient}>
       <Navigation theme={currentTheme} />
+      <ToastProvider />
     </QueryClientProvider>
   );
 }
