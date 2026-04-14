@@ -38,6 +38,7 @@ export const AuthenticationService = {
       const response = await axios.post<AuthResponse>(`${BASE_URL}${PATH}/apple`, request);
       return mapAuthResponseToAuth(response.data);
     } catch (error) {
+      console.log('Apple Sign-In error:', error);
       throw mapAxiosErrorToAppError(error);
     }
   },
