@@ -48,7 +48,7 @@ const AuthScreen = () => {
             logo="logo-apple"
             color="#000000"
             labelColor="#FFFFFF"
-            borderColor="#FFFFFF"
+            borderColor="#000000"
             loading={isLoggingInWithApple}
           />
         </Animated.View>
