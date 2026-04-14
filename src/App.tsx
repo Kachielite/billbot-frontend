@@ -1,9 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useColorScheme } from 'react-native';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
 import useLoadFonts from '@/core/common/hooks/use-load-fonts';
 import * as SplashScreen from 'expo-splash-screen';
+import { Navigation } from '@/core/navigation';
+import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,21 +19,12 @@ const queryClient = new QueryClient({
 
 export default function App() {
   useLoadFonts();
+  const theme = useColorScheme();
+  const isDarkMode = theme === 'dark';
+  const currentTheme = isDarkMode ? DarkTheme : DefaultTheme;
   return (
     <QueryClientProvider client={queryClient}>
-      <View style={styles.container}>
-        <Text>Open up App.tsx to start working on your app!</Text>
-        <StatusBar style="auto" />
-      </View>
+      <Navigation theme={currentTheme} />
     </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
