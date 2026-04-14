@@ -2,6 +2,10 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
+import useLoadFonts from '@/core/common/hooks/use-load-fonts';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,6 +17,7 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
+  useLoadFonts();
   return (
     <QueryClientProvider client={queryClient}>
       <View style={styles.container}>
