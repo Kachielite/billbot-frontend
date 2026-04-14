@@ -9,10 +9,10 @@ const useAppleAuth = () => {
   const { setToken } = useAuthStore();
   const { setUser } = useUserStore();
 
-  const { isLoading: isLoggingIn, mutateAsync: appleLoginHandler } = useMutation(
+  const { isLoading: isLoggingInWithApple, mutateAsync: appleLoginHandler } = useMutation(
     'apple-auth',
     async () => {
-      return AuthenticationService.loginGoogle();
+      return AuthenticationService.loginApple();
     },
     {
       onSuccess: (res) => {
@@ -26,7 +26,7 @@ const useAppleAuth = () => {
   );
 
   return {
-    isLoggingIn,
+    isLoggingInWithApple,
     appleLoginHandler,
   };
 };

@@ -9,7 +9,7 @@ const useGoogleAuth = () => {
   const { setToken } = useAuthStore();
   const { setUser } = useUserStore();
 
-  const { isLoading: isLoggingIn, mutateAsync: googleLoginHandler } = useMutation(
+  const { isLoading: isLoggingInWithGoogle, mutateAsync: googleLoginHandler } = useMutation(
     'google-auth',
     async () => {
       return AuthenticationService.loginGoogle();
@@ -26,7 +26,7 @@ const useGoogleAuth = () => {
   );
 
   return {
-    isLoggingIn,
+    isLoggingInWithGoogle,
     googleLoginHandler,
   };
 };

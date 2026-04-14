@@ -1,10 +1,15 @@
-import { useColorScheme } from 'react-native';
+import { Platform, useColorScheme } from 'react-native';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
 import useLoadFonts from '@/core/common/hooks/use-load-fonts';
 import * as SplashScreen from 'expo-splash-screen';
 import { Navigation } from '@/core/navigation';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  MaterialDarkTheme,
+  MaterialLightTheme,
+} from '@react-navigation/native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,7 +26,14 @@ export default function App() {
   useLoadFonts();
   const theme = useColorScheme();
   const isDarkMode = theme === 'dark';
-  const currentTheme = isDarkMode ? DarkTheme : DefaultTheme;
+  const currentTheme = Platform.select({
+    ios: isDarkMode ? DarkTheme : DefaultTheme,
+    android: isDarkMode ? MaterialDarkTheme : MaterialLightTheme,
+  });
+
+  console.log('Current theme:', currentTheme);
+  console.log('theme:', theme);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Navigation theme={currentTheme} />

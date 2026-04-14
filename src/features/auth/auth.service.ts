@@ -43,11 +43,13 @@ export const AuthenticationService = {
   },
   loginGoogle: async (): Promise<IAuth> => {
     GoogleSignin.configure({
-      iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
+      iosClientId: ENV.ANDROID_CLIENT_ID,
     });
     try {
       await GoogleSignin.hasPlayServices();
       const googleAuthResponse = await GoogleSignin.signIn();
+
+      console.log('Google Sign-In response:', googleAuthResponse);
 
       const request: GoogleAuthRequest = {
         idToken: googleAuthResponse?.data?.idToken as string,
@@ -56,6 +58,7 @@ export const AuthenticationService = {
       const response = await axios.post<AuthResponse>(`${BASE_URL}${PATH}/google`, request);
       return mapAuthResponseToAuth(response.data);
     } catch (error) {
+      console.log('Google Sign-In error:', error);
       const createErrorObj = (message: string) => ({
         status: 400,
         error: {
