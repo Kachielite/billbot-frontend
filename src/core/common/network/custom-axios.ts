@@ -85,7 +85,7 @@ api.interceptors.response.use(
 
       try {
         const navigation = await import('@react-navigation/native').then((m) => m.useNavigation());
-        navigation.navigate('Login' as never);
+        navigation.navigate('Authentication');
       } catch {}
 
       return Promise.reject(

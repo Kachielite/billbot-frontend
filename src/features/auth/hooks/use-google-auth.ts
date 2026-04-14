@@ -18,6 +18,8 @@ const useGoogleAuth = () => {
       onSuccess: (res) => {
         setToken(res.data.token);
         setUser(res.data.user);
+        Toast.success('Login successfully');
+        // Navigation happens automatically via conditional rendering when auth state updates
       },
       onError: (error: AppError) => {
         Toast.error(error.message || 'An error occurred during Google authentication');

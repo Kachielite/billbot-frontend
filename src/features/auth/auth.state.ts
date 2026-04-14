@@ -19,6 +19,7 @@ const useAuthStore = create<TokenStore>()(
         zustandStorage.setItem('auth-token', JSON.stringify(value));
       },
       clearAuth: () => {
+        set({ token: null });
         zustandStorage.removeItem('auth-token');
       },
     }),
