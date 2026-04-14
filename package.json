@@ -17,6 +17,7 @@
   "dependencies": {
     "@callstack/liquid-glass": "^0.7.1",
     "@expo-google-fonts/nunito": "^0.4.2",
+    "@hookform/resolvers": "^5.2.2",
     "@react-native-community/datetimepicker": "^9.1.0",
     "@react-native-google-signin/google-signin": "^16.1.2",
     "@react-navigation/bottom-tabs": "^8.0.0-alpha.22",
@@ -36,6 +37,7 @@
     "react-hook-form": "^7.72.1",
     "react-native": "0.83.4",
     "react-native-element-dropdown": "^2.12.4",
+    "react-native-image-picker": "^8.2.1",
     "react-native-mmkv": "^4.3.1",
     "react-native-nitro-modules": "^0.35.4",
     "react-native-reanimated": "^4.3.0",

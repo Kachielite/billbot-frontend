@@ -1,0 +1,17 @@
+export const QUERY_KEYS = {
+  ME: 'me',
+  GROUPS: 'groups',
+  GROUP_DETAIL: 'group-detail',
+  GROUP_POOLS: 'group-pools',
+  POOL_DETAIL: 'pool-detail',
+  POOL_EXPENSES: 'pool-expenses',
+  POOL_BALANCES: 'pool-balances',
+  POOL_SETTLEMENTS: 'pool-settlements',
+  EXPENSE_DETAIL: 'expense-detail',
+  SETTLEMENT_DETAIL: 'settlement-detail',
+  NOTIFICATIONS: 'notifications',
+  CATEGORIES: 'categories',
+  GROUP_INVITES: 'group-invites',
+  GROUP_WEBHOOKS: 'group-webhooks',
+  USER_SEARCH: 'user-search',
+} as const;

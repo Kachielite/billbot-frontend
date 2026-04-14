@@ -1,0 +1,105 @@
+import { Asset } from 'react-native-image-picker';
+import { customAxios } from '@/core/common/network/custom-axios';
+import { mapAxiosErrorToAppError } from '@/core/common/error';
+import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
+import { PaginatedResponse, PaginationParams } from '@/core/common/interface/pagination.interface';
+import { Expense, ParseReceiptResult } from './expenses.interface';
+import { mapExpenseFromDto, mapParsedReceiptFromDto } from './expenses.mapper';
+import { ExpenseDto, LogExpenseSchemaType, ParseReceiptResponseDto } from './expenses.dto';
+
+export const ExpensesService = {
+  listExpenses: async (
+    poolId: string,
+    params?: PaginationParams,
+  ): Promise<PaginatedResponse<Expense>> => {
+    try {
+      const response = await customAxios.get<{
+        page: number;
+        limit: number;
+        total_items: number;
+        pages: number;
+        items: ExpenseDto[];
+      }>(API_ENDPOINTS.POOL_EXPENSES(poolId), { params });
+      return {
+        ...response.data,
+        items: response.data.items.map(mapExpenseFromDto),
+      };
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  getExpense: async (expenseId: string): Promise<Expense> => {
+    try {
+      const response = await customAxios.get<ExpenseDto>(API_ENDPOINTS.EXPENSE_DETAIL(expenseId));
+      return mapExpenseFromDto(response.data);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  logExpense: async (
+    poolId: string,
+    data: LogExpenseSchemaType,
+    receipt?: Asset,
+  ): Promise<Expense> => {
+    try {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      });
+      if (receipt?.uri) {
+        formData.append('receipt', {
+          uri: receipt.uri,
+          type: receipt.type ?? 'image/jpeg',
+          name: receipt.fileName ?? 'receipt.jpg',
+        } as unknown as Blob);
+      }
+      const response = await customAxios.post<ExpenseDto>(
+        API_ENDPOINTS.POOL_EXPENSES(poolId),
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+      return mapExpenseFromDto(response.data);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  parseReceipt: async (poolId: string, image: Asset): Promise<ParseReceiptResult> => {
+    try {
+      const formData = new FormData();
+      formData.append('receipt', {
+        uri: image.uri,
+        type: image.type ?? 'image/jpeg',
+        name: image.fileName ?? 'receipt.jpg',
+      } as unknown as Blob);
+      const response = await customAxios.post<ParseReceiptResponseDto>(
+        API_ENDPOINTS.POOL_PARSE_RECEIPT(poolId),
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+      return mapParsedReceiptFromDto(response.data);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  deleteExpense: async (expenseId: string): Promise<void> => {
+    try {
+      await customAxios.delete(API_ENDPOINTS.EXPENSE_DETAIL(expenseId));
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  cancelRecurrence: async (poolId: string, expenseId: string): Promise<void> => {
+    try {
+      await customAxios.delete(API_ENDPOINTS.EXPENSE_RECURRENCE(poolId, expenseId));
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+};
