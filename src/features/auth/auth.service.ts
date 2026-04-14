@@ -43,13 +43,11 @@ export const AuthenticationService = {
   },
   loginGoogle: async (): Promise<IAuth> => {
     GoogleSignin.configure({
-      iosClientId: ENV.ANDROID_CLIENT_ID,
+      iosClientId: ENV.IOS_CLIENT_ID,
     });
     try {
       await GoogleSignin.hasPlayServices();
       const googleAuthResponse = await GoogleSignin.signIn();
-
-      console.log('Google Sign-In response:', googleAuthResponse);
 
       const request: GoogleAuthRequest = {
         idToken: googleAuthResponse?.data?.idToken as string,
