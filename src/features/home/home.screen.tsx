@@ -4,16 +4,13 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import ScreenHeader from '@/core/common/components/screen-header';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
+import HomeHeader from '@/features/home/components/home-header';
 
 const HomeScreen = () => {
   const colors = useThemeColors();
   return (
     <ScreenContainer>
-      <ScreenHeader title="Good morning 👋">
-        <Pressable>
-          <Ionicons name="notifications" size={24} color={colors.text.primary} />
-        </Pressable>
-      </ScreenHeader>
+      <HomeHeader />
     </ScreenContainer>
   );
 };
