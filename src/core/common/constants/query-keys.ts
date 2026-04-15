@@ -5,6 +5,7 @@ export const QUERY_KEYS = {
   GROUP_POOLS: 'group-pools',
   POOL_DETAIL: 'pool-detail',
   POOL_EXPENSES: 'pool-expenses',
+  USER_BALANCES: 'user-balances',
   POOL_BALANCES: 'pool-balances',
   POOL_SETTLEMENTS: 'pool-settlements',
   EXPENSE_DETAIL: 'expense-detail',

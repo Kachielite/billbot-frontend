@@ -16,3 +16,9 @@ export interface PoolBalancesDto {
   balances: BalanceEntryDto[];
   memberSummary: MemberSummaryDto[];
 }
+
+export interface UserBalancesDto {
+  totalOwed: number;
+  totalOwedToMe: number;
+  currency: string;
+}

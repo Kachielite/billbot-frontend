@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   EXPENSE_DETAIL: (expenseId: string) => `/expenses/${expenseId}`,
   EXPENSE_RECURRENCE: (poolId: string, expenseId: string) =>
     `/pools/${poolId}/expenses/${expenseId}/recurrence`,
+  BALANCES: '/balances',
   POOL_BALANCES: (poolId: string) => `/pools/${poolId}/balances`,
   POOL_SETTLEMENTS: (poolId: string) => `/pools/${poolId}/settlements`,
   SETTLEMENT_DETAIL: (settlementId: string) => `/settlements/${settlementId}`,

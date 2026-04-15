@@ -18,3 +18,9 @@ export interface PoolBalances {
   balances: BalanceEntry[];
   memberSummary: MemberSummary[];
 }
+
+export interface UserBalances {
+  totalOwed: number;
+  totalOwedToMe: number;
+  currency: string;
+}
