@@ -16,7 +16,7 @@ const AuthScreen = () => {
   const { isLoggingInWithGoogle, googleLoginHandler } = useGoogleAuth();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.primaryContainer }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.contentContainer}>
         <Animated.Text
           entering={FadeInDown}

@@ -14,7 +14,7 @@ import ProfileScreen from '@/features/user/screens/profile.screen';
 import { isLiquidGlassSupported } from '@callstack/liquid-glass';
 import useAuthStore from '@/features/auth/auth.state';
 import type { Theme } from '@react-navigation/native';
-import { LightColors, DarkColors } from '@/core/common/constants/theme';
+import { LightColors, DarkColors, TextStyles } from '@/core/common/constants/theme';
 
 interface NavigationProps {
   theme?: Theme;
@@ -75,7 +75,7 @@ const createTabsNavigator = (colorScheme: string | null) => {
     screenOptions: {
       headerShown: false,
       tabBarStyle: {
-        backgroundColor: isLiquidGlassSupported ? 'transparent' : colors.onPrimary,
+        backgroundColor: isLiquidGlassSupported ? 'transparent' : colors.surface,
       },
       tabBarActiveTintColor: colors.primary,
       tabBarInactiveTintColor: colors.text.secondary,

@@ -19,6 +19,9 @@ export const BrandColors = {
 };
 
 export const LightColors = {
+  background: '#F4F9F5',
+  surface: '#FFFFFF',
+
   primary: '#1B7A48',
   onPrimary: '#FFFFFF',
   primaryContainer: '#C8F0D8',
@@ -79,6 +82,9 @@ export const LightColors = {
 };
 
 export const DarkColors = {
+  background: '#0F1410',
+  surface: '#1C2420',
+
   primary: '#6EDFA0',
   onPrimary: '#003920',
   primaryContainer: '#005232',

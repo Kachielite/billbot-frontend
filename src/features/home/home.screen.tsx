@@ -1,18 +1,16 @@
-import { Text, ScrollView } from 'react-native';
+import { Text, ScrollView, StyleSheet } from 'react-native';
 import React from 'react';
 import { Button } from '@react-navigation/elements';
 import useAuthStore from '@/features/auth/auth.state';
+import useThemeColors from '@/core/common/hooks/use-theme-colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenContainer } from '@/core/common/constants/theme';
 
 const HomeScreen = () => {
   const { clearAuth } = useAuthStore();
+  const colors = useThemeColors();
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior={'automatic'}
-      contentContainerStyle={{
-        padding: 16,
-        gap: 16,
-      }}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Text>HomeScreen</Text>
       <Button
         variant="filled"
@@ -23,7 +21,14 @@ const HomeScreen = () => {
       >
         Logout
       </Button>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    ...ScreenContainer,
+  },
+});
+
 export default HomeScreen;
