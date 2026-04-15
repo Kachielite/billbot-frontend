@@ -2,6 +2,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-nat
 import React, { ReactElement } from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { GlassView } from 'expo-glass-effect';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 type CustomButtonProps = {
   label: string;
@@ -21,7 +22,7 @@ const CustomButton = ({ label, onPress, loading, icon }: CustomButtonProps) => {
     <GlassView tintColor={colors.primary} isInteractive style={[styles.btn]}>
       <TouchableOpacity onPress={onPress} disabled={loading}>
         {icon}
-        <Text style={[styles.buttonLabel, { color: colors.text.primary }]}>{label}</Text>
+        <Text style={[styles.buttonLabel, { color: colors.onPrimary }]}>{label}</Text>
       </TouchableOpacity>
     </GlassView>
   );
@@ -29,8 +30,7 @@ const CustomButton = ({ label, onPress, loading, icon }: CustomButtonProps) => {
 
 const styles = StyleSheet.create({
   buttonLabel: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...TextStyles.button,
   },
   btn: {
     width: '97%',

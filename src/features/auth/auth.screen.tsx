@@ -3,10 +3,10 @@ import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import LottieView from 'lottie-react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Fonts } from '@/core/common/constants/theme';
 import AuthButton from '@/features/auth/components/auth-button';
 import useAppleAuth from '@/features/auth/hooks/use-apple-auth';
 import useGoogleAuth from '@/features/auth/hooks/use-google-auth';
+import { Fonts, FontSize, TextStyles } from '@/core/common/constants/fonts';
 
 const AuthScreen = () => {
   const colors = useThemeColors();
@@ -86,21 +86,17 @@ const styles = StyleSheet.create({
   },
   headline: {
     position: 'absolute',
-    top: 10,
-    fontSize: 32,
-    fontFamily: Fonts.brandBlack,
+    top: 0,
     textAlign: 'center',
     width: '100%',
+    ...TextStyles.displayLarge,
   },
   tagline: {
     position: 'absolute',
     bottom: 10,
-    fontSize: 18,
-    fontFamily: Fonts.brand,
-    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 50,
-    lineHeight: 30,
+    ...TextStyles.headingSmall,
   },
   buttonContainer: {
     width: '100%',

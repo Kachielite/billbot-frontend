@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 type AuthButtonProps = {
   label: string;
@@ -53,8 +54,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   buttonLabel: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...TextStyles.button,
   },
 });
 

@@ -9,12 +9,12 @@ import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigati
 import HomeScreen from '@/features/home/home.screen';
 import { Platform, useColorScheme } from 'react-native';
 import ActivityScreen from '@/features/activity/activity.screen';
-import GroupScreen from '@/features/groups/screens/group.screen';
+import GroupsScreen from '@/features/groups/screens/groups.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
 import { isLiquidGlassSupported } from '@callstack/liquid-glass';
 import useAuthStore from '@/features/auth/auth.state';
 import type { Theme } from '@react-navigation/native';
-import { LightColors, DarkColors, TextStyles } from '@/core/common/constants/theme';
+import { LightColors, DarkColors } from '@/core/common/constants/theme';
 
 interface NavigationProps {
   theme?: Theme;
@@ -50,7 +50,7 @@ const createTabsNavigator = (colorScheme: string | null) => {
         },
       }),
       Groups: createBottomTabScreen({
-        screen: GroupScreen,
+        screen: GroupsScreen,
         options: {
           title: 'Groups',
           tabBarIcon: ({ focused }) =>

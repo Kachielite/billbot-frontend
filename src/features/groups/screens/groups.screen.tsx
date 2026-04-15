@@ -2,12 +2,12 @@ import { StyleSheet, Text } from 'react-native';
 import React from 'react';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 
-const ActivityScreen = () => {
+const GroupsScreen = () => {
   return (
     <ScreenContainer>
-      <Text>ActivityScreen</Text>
+      <Text>GroupScreen</Text>
     </ScreenContainer>
   );
 };
-export default ActivityScreen;
+export default GroupsScreen;
 const styles = StyleSheet.create({});

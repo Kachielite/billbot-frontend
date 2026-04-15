@@ -1,34 +1,23 @@
-import { Text, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import React from 'react';
-import { Button } from '@react-navigation/elements';
-import useAuthStore from '@/features/auth/auth.state';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScreenContainer } from '@/core/common/constants/theme';
+import ScreenHeader from '@/core/common/components/screen-header';
+import { Ionicons } from '@expo/vector-icons';
+import ScreenContainer from '@/core/common/components/layout/screen-container';
 
 const HomeScreen = () => {
-  const { clearAuth } = useAuthStore();
   const colors = useThemeColors();
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text>HomeScreen</Text>
-      <Button
-        variant="filled"
-        onPressIn={() => {
-          clearAuth();
-          // Navigation happens automatically via conditional rendering when auth state updates
-        }}
-      >
-        Logout
-      </Button>
-    </SafeAreaView>
+    <ScreenContainer>
+      <ScreenHeader title="Good morning 👋">
+        <Pressable>
+          <Ionicons name="notifications" size={24} color={colors.text.primary} />
+        </Pressable>
+      </ScreenHeader>
+    </ScreenContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    ...ScreenContainer,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default HomeScreen;

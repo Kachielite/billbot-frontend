@@ -13,7 +13,8 @@ import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/d
 import moment from 'moment/moment';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Border, Input, Radius, Spacing, TextStyles } from '@/core/common/constants/theme';
+import { Border, Input, Radius, Spacing } from '@/core/common/constants/theme';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 interface Props<T extends FieldValues> {
   id: Path<T>;
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
   asterisk: {
     marginTop: 2,
@@ -189,6 +190,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   error: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.error,
   },
 });

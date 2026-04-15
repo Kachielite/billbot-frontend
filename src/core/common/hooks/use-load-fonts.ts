@@ -1,11 +1,11 @@
 import { useFonts } from 'expo-font';
 import {
-  Nunito_300Light,
-  Nunito_400Regular,
-  Nunito_500Medium,
-  Nunito_700Bold,
-  Nunito_900Black,
-} from '@expo-google-fonts/nunito';
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+} from '@expo-google-fonts/plus-jakarta-sans';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -13,11 +13,11 @@ SplashScreen.preventAutoHideAsync();
 
 const useLoadFonts = () => {
   const [loaded, error] = useFonts({
-    Nunito_400Regular,
-    Nunito_700Bold,
-    Nunito_900Black,
-    Nunito_500Medium,
-    Nunito_300Light,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
   });
 
   useEffect(() => {
