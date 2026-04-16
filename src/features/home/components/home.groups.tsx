@@ -4,9 +4,8 @@ import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useGroups from '@/features/groups/hooks/use-groups';
+import SkeletonBox from '@/core/common/components/skeleton-box';
 import { Group } from '@/features/groups/groups.interface';
-import { LiquidGlassContainerView } from '@callstack/liquid-glass';
-import { GlassContainer } from 'expo-glass-effect';
 
 // TODO: Remove once you create Groups
 const GROUPS_MOCK: Group[] = [
@@ -101,23 +100,32 @@ const groupCardStyles = StyleSheet.create({
 
 export default function HomeGroups() {
   const colors = useThemeColors();
-  // const {groups} = useGroups();
+  const { groups, isLoading: groupsLoading } = useGroups();
+  const groupsToDisplay = groups.length > 0 ? groups : GROUPS_MOCK;
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Your groups</Text>
         <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
       </View>
-      <FlatList
-        data={GROUPS_MOCK}
-        renderItem={({ item }) => <GroupCard group={item} />}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          gap: Spacing.md,
-          paddingVertical: Spacing.sm,
-        }}
-      />
+      {groupsLoading ? (
+        <View style={{ flexDirection: 'row', paddingVertical: Spacing.sm }}>
+          {[0, 1, 2, 3].map((i) => (
+            <SkeletonBox key={i} width={170} height={110} bg={colors.surface} />
+          ))}
+        </View>
+      ) : (
+        <FlatList
+          data={groupsToDisplay}
+          renderItem={({ item }) => <GroupCard group={item} />}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            gap: Spacing.md,
+            paddingVertical: Spacing.sm,
+          }}
+        />
+      )}
     </View>
   );
 }
