@@ -16,4 +16,5 @@ export const QUERY_KEYS = {
   GROUP_WEBHOOKS: 'group-webhooks',
   USER_SEARCH: 'user-search',
   UPCOMING_EXPENSES: 'upcoming-expenses',
+  USER_ACTIVITIES: 'user-activities',
 } as const;
