@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     ...TextStyles.headingLarge,
   },
   name: {
-    ...TextStyles.label,
+    ...TextStyles.bodyMedium,
   },
   notificationBtn: {
     width: 40,

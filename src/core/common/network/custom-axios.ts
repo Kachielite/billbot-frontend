@@ -11,8 +11,27 @@ const tokenStore = {
     try {
       const tokenStorage = zustandStorage.getItem('auth-token') as string | null;
       if (tokenStorage) {
-        const tokens: Omit<IAuth, 'user'> = JSON.parse(tokenStorage);
-        return tokens?.data.token || null;
+        // tokenStorage may be one of:
+        // - a JSON string of the form `"my-token"` (auth.state.setToken stored a string)
+        // - a JSON object matching Omit<IAuth, 'user'> (tokenStore.setTokens stores this)
+        try {
+          const parsed = JSON.parse(tokenStorage);
+
+          // If parsed is a plain string ("my-token"), return it
+          if (typeof parsed === 'string') return parsed;
+
+          // If parsed is an object, attempt to find token in common shapes
+          if (parsed && typeof parsed === 'object') {
+            // common shape: { data: { token: string } }
+            if (parsed.data && typeof parsed.data.token === 'string') return parsed.data.token;
+            // alternate shape: { token: string }
+            if (typeof parsed.token === 'string') return parsed.token;
+          }
+        } catch (err) {
+          // If parsing fails, tokenStorage might already be the raw token string
+          // but zustandStorage.getItem returns strings, so this is unlikely. Still, handle it.
+          return tokenStorage;
+        }
       }
       return null;
     } catch (error) {
@@ -30,26 +49,11 @@ const tokenStore = {
 
 // Minimal axios instance — baseURL can be set via environment or elsewhere
 const api = axios.create({ baseURL: BASE_URL });
-// Plain axios instance without interceptors for auth refresh calls (breaks require cycle)
-const plainAxios = axios.create({ baseURL: BASE_URL });
-
-let isRefreshing = false;
-let failedQueue: {
-  resolve: (token: string | PromiseLike<string>) => void;
-  reject: (err: unknown) => void;
-}[] = [];
-
-const processQueue = (error: unknown, token?: string) => {
-  failedQueue.forEach((p) => {
-    if (error) p.reject(error);
-    else p.resolve(token as string);
-  });
-  failedQueue = [];
-};
 
 // Attach access token to every request
 api.interceptors.request.use((config) => {
   const token = tokenStore.getAccessToken();
+  console.log(`Reading access token from storage: ${token}`);
   if (token) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
@@ -85,7 +89,7 @@ api.interceptors.response.use(
 
       try {
         const navigation = await import('@react-navigation/native').then((m) => m.useNavigation());
-        navigation.navigate('Authentication');
+        navigation.navigate();
       } catch {}
 
       return Promise.reject(

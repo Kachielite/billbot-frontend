@@ -87,6 +87,12 @@ export const LightColors = {
     primary: '#1B7A48', // branded borders — active inputs, selected cards
   },
 
+  // Hero card — for surfaces built on a primary-colored background
+  primaryCard: {
+    labelText: 'rgba(255, 255, 255, 0.70)',
+    subtitleText: 'rgba(255, 255, 255, 0.75)',
+    pillBg: 'rgba(255, 255, 255, 0.15)',
+  },
   // Buttons — map directly to color tokens above
   // Primary button:     background=primary,          text=onPrimary
   // Secondary button:   background=primaryContainer, text=onPrimaryContainer
@@ -165,6 +171,13 @@ export const DarkColors = {
     default: 'rgba(255, 255, 255, 0.13)', // card edges, input outlines
     strong: 'rgba(255, 255, 255, 0.22)', // emphasis borders, focused inputs
     primary: '#6EDFA0', // branded borders in dark mode
+  },
+
+  // Hero card — for surfaces built on a primary-colored background
+  primaryCard: {
+    labelText: 'rgba(0, 0, 0, 0.55)',
+    subtitleText: 'rgba(0, 0, 0, 0.55)',
+    pillBg: 'rgba(0, 0, 0, 0.10)',
   },
 };
 
