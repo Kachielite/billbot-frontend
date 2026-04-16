@@ -9,6 +9,7 @@ type Props = {
   subtitle?: string;
   actionLabel?: string;
   onAction?: () => void;
+  cta?: React.ReactNode;
 };
 
 export default function EmptyState({
@@ -16,6 +17,7 @@ export default function EmptyState({
   subtitle,
   actionLabel,
   onAction,
+  cta,
 }: Props) {
   const colors = useThemeColors();
 
@@ -28,7 +30,9 @@ export default function EmptyState({
       {subtitle ? (
         <Text style={[styles.subtitle, { color: colors.text.secondary }]}>{subtitle}</Text>
       ) : null}
-      {actionLabel && onAction ? (
+      {cta ? (
+        <>{cta}</>
+      ) : actionLabel && onAction ? (
         <TouchableOpacity
           onPress={onAction}
           style={[styles.button, { backgroundColor: colors.primary }]}

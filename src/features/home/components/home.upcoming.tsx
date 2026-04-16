@@ -7,6 +7,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useUpcomingExpenses from '@/features/expenses/hooks/use-upcoming-expenses';
 import SkeletonBox from '@/core/common/components/skeleton-box';
+import EmptyState from '@/core/common/components/empty-state';
 
 // TODO: Remove this upcoming mock data once you create the data
 const UPCOMING_MOCK: UpcomingExpense[] = [
@@ -127,12 +128,14 @@ const groupCardStyles = StyleSheet.create({
 export default function HomeUpcoming() {
   const colors = useThemeColors();
   const { upcomingExpenses, isLoading } = useUpcomingExpenses();
-  const upcomingToDisplay = upcomingExpenses.length > 0 ? upcomingExpenses : UPCOMING_MOCK;
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Upcoming</Text>
-        <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+        {upcomingExpenses.length > 0 ? (
+          <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+        ) : null}
       </View>
       {isLoading ? (
         <View style={{ flexDirection: 'row', paddingVertical: Spacing.sm }}>
@@ -140,9 +143,14 @@ export default function HomeUpcoming() {
             <SkeletonBox key={i} width={170} height={110} bg={colors.surface} />
           ))}
         </View>
+      ) : upcomingExpenses.length === 0 ? (
+        <EmptyState
+          title="No upcoming expenses"
+          subtitle="You have no upcoming recurring expenses."
+        />
       ) : (
         <FlatList
-          data={upcomingToDisplay}
+          data={upcomingExpenses}
           renderItem={({ item }) => <UpcomingCard upcoming={item} />}
           horizontal
           showsHorizontalScrollIndicator={false}

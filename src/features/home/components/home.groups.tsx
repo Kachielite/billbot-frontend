@@ -1,10 +1,12 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useGroups from '@/features/groups/hooks/use-groups';
 import SkeletonBox from '@/core/common/components/skeleton-box';
+import EmptyState from '@/core/common/components/empty-state';
+import { useNavigation } from '@react-navigation/native';
 import { Group } from '@/features/groups/groups.interface';
 
 // TODO: Remove once you create Groups
@@ -100,13 +102,16 @@ const groupCardStyles = StyleSheet.create({
 
 export default function HomeGroups() {
   const colors = useThemeColors();
+  const nav: any = useNavigation();
   const { groups, isLoading: groupsLoading } = useGroups();
-  const groupsToDisplay = groups.length > 0 ? groups : GROUPS_MOCK;
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Your groups</Text>
-        <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+        {groups.length > 0 ? (
+          <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+        ) : null}
       </View>
       {groupsLoading ? (
         <View style={{ flexDirection: 'row', paddingVertical: Spacing.sm }}>
@@ -114,9 +119,20 @@ export default function HomeGroups() {
             <SkeletonBox key={i} width={170} height={110} bg={colors.surface} />
           ))}
         </View>
+      ) : groups.length === 0 ? (
+        <EmptyState
+          title="No groups yet"
+          subtitle="Create your first group to start tracking shared expenses."
+          actionLabel="Create group"
+          onAction={() => {
+            // TODO: Implement navigation to create group screen
+            // Attempt to navigate to a create-group screen; adjust name if your app uses a different route
+            nav.navigate('CreateGroup');
+          }}
+        />
       ) : (
         <FlatList
-          data={groupsToDisplay}
+          data={groups}
           renderItem={({ item }) => <GroupCard group={item} />}
           horizontal
           showsHorizontalScrollIndicator={false}

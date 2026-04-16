@@ -152,7 +152,9 @@ export default function HomeActivities() {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Recent Activities</Text>
-        <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+        {activitiesToDisplay.length > 0 ? (
+          <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+        ) : null}
       </View>
       <View style={[styles.cardContainer, { backgroundColor: colors.surface }]}>
         {isLoading ? (
@@ -164,7 +166,6 @@ export default function HomeActivities() {
           ))
         ) : activitiesToDisplay.length === 0 ? (
           <EmptyState
-            icon="ios-time"
             title="No recent activity"
             subtitle="You don't have any recent activity yet."
           />
