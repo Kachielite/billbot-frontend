@@ -8,7 +8,7 @@ import AuthScreen from '@/features/auth/auth.screen';
 import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigation/bottom-tabs';
 import HomeScreen from '@/features/home/home.screen';
 import { Platform, useColorScheme } from 'react-native';
-import ActivityScreen from '@/features/activity/activity.screen';
+import ActivitiesScreen from '@/features/activities/activities.screen';
 import GroupsScreen from '@/features/groups/screens/groups.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
 import { isLiquidGlassSupported } from '@callstack/liquid-glass';
@@ -39,7 +39,7 @@ const createTabsNavigator = (colorScheme: string | null) => {
         },
       }),
       Activity: createBottomTabScreen({
-        screen: ActivityScreen,
+        screen: ActivitiesScreen,
         options: {
           title: 'Activity',
           tabBarIcon: ({ focused }) =>

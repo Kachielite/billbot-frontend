@@ -1,3 +1,13 @@
+// ── Request params ────────────────────────────────────────────────────────────
+export interface GetActivitiesParamsDto {
+  page?: number;
+  limit?: number;
+  pool_id?: string;
+  group_id?: string;
+  from?: string;
+  to?: string;
+}
+
 // ── Shared nested DTOs ────────────────────────────────────────────────────────
 export interface ActivityActorDto {
   id: string;

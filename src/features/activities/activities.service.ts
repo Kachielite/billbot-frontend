@@ -1,13 +1,13 @@
 import { customAxios } from '@/core/common/network/custom-axios';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
 import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
-import { PaginatedResponse, PaginationParams } from '@/core/common/interface/pagination.interface';
+import { PaginatedResponse } from '@/core/common/interface/pagination.interface';
 import { Activity } from './activities.interface';
 import { mapActivityFromDto } from './activities.mapper';
-import { ActivityDto } from './activities.dto';
+import { ActivityDto, GetActivitiesParamsDto } from './activities.dto';
 
 export const ActivitiesService = {
-  getActivities: async (params?: PaginationParams): Promise<PaginatedResponse<Activity>> => {
+  getActivities: async (params?: GetActivitiesParamsDto): Promise<PaginatedResponse<Activity>> => {
     try {
       const response = await customAxios.get<{
         page: number;
