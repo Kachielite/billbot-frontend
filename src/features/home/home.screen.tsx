@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import HomeHeader from '@/features/home/components/home-header';
 import HomeBalances from '@/features/home/components/home.balances';
+import HomeGroups from '@/features/home/components/home.groups';
 
 const HomeScreen = () => {
   const colors = useThemeColors();
@@ -13,6 +14,7 @@ const HomeScreen = () => {
     <ScreenContainer>
       <HomeHeader />
       <HomeBalances />
+      <HomeGroups />
     </ScreenContainer>
   );
 };
