@@ -13,10 +13,10 @@ const HomeHeader = () => {
   return (
     <View style={[styles.container]}>
       <View>
-        <Text style={[styles.greetings, { color: colors.text.primary }]}>
+        <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>
           {getGreetingForName()}
         </Text>
-        <Text style={[styles.name, { color: colors.text.secondary }]}>{user?.name}</Text>
+        <Text style={[TextStyles.bodyMedium, { color: colors.text.secondary }]}>{user?.name}</Text>
       </View>
       <Pressable
         style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
@@ -35,12 +35,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     justifyContent: 'space-between',
-  },
-  greetings: {
-    ...TextStyles.headingLarge,
-  },
-  name: {
-    ...TextStyles.bodyMedium,
   },
   notificationBtn: {
     width: 40,

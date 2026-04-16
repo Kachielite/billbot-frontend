@@ -42,30 +42,6 @@ export const mapActivityFromDto = (dto: ActivityDto): Activity => {
         metadata: { expenseId: dto.metadata.expense_id },
       };
 
-    case 'pool.created':
-      return {
-        ...base,
-        type: 'pool.created',
-        metadata: { poolName: dto.metadata.pool_name },
-      };
-
-    case 'pool.settled':
-      return { ...base, type: 'pool.settled', metadata: {} };
-
-    case 'pool.member_added':
-      return {
-        ...base,
-        type: 'pool.member_added',
-        metadata: { targetUserId: dto.metadata.target_user_id },
-      };
-
-    case 'pool.member_removed':
-      return {
-        ...base,
-        type: 'pool.member_removed',
-        metadata: { targetUserId: dto.metadata.target_user_id },
-      };
-
     case 'settlement.submitted':
       return {
         ...base,

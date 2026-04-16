@@ -29,20 +29,6 @@ export interface ExpenseDeletedMetadata {
   expenseId: string;
 }
 
-export interface PoolCreatedMetadata {
-  poolName: string;
-}
-
-export type PoolSettledMetadata = Record<string, never>;
-
-export interface PoolMemberAddedMetadata {
-  targetUserId: string;
-}
-
-export interface PoolMemberRemovedMetadata {
-  targetUserId: string;
-}
-
 export interface SettlementSubmittedMetadata {
   settlementId: string;
   amount: number;
@@ -73,10 +59,6 @@ interface ActivityBase {
 export type Activity =
   | (ActivityBase & { type: 'expense.created'; metadata: ExpenseCreatedMetadata })
   | (ActivityBase & { type: 'expense.deleted'; metadata: ExpenseDeletedMetadata })
-  | (ActivityBase & { type: 'pool.created'; metadata: PoolCreatedMetadata })
-  | (ActivityBase & { type: 'pool.settled'; metadata: PoolSettledMetadata })
-  | (ActivityBase & { type: 'pool.member_added'; metadata: PoolMemberAddedMetadata })
-  | (ActivityBase & { type: 'pool.member_removed'; metadata: PoolMemberRemovedMetadata })
   | (ActivityBase & { type: 'settlement.submitted'; metadata: SettlementSubmittedMetadata })
   | (ActivityBase & { type: 'settlement.confirmed'; metadata: SettlementConfirmedMetadata })
   | (ActivityBase & { type: 'settlement.disputed'; metadata: SettlementDisputedMetadata });
