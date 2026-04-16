@@ -79,6 +79,7 @@ const createTabsNavigator = (colorScheme: string | null) => {
       },
       tabBarActiveTintColor: colors.primary,
       tabBarInactiveTintColor: colors.text.secondary,
+      animation: 'shift',
     },
   });
 };
