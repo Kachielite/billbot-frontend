@@ -3,7 +3,7 @@ import {
   createNativeStackNavigator,
   createNativeStackScreen,
 } from '@react-navigation/native-stack';
-import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
+import { createStaticNavigation } from '@react-navigation/native';
 import AuthScreen from '@/features/auth/auth.screen';
 import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigation/bottom-tabs';
 import HomeScreen from '@/features/home/home.screen';
@@ -74,6 +74,7 @@ const Tabs = createBottomTabNavigator({
       backgroundColor: isLiquidGlassSupported ? 'transparent' : undefined,
     },
     tabBarActiveTintColor: BrandColors.primary,
+    animation: 'shift',
   },
 });
 
@@ -86,14 +87,14 @@ const AuthenticatedStack = createNativeStackNavigator({
         headerShown: false,
       },
     }),
-    NewGroup: {
+    NewGroup: createNativeStackScreen({
       screen: NewGroupScreen,
       options: {
-        presentation: 'formSheet',
+        presentation: 'modal',
         headerShown: false,
         sheetAllowedDetents: 'fitToContents',
       },
-    },
+    }),
   },
 });
 
@@ -125,5 +126,7 @@ export function Navigation({ theme }: NavigationProps): React.JSX.Element {
 type AuthenticatedStackType = typeof AuthenticatedStack;
 
 declare module '@react-navigation/core' {
+  // Required module augmentation pattern for React Navigation static API root typing.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface RootNavigator extends AuthenticatedStackType {}
 }
