@@ -255,7 +255,7 @@ export const Shadow = {
 export const ScreenContainerStyle = {
   flex: 1,
   paddingHorizontal: 12,
-  gap: Spacing.lg,
+  gap: Spacing.xl,
 };
 
 export const ModalContainer = {

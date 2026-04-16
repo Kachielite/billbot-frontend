@@ -1,15 +1,21 @@
 import { customAxios } from '@/core/common/network/custom-axios';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
 import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
-import { Group, GroupDetail } from './groups.interface';
-import { mapGroupDetailFromDto, mapGroupFromDto } from './groups.mapper';
-import { CreateGroupSchemaType, GroupDetailDto, GroupDto } from './groups.dto';
+import { Group, GroupDetail, PaginatedGroups } from './groups.interface';
+import { mapGroupDetailFromDto, mapGroupFromDto, mapPaginatedGroupsFromDto } from './groups.mapper';
+import {
+  CreateGroupSchemaType,
+  GroupDetailDto,
+  GroupDto,
+  ListGroupsParamsDto,
+  PaginatedGroupsDto,
+} from './groups.dto';
 
 export const GroupsService = {
-  listGroups: async (): Promise<Group[]> => {
+  listGroups: async (params?: ListGroupsParamsDto): Promise<PaginatedGroups> => {
     try {
-      const response = await customAxios.get<GroupDto[]>(API_ENDPOINTS.GROUPS);
-      return response.data.map(mapGroupFromDto);
+      const response = await customAxios.get<PaginatedGroupsDto>(API_ENDPOINTS.GROUPS, { params });
+      return mapPaginatedGroupsFromDto(response.data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }

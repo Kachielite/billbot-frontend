@@ -7,7 +7,20 @@ export const createGroupSchema = z.object({
 });
 export type CreateGroupSchemaType = z.infer<typeof createGroupSchema>;
 
+export interface ListGroupsParamsDto {
+  page?: number;
+  limit?: number;
+  include_members?: boolean;
+}
+
 // ── Response DTOs ─────────────────────────────────────────────────────────────
+export interface GroupBalanceDto {
+  total_owed: number;
+  total_owed_to_me: number;
+  net_balance: number;
+  currency: string;
+}
+
 export interface GroupDto {
   id: string;
   name: string;
@@ -15,6 +28,9 @@ export interface GroupDto {
   invite_code: string;
   created_by: string | null;
   created_at: string;
+  member_count: number;
+  members?: GroupMemberDto[];
+  balance?: GroupBalanceDto;
 }
 
 export interface GroupMemberDto {
@@ -28,4 +44,12 @@ export interface GroupMemberDto {
 
 export interface GroupDetailDto extends GroupDto {
   members: GroupMemberDto[];
+}
+
+export interface PaginatedGroupsDto {
+  page: number;
+  limit: number;
+  total_items: number;
+  pages: number;
+  items: GroupDto[];
 }

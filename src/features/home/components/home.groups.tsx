@@ -17,6 +17,8 @@ const GROUPS_MOCK: Group[] = [
     inviteCode: 'FAMILY123',
     createdBy: 'user1',
     createdAt: new Date(),
+    memberCount: 3,
+    balance: { totalOwed: 50.0, totalOwedToMe: 20.0, netBalance: -30.0, currency: 'NGN' },
   },
   {
     id: '2',
@@ -25,6 +27,8 @@ const GROUPS_MOCK: Group[] = [
     inviteCode: 'FRIENDS123',
     createdBy: 'user1',
     createdAt: new Date(),
+    memberCount: 5,
+    balance: { totalOwed: 0, totalOwedToMe: 75.5, netBalance: 75.5, currency: 'NGN' },
   },
   {
     id: '3',
@@ -33,6 +37,8 @@ const GROUPS_MOCK: Group[] = [
     inviteCode: 'WORK123',
     createdBy: 'user1',
     createdAt: new Date(),
+    memberCount: 8,
+    balance: { totalOwed: 120.0, totalOwedToMe: 0, netBalance: -120.0, currency: 'NGN' },
   },
   {
     id: '4',
@@ -41,11 +47,20 @@ const GROUPS_MOCK: Group[] = [
     inviteCode: 'SPORTS123',
     createdBy: 'user1',
     createdAt: new Date(),
+    memberCount: 11,
+    balance: { totalOwed: 0, totalOwedToMe: 0, netBalance: 0, currency: 'NGN' },
   },
 ];
 
 const GroupCard = ({ group }: { group: Group }) => {
   const colors = useThemeColors();
+  const { totalOwed = 0, totalOwedToMe = 0, currency } = group.balance ?? {};
+  const owedToMeIsGreatest = totalOwedToMe >= totalOwed;
+  const amountLabel = owedToMeIsGreatest ? 'Owed to you' : 'You owe';
+  const amountToDisplay = owedToMeIsGreatest ? totalOwedToMe : totalOwed;
+  const prefix = owedToMeIsGreatest ? '+' : '-';
+  const amountColor = owedToMeIsGreatest ? colors.primary : colors.error;
+
   return (
     <View
       style={[
@@ -55,7 +70,19 @@ const GroupCard = ({ group }: { group: Group }) => {
     >
       <View>
         <Text style={[TextStyles.label, { color: colors.text.primary }]}>{group.name}</Text>
-        <Text style={[TextStyles.caption]}>3 members</Text>
+        <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>
+          {group.memberCount} members
+        </Text>
+      </View>
+      <View>
+        <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
+          {prefix} {currency}{' '}
+          {amountToDisplay.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+        <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>{amountLabel}</Text>
       </View>
     </View>
   );
@@ -65,7 +92,7 @@ const groupCardStyles = StyleSheet.create({
   groupCard: {
     display: 'flex',
     flexDirection: 'column',
-    gap: Spacing.sm,
+    gap: Spacing.md,
     padding: Spacing.md,
     borderRadius: Radius.lg,
     width: 170,

@@ -1,3 +1,10 @@
+export interface GroupBalance {
+  totalOwed: number;
+  totalOwedToMe: number;
+  netBalance: number;
+  currency: string;
+}
+
 export interface Group {
   id: string;
   name: string;
@@ -5,6 +12,9 @@ export interface Group {
   inviteCode: string;
   createdBy: string | null;
   createdAt: Date;
+  memberCount: number;
+  members?: GroupMember[];
+  balance?: GroupBalance;
 }
 
 export interface GroupMember {
@@ -18,4 +28,12 @@ export interface GroupMember {
 
 export interface GroupDetail extends Group {
   members: GroupMember[];
+}
+
+export interface PaginatedGroups {
+  page: number;
+  limit: number;
+  totalItems: number;
+  pages: number;
+  groups: Group[];
 }
