@@ -53,7 +53,6 @@ const api = axios.create({ baseURL: BASE_URL });
 // Attach access token to every request
 api.interceptors.request.use((config) => {
   const token = tokenStore.getAccessToken();
-  console.log(`Reading access token from storage: ${token}`);
   if (token) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
@@ -86,11 +85,6 @@ api.interceptors.response.use(
           console.error(`Failed to clear auth state: ${err}`);
         } catch {}
       }
-
-      try {
-        const navigation = await import('@react-navigation/native').then((m) => m.useNavigation());
-        navigation.navigate();
-      } catch {}
 
       return Promise.reject(
         mapAxiosErrorToAppError(new Error('Session expired. Please login again.')),
