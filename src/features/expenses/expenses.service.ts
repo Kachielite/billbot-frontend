@@ -3,9 +3,18 @@ import { customAxios } from '@/core/common/network/custom-axios';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
 import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
 import { PaginatedResponse, PaginationParams } from '@/core/common/interface/pagination.interface';
-import { Expense, ParseReceiptResult } from './expenses.interface';
-import { mapExpenseFromDto, mapParsedReceiptFromDto } from './expenses.mapper';
-import { ExpenseDto, LogExpenseSchemaType, ParseReceiptResponseDto } from './expenses.dto';
+import { Expense, ParseReceiptResult, UpcomingExpense } from './expenses.interface';
+import {
+  mapExpenseFromDto,
+  mapParsedReceiptFromDto,
+  mapUpcomingExpenseFromDto,
+} from './expenses.mapper';
+import {
+  ExpenseDto,
+  LogExpenseSchemaType,
+  ParseReceiptResponseDto,
+  UpcomingExpenseDto,
+} from './expenses.dto';
 
 export const ExpensesService = {
   listExpenses: async (
@@ -98,6 +107,26 @@ export const ExpensesService = {
   cancelRecurrence: async (poolId: string, expenseId: string): Promise<void> => {
     try {
       await customAxios.delete(API_ENDPOINTS.EXPENSE_RECURRENCE(poolId, expenseId));
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  getUpcomingExpenses: async (
+    params?: PaginationParams,
+  ): Promise<PaginatedResponse<UpcomingExpense>> => {
+    try {
+      const response = await customAxios.get<{
+        page: number;
+        limit: number;
+        total_items: number;
+        pages: number;
+        items: UpcomingExpenseDto[];
+      }>(API_ENDPOINTS.UPCOMING_EXPENSES, { params });
+      return {
+        ...response.data,
+        items: response.data.items.map(mapUpcomingExpenseFromDto),
+      };
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }

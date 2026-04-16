@@ -44,6 +44,23 @@ export interface ExpenseDto {
   splits: SplitDto[];
 }
 
+export interface UpcomingExpenseDto {
+  id: string;
+  pool_id: string;
+  paid_by: string;
+  amount: string;
+  currency: string;
+  description: string | null;
+  category_id: string | null;
+  receipt_url: string | null;
+  is_recurring: true;
+  recurrence_frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';
+  recurrence_end_date: string | null;
+  recurrence_parent_id: string | null;
+  next_occurrence_at: string;
+  created_at: string;
+}
+
 export interface ParsedReceiptDto {
   amount: number | null;
   currency: string | null;

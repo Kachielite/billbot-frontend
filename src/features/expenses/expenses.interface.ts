@@ -24,6 +24,23 @@ export interface Expense {
   splits: Split[];
 }
 
+export interface UpcomingExpense {
+  id: string;
+  poolId: string;
+  paidBy: string;
+  amount: number;
+  currency: string;
+  description: string | null;
+  categoryId: string | null;
+  receiptUrl: string | null;
+  isRecurring: true;
+  recurrenceFrequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';
+  recurrenceEndDate: Date | null;
+  recurrenceParentId: string | null;
+  nextOccurrenceAt: Date;
+  createdAt: Date;
+}
+
 export interface ParsedReceipt {
   amount: number | null;
   currency: string | null;

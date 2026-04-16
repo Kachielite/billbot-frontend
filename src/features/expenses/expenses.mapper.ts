@@ -1,5 +1,5 @@
-import { ExpenseDto, ParseReceiptResponseDto, SplitDto } from './expenses.dto';
-import { Expense, ParseReceiptResult, Split } from './expenses.interface';
+import { ExpenseDto, ParseReceiptResponseDto, SplitDto, UpcomingExpenseDto } from './expenses.dto';
+import { Expense, ParseReceiptResult, Split, UpcomingExpense } from './expenses.interface';
 
 export const mapSplitFromDto = (dto: SplitDto): Split => ({
   id: dto.id,
@@ -25,6 +25,23 @@ export const mapExpenseFromDto = (dto: ExpenseDto): Expense => ({
   recurrenceEndDate: dto.recurrence_end_date ? new Date(dto.recurrence_end_date) : null,
   nextOccurrenceAt: dto.next_occurrence_at ? new Date(dto.next_occurrence_at) : null,
   splits: dto.splits.map(mapSplitFromDto),
+});
+
+export const mapUpcomingExpenseFromDto = (dto: UpcomingExpenseDto): UpcomingExpense => ({
+  id: dto.id,
+  poolId: dto.pool_id,
+  paidBy: dto.paid_by,
+  amount: parseFloat(dto.amount),
+  currency: dto.currency,
+  description: dto.description,
+  categoryId: dto.category_id,
+  receiptUrl: dto.receipt_url,
+  isRecurring: true,
+  recurrenceFrequency: dto.recurrence_frequency,
+  recurrenceEndDate: dto.recurrence_end_date ? new Date(dto.recurrence_end_date) : null,
+  recurrenceParentId: dto.recurrence_parent_id,
+  nextOccurrenceAt: new Date(dto.next_occurrence_at),
+  createdAt: new Date(dto.created_at),
 });
 
 export const mapParsedReceiptFromDto = (dto: ParseReceiptResponseDto): ParseReceiptResult => ({
