@@ -125,9 +125,7 @@ export default function HomeGroups() {
           subtitle="Create your first group to start tracking shared expenses."
           actionLabel="Create group"
           onAction={() => {
-            // TODO: Implement navigation to create group screen
-            // Attempt to navigate to a create-group screen; adjust name if your app uses a different route
-            nav.navigate('CreateGroup');
+            nav.navigate('NewGroup');
           }}
         />
       ) : (

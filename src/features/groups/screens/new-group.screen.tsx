@@ -9,21 +9,19 @@ export default function NewGroupScreen() {
   const colors = useThemeColors();
 
   return (
-    <ScreenContainer useScrollView={false} contentContainerStyle={styles.container}>
-      <View>
-        <Text style={[styles.title, { color: colors.text.primary }]}>New Group</Text>
-        <Text style={[styles.subtitle, { color: colors.text.secondary }]}>
-          Form sheet is loaded. Build your create-group form here.
-        </Text>
+    <View style={{ padding: 15 }}>
+      <Text style={[styles.title, { color: colors.text.primary }]}>New Group</Text>
+      <Text style={[styles.subtitle, { color: colors.text.secondary }]}>
+        Form sheet is loaded. Build your create-group form here.
+      </Text>
 
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={[styles.closeButton, { backgroundColor: colors.primaryContainer }]}
-        >
-          <Text style={[styles.closeText, { color: colors.text.primary }]}>Close</Text>
-        </Pressable>
-      </View>
-    </ScreenContainer>
+      <Pressable
+        onPress={() => navigation.goBack()}
+        style={[styles.closeButton, { backgroundColor: colors.primaryContainer }]}
+      >
+        <Text style={[styles.closeText, { color: colors.text.primary }]}>Close</Text>
+      </Pressable>
+    </View>
   );
 }
 

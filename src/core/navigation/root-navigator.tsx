@@ -16,6 +16,7 @@ import useAuthStore from '@/features/auth/auth.state';
 import type { Theme } from '@react-navigation/native';
 import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import { BrandColors } from '@/core/common/constants/theme';
+import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -80,21 +81,28 @@ const Tabs = createBottomTabNavigator({
 
 const AuthenticatedStack = createNativeStackNavigator({
   screens: {
-    Tabs: createNativeStackScreen({
+    Tabs: {
       screen: Tabs,
       options: {
         title: 'Tabs',
         headerShown: false,
       },
-    }),
-    NewGroup: createNativeStackScreen({
+    },
+    NewGroup: {
       screen: NewGroupScreen,
+      options: {
+        presentation: 'modal',
+        headerShown: false,
+      },
+    },
+    NewExpense: {
+      screen: NewExpenseScreen,
       options: {
         presentation: 'modal',
         headerShown: false,
         sheetAllowedDetents: 'fitToContents',
       },
-    }),
+    },
   },
 });
 

@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
@@ -21,18 +28,18 @@ const HomeHeader = () => {
         <Text style={[TextStyles.bodyMedium, { color: colors.text.secondary }]}>{user?.name}</Text>
       </View>
       <View style={styles.cta}>
-        <Pressable
+        <TouchableOpacity
           style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
-          onPress={() => navigation.navigate('NewGroup')}
+          onPress={() => navigation.navigate('NewExpense')}
         >
           <Ionicons name="add-sharp" size={24} color={colors.text.primary} />
-        </Pressable>
-        <Pressable
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
           onPress={() => {}}
         >
           <Ionicons name="notifications" size={24} color={colors.text.primary} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
