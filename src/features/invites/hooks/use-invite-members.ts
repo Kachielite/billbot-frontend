@@ -12,9 +12,14 @@ const useInviteMembers = () => {
   const route = useRoute<any>();
   const groupId: string = (route.params as { groupId?: string })?.groupId ?? '';
 
-  const inputRef = useRef<TextInput>(null);
-  const [inputValue, setInputValue] = useState('');
+  // ── Add-new input ──────────────────────────────────────────────────────────
+  const addInputRef = useRef<TextInput>(null);
+  const [addValue, setAddValue] = useState('');
+
+  // ── Inline edit state ──────────────────────────────────────────────────────
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState('');
+
   const [entries, setEntries] = useState<InviteEntry[]>([]);
 
   const { isLoading: isSending, mutateAsync: sendInvites } = useMutation(
@@ -32,39 +37,50 @@ const useInviteMembers = () => {
     },
   );
 
-  const addOrUpdateEmail = () => {
-    const trimmed = inputValue.trim().toLowerCase();
+  const addEmail = () => {
+    const trimmed = addValue.trim().toLowerCase();
     if (!trimmed) return;
 
     if (!EMAIL_REGEX.test(trimmed)) {
       Toast.error('Enter a valid email address');
       return;
     }
-
-    if (editingId) {
-      setEntries((prev) => prev.map((e) => (e.id === editingId ? { ...e, email: trimmed } : e)));
-      setEditingId(null);
-    } else {
-      if (entries.some((e) => e.email === trimmed)) {
-        Toast.error('Email already added');
-        return;
-      }
-      setEntries((prev) => [...prev, { id: Date.now().toString(), email: trimmed }]);
+    if (entries.some((e) => e.email === trimmed)) {
+      Toast.error('Email already added');
+      return;
     }
 
-    setInputValue('');
-    inputRef.current?.focus();
+    setEntries((prev) => [...prev, { id: Date.now().toString(), email: trimmed }]);
+    setAddValue('');
+    addInputRef.current?.focus();
   };
 
   const startEdit = (entry: InviteEntry) => {
     setEditingId(entry.id);
-    setInputValue(entry.email);
-    inputRef.current?.focus();
+    setEditingValue(entry.email);
+  };
+
+  const saveEdit = () => {
+    const trimmed = editingValue.trim().toLowerCase();
+    if (!trimmed) return;
+
+    if (!EMAIL_REGEX.test(trimmed)) {
+      Toast.error('Enter a valid email address');
+      return;
+    }
+    if (entries.some((e) => e.email === trimmed && e.id !== editingId)) {
+      Toast.error('Email already added');
+      return;
+    }
+
+    setEntries((prev) => prev.map((e) => (e.id === editingId ? { ...e, email: trimmed } : e)));
+    setEditingId(null);
+    setEditingValue('');
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setInputValue('');
+    setEditingValue('');
   };
 
   const removeEntry = (id: string) => {
@@ -85,14 +101,17 @@ const useInviteMembers = () => {
   };
 
   return {
-    inputRef,
-    inputValue,
-    setInputValue,
+    addInputRef,
+    addValue,
+    setAddValue,
+    addEmail,
     editingId,
+    editingValue,
+    setEditingValue,
     entries,
     isSending,
-    addOrUpdateEmail,
     startEdit,
+    saveEdit,
     cancelEdit,
     removeEntry,
     handleInvite,

@@ -20,14 +20,17 @@ import useInviteMembers from '@/features/invites/hooks/use-invite-members';
 export default function InviteMembersScreen() {
   const colors = useThemeColors();
   const {
-    inputRef,
-    inputValue,
-    setInputValue,
+    addInputRef,
+    addValue,
+    setAddValue,
+    addEmail,
     editingId,
+    editingValue,
+    setEditingValue,
     entries,
     isSending,
-    addOrUpdateEmail,
     startEdit,
+    saveEdit,
     cancelEdit,
     removeEntry,
     handleInvite,
@@ -39,98 +42,123 @@ export default function InviteMembersScreen() {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScreenContainer>
+      <ScreenContainer useScrollView={false}>
         <InviteMembersHeader onDone={handleDone} />
 
-        {/* ── Email input row ──────────────────────────────────────── */}
+        {/* ── Add-new input row ────────────────────────────────────── */}
         <View
           style={[
             styles.inputRow,
-            {
-              backgroundColor: colors.surface,
-              borderColor: editingId ? colors.primary : colors.border.default,
-              borderWidth: editingId ? 2 : Border.thin,
-            },
+            { backgroundColor: colors.surface, borderColor: colors.border.default },
           ]}
         >
           <TextInput
-            ref={inputRef}
+            ref={addInputRef}
             style={[styles.emailInput, { color: colors.text.primary }]}
             placeholder="Enter email address"
             placeholderTextColor={colors.text.disabled}
-            value={inputValue}
-            onChangeText={setInputValue}
+            value={addValue}
+            onChangeText={setAddValue}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="done"
-            onSubmitEditing={addOrUpdateEmail}
+            onSubmitEditing={addEmail}
           />
-          {editingId ? (
-            <View style={styles.inputActions}>
-              <TouchableOpacity onPress={cancelEdit} style={styles.iconBtn}>
-                <Ionicons name="close" size={20} color={colors.text.secondary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={addOrUpdateEmail}
-                style={[styles.addBtn, { backgroundColor: colors.primary }]}
-              >
-                <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
-              onPress={addOrUpdateEmail}
-              style={[styles.addBtn, { backgroundColor: colors.primary }]}
-            >
-              <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Add</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            onPress={addEmail}
+            style={[styles.addBtn, { backgroundColor: colors.primary }]}
+          >
+            <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Add</Text>
+          </TouchableOpacity>
         </View>
 
         {/* ── Email list ───────────────────────────────────────────── */}
         {entries.length > 0 ? (
           <FlatList
+            style={styles.list}
             data={entries}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.listContent}
-            renderItem={({ item }) => (
-              <View
-                style={[
-                  styles.listItem,
-                  {
-                    backgroundColor: colors.surface,
-                    borderColor: editingId === item.id ? colors.primary : colors.border.subtle,
-                  },
-                ]}
-              >
-                <View style={[styles.avatar, { backgroundColor: colors.primaryContainer }]}>
-                  <Text style={[TextStyles.label, { color: colors.onPrimaryContainer }]}>
-                    {item.email[0].toUpperCase()}
-                  </Text>
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => {
+              const isEditing = editingId === item.id;
+              return (
+                <View
+                  style={[
+                    styles.listItem,
+                    {
+                      backgroundColor: colors.surface,
+                      borderColor: isEditing ? colors.primary : colors.border.subtle,
+                      borderWidth: isEditing ? 2 : Border.thin,
+                    },
+                  ]}
+                >
+                  <View style={[styles.avatar, { backgroundColor: colors.primaryContainer }]}>
+                    <Text style={[TextStyles.label, { color: colors.onPrimaryContainer }]}>
+                      {item.email[0].toUpperCase()}
+                    </Text>
+                  </View>
+
+                  {isEditing ? (
+                    <TextInput
+                      style={[styles.inlineInput, { color: colors.text.primary }]}
+                      value={editingValue}
+                      onChangeText={setEditingValue}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      returnKeyType="done"
+                      onSubmitEditing={saveEdit}
+                      autoFocus
+                    />
+                  ) : (
+                    <Text
+                      style={[styles.emailText, TextStyles.body, { color: colors.text.primary }]}
+                      numberOfLines={1}
+                    >
+                      {item.email}
+                    </Text>
+                  )}
+
+                  {isEditing ? (
+                    <>
+                      <TouchableOpacity
+                        onPress={saveEdit}
+                        style={styles.iconBtn}
+                        accessibilityLabel="Save email"
+                      >
+                        <Ionicons name="checkmark" size={20} color={colors.primary} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={cancelEdit}
+                        style={styles.iconBtn}
+                        accessibilityLabel="Cancel edit"
+                      >
+                        <Ionicons name="close" size={20} color={colors.text.secondary} />
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity
+                        onPress={() => startEdit(item)}
+                        style={styles.iconBtn}
+                        accessibilityLabel="Edit email"
+                      >
+                        <Ionicons name="pencil-outline" size={18} color={colors.text.secondary} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => removeEntry(item.id)}
+                        style={styles.iconBtn}
+                        accessibilityLabel="Remove email"
+                      >
+                        <Ionicons name="trash-outline" size={18} color={colors.error} />
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
-                <Text
-                  style={[styles.emailText, TextStyles.body, { color: colors.text.primary }]}
-                  numberOfLines={1}
-                >
-                  {item.email}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => startEdit(item)}
-                  style={styles.iconBtn}
-                  accessibilityLabel="Edit email"
-                >
-                  <Ionicons name="pencil-outline" size={18} color={colors.text.secondary} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => removeEntry(item.id)}
-                  style={styles.iconBtn}
-                  accessibilityLabel="Remove email"
-                >
-                  <Ionicons name="trash-outline" size={18} color={colors.error} />
-                </TouchableOpacity>
-              </View>
-            )}
+              );
+            }}
           />
         ) : (
           <View style={styles.emptyState}>
@@ -170,6 +198,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: Radius.md,
+    borderWidth: Border.thin,
     paddingLeft: Spacing.md,
     paddingRight: Spacing.xs,
     paddingVertical: Spacing.xs,
@@ -180,11 +209,6 @@ const styles = StyleSheet.create({
     height: 44,
     fontSize: 15,
   },
-  inputActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
   addBtn: {
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
@@ -192,6 +216,9 @@ const styles = StyleSheet.create({
   },
   iconBtn: {
     padding: Spacing.sm,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     gap: Spacing.sm,
@@ -201,7 +228,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
     borderRadius: Radius.md,
-    borderWidth: Border.thin,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     ...Shadow.sm,
@@ -215,6 +241,11 @@ const styles = StyleSheet.create({
   },
   emailText: {
     flex: 1,
+  },
+  inlineInput: {
+    flex: 1,
+    fontSize: 15,
+    paddingVertical: Spacing.xs,
   },
   emptyState: {
     flex: 1,
