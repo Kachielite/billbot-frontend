@@ -1,5 +1,5 @@
-import { PoolBalancesDto } from './balances.dto';
-import { PoolBalances } from './balances.interface';
+import { PoolBalancesDto, UserBalancesDto } from './balances.dto';
+import { PoolBalances, UserBalances } from './balances.interface';
 
 export const mapPoolBalancesFromDto = (dto: PoolBalancesDto): PoolBalances => ({
   balances: dto.balances.map((b) => ({
@@ -8,10 +8,16 @@ export const mapPoolBalancesFromDto = (dto: PoolBalancesDto): PoolBalances => ({
     amount: b.amount,
     currency: b.currency,
   })),
-  memberSummary: dto.memberSummary.map((m) => ({
+  memberSummary: dto.member_summary.map((m) => ({
     user: { id: m.user.id, name: m.user.name, email: null, avatarUrl: null },
-    totalPaid: m.totalPaid,
-    totalOwed: m.totalOwed,
-    netBalance: m.netBalance,
+    totalPaid: m.total_paid,
+    totalOwed: m.total_owed,
+    netBalance: m.net_balance,
   })),
+});
+
+export const mapUserBalancesFromDto = (dto: UserBalancesDto): UserBalances => ({
+  totalOwed: dto.total_owed,
+  totalOwedToMe: dto.total_owed_to_me,
+  currency: dto.currency,
 });

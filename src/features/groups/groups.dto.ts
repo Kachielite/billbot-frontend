@@ -33,6 +33,7 @@ export interface GroupDto {
   created_by: string | null;
   created_at: string;
   member_count: number;
+  active_pool_count: number;
   members?: GroupMemberDto[];
   balance?: GroupBalanceDto;
 }

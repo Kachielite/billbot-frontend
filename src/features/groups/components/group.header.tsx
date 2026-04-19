@@ -7,13 +7,7 @@ import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function GroupHeader({
-  groupName,
-  memberCount,
-}: {
-  groupName: string;
-  memberCount: number;
-}) {
+export default function GroupHeader({ groupName }: { groupName: string }) {
   const navigation = useNavigation();
   const colors = useThemeColors();
   return (
@@ -26,7 +20,7 @@ export default function GroupHeader({
               if (navigation.canGoBack()) navigation.goBack();
             }}
           >
-            <FontAwesome6 name="chevron-left" size={24} color={colors.text.primary} />
+            <FontAwesome6 name="chevron-left" size={16} color={colors.text.primary} />
           </TouchableOpacity>
         </View>
         <View>
@@ -36,7 +30,7 @@ export default function GroupHeader({
               { color: colors.text.primary, textTransform: 'uppercase' },
             ]}
           >
-            GROUP . {memberCount} {memberCount === 1 ? 'member' : 'members'}
+            GROUP DETAILS
           </Text>
           <Text style={[TextStyles.headingLarge, { color: colors.text.secondary }]}>
             {groupName}
@@ -47,7 +41,7 @@ export default function GroupHeader({
         style={[styles.optionBtn, { backgroundColor: colors.surface }]}
         onPress={() => navigation.navigate('InviteMembers')}
       >
-        <Ionicons name="ellipsis-horizontal-sharp" size={24} color={colors.text.primary} />
+        <Ionicons name="ellipsis-horizontal-sharp" size={18} color={colors.text.primary} />
       </TouchableOpacity>
     </View>
   );
@@ -67,8 +61,8 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   backBtn: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     borderRadius: Radius.md,
     display: 'flex',
     alignItems: 'center',

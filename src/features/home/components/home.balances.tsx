@@ -63,7 +63,7 @@ export default function HomeBalances() {
             <Text style={[TextStyles.label, { color: colors.text.inverse }]}>{balance.label}</Text>
             <Text style={[TextStyles.headingSmall, { color: colors.text.onPrimary }]}>
               {userBalances.currency}{' '}
-              {balance.amount.toLocaleString(undefined, {
+              {balance.amount.toLocaleString('US-EN', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}

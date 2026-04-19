@@ -15,6 +15,7 @@ export interface Group {
   createdBy: string | null;
   createdAt: Date;
   memberCount: number;
+  activePoolCount: number;
   members?: GroupMember[];
   balance?: GroupBalance;
 }

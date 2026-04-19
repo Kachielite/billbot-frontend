@@ -2,7 +2,7 @@ import { customAxios } from '@/core/common/network/custom-axios';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
 import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
 import { PoolBalances, UserBalances } from './balances.interface';
-import { mapPoolBalancesFromDto } from './balances.mapper';
+import { mapPoolBalancesFromDto, mapUserBalancesFromDto } from './balances.mapper';
 import { PoolBalancesDto, UserBalancesDto } from './balances.dto';
 
 export const BalancesService = {
@@ -29,7 +29,7 @@ export const BalancesService = {
   getUserBalances: async (): Promise<UserBalances> => {
     try {
       const response = await customAxios.get<UserBalancesDto>(API_ENDPOINTS.BALANCES);
-      return response.data;
+      return mapUserBalancesFromDto(response.data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }
