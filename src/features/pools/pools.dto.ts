@@ -23,9 +23,18 @@ export interface PoolDto {
   description: string | null;
   status: 'active' | 'settled' | 'closed';
   activity_status: 'empty' | 'ongoing' | 'settled';
+  expense_count: number;
   split_type: string;
   created_by: string | null;
   created_at: string;
+}
+
+export interface PaginatedPoolsDto {
+  page: number;
+  limit: number;
+  total_items: number;
+  pages: number;
+  items: PoolDto[];
 }
 
 export interface PoolMemberDto {

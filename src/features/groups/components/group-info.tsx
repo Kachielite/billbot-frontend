@@ -6,6 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { MemberSummary } from '@/features/balances/balances.interface';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import SkeletonCard from '@/core/common/components/skeleton-card';
 
 const AVATAR_SIZE = 45;
 const AVATAR_OVERLAP = 12;
@@ -21,25 +22,8 @@ function getInitials(name: string): string {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function MemberAvatarsSkeleton({ colors }: { colors: ReturnType<typeof useThemeColors> }) {
-  return (
-    <View style={styles.row}>
-      {[0, 1, 2].map((i) => (
-        <View
-          key={i}
-          style={[
-            styles.avatar,
-            {
-              backgroundColor: colors.border.subtle,
-              borderColor: colors.surface,
-              marginLeft: i === 0 ? 0 : -AVATAR_OVERLAP,
-            },
-          ]}
-        />
-      ))}
-    </View>
-  );
-}
+// Note: we use a full-card skeleton loader (SkeletonCard) instead of a small avatar skeleton
+// so the loader better represents the overall card layout.
 
 function MemberAvatars({
   memberSummary,
@@ -119,7 +103,7 @@ export default function GroupInfo({
     <View style={[Card as ViewStyle, { backgroundColor: colors.surface }]}>
       <View style={styles.sectionHeader}>
         {isLoading ? (
-          <MemberAvatarsSkeleton colors={colors} />
+          <SkeletonCard containerStyle={{ width: '100%' }} tintColor={colors.surface} />
         ) : memberSummary.length === 0 ? (
           <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>No members yet</Text>
         ) : (

@@ -1,15 +1,27 @@
 import { customAxios } from '@/core/common/network/custom-axios';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
 import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
-import { Pool, PoolDetail } from './pools.interface';
-import { mapPoolDetailFromDto, mapPoolFromDto } from './pools.mapper';
-import { CreatePoolSchemaType, PoolDetailDto, PoolDto, UpdatePoolSchemaType } from './pools.dto';
+import { PaginatedPools, Pool, PoolDetail } from './pools.interface';
+import { mapPaginatedPoolsFromDto, mapPoolDetailFromDto, mapPoolFromDto } from './pools.mapper';
+import {
+  CreatePoolSchemaType,
+  PaginatedPoolsDto,
+  PoolDetailDto,
+  PoolDto,
+  UpdatePoolSchemaType,
+} from './pools.dto';
 
 export const PoolsService = {
-  listGroupPools: async (groupId: string): Promise<Pool[]> => {
+  listGroupPools: async (
+    groupId: string,
+    params?: { page?: number; limit?: number },
+  ): Promise<PaginatedPools> => {
     try {
-      const response = await customAxios.get<PoolDto[]>(API_ENDPOINTS.GROUP_POOLS(groupId));
-      return response.data.map(mapPoolFromDto);
+      const response = await customAxios.get<PaginatedPoolsDto>(
+        API_ENDPOINTS.GROUP_POOLS(groupId),
+        { params },
+      );
+      return mapPaginatedPoolsFromDto(response.data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }
