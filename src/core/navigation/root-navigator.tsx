@@ -10,6 +10,7 @@ import HomeScreen from '@/features/home/home.screen';
 import { Platform, useColorScheme } from 'react-native';
 import ActivitiesScreen from '@/features/activities/activities.screen';
 import GroupsScreen from '@/features/groups/screens/groups.screen';
+import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
 import { isLiquidGlassSupported } from '@callstack/liquid-glass';
 import useAuthStore from '@/features/auth/auth.state';
@@ -111,6 +112,14 @@ export function Navigation({ theme }: NavigationProps): React.JSX.Element {
           options: {
             title: 'Tabs',
             headerShown: false,
+          },
+        }),
+        CreateGroup: createNativeStackScreen({
+          screen: NewGroupScreen,
+          options: {
+            title: 'New group',
+            headerShown: false,
+            presentation: 'modal',
           },
         }),
       },
