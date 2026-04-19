@@ -51,12 +51,11 @@ export default function CustomTextAreaInput<T extends FieldValues>({
         control={control}
         name={id}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
+          <View
             style={[
-              styles.input,
+              styles.inputWrapper,
               {
                 backgroundColor: colors.surface,
-                color: labelColor,
                 borderColor: isFocused ? colors.primary : inputBorderColor,
                 borderWidth: isFocused ? 2 : Border.thin,
               },
@@ -68,19 +67,23 @@ export default function CustomTextAreaInput<T extends FieldValues>({
                 elevation: 4,
               },
             ]}
-            placeholder={placeholder}
-            placeholderTextColor={colors.text.disabled}
-            onBlur={() => {
-              onBlur();
-              setIsFocused(false);
-            }}
-            onFocus={() => setIsFocused(true)}
-            onChangeText={onChange}
-            value={value ?? ''}
-            multiline
-            numberOfLines={numberOfLines}
-            maxLength={maxLength === -1 ? undefined : maxLength}
-          />
+          >
+            <TextInput
+              style={[styles.input, { color: labelColor }]}
+              placeholder={placeholder}
+              placeholderTextColor={colors.text.disabled}
+              onBlur={() => {
+                onBlur();
+                setIsFocused(false);
+              }}
+              onFocus={() => setIsFocused(true)}
+              onChangeText={onChange}
+              value={value ?? ''}
+              multiline
+              numberOfLines={numberOfLines}
+              maxLength={maxLength === -1 ? undefined : maxLength}
+            />
+          </View>
         )}
       />
       {errorMessage && <Text style={[styles.error, { color: colors.error }]}>{errorMessage}</Text>}
@@ -104,8 +107,12 @@ const styles = StyleSheet.create({
   },
   input: {
     ...TextAreaInput,
-    borderWidth: Border.thin,
     borderRadius: Radius.md,
+    backgroundColor: 'transparent',
+  },
+  inputWrapper: {
+    borderRadius: Radius.md,
+    overflow: 'hidden',
   },
   error: {
     ...TextStyles.label,

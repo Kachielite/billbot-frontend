@@ -79,7 +79,10 @@ export default function CustomMultiSelect<T extends FieldValues, V = string | nu
 
       <MultiSelect
         ref={multiSelectRef as any}
-        style={[styles.dropdown, { borderColor: inputBorderColor }]}
+        style={[
+          styles.dropdown,
+          { borderColor: inputBorderColor, backgroundColor: colors.surface },
+        ]}
         placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
         selectedTextStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
         itemTextStyle={[styles.itemText, { color: colors.text.primary }]}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
@@ -13,6 +13,7 @@ import useEmojiIconsStore from '@/features/groups/emoji-icons.state';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function NewGroupScreen() {
+  const scheme = useColorScheme();
   const colors = useThemeColors();
   const { form, isCreating, createGroup } = useCreateGroup();
 
@@ -20,6 +21,7 @@ export default function NewGroupScreen() {
   const groupColors = colors.groupColors;
   const [selectedIcon, setSelectedIcon] = useState(icons[0] ?? '🏠');
   const [selectedColor, setSelectedColor] = useState(groupColors[0].fill);
+  const iconBackgroundOpacity = scheme === 'dark' ? '80' : '30';
 
   const groupName = form.watch('name');
 
@@ -32,7 +34,9 @@ export default function NewGroupScreen() {
       <NewGroupHeader />
       {/* ── Preview ────────────────────────────────────────────────── */}
       <View style={styles.previewContainer}>
-        <View style={[styles.iconPreview, { backgroundColor: selectedColor + '30' }]}>
+        <View
+          style={[styles.iconPreview, { backgroundColor: selectedColor + iconBackgroundOpacity }]}
+        >
           <Text style={styles.iconPreviewEmoji}>{selectedIcon}</Text>
         </View>
         <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>

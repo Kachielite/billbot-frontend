@@ -51,7 +51,10 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
       </View>
 
       <Dropdown
-        style={[styles.dropdown, { borderColor: inputBorderColor }]}
+        style={[
+          styles.dropdown,
+          { borderColor: inputBorderColor, backgroundColor: colors.surface },
+        ]}
         placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
         selectedTextStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
         itemTextStyle={[styles.itemText, { color: colors.text.primary }]}

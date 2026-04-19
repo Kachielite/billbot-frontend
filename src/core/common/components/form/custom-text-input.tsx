@@ -49,11 +49,11 @@ export default function CustomTextInput<T extends FieldValues>({
         control={control}
         name={id}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
+          <View
             style={[
-              styles.input,
+              styles.inputWrapper,
               {
-                color: labelColor,
+                backgroundColor: colors.surface,
                 borderColor: isFocused ? colors.primary : inputBorderColor,
                 borderWidth: isFocused ? 2 : Border.thin,
               },
@@ -65,16 +65,20 @@ export default function CustomTextInput<T extends FieldValues>({
                 elevation: 4,
               },
             ]}
-            placeholder={placeholder}
-            placeholderTextColor={colors.text.disabled}
-            onBlur={() => {
-              onBlur();
-              setIsFocused(false);
-            }}
-            onFocus={() => setIsFocused(true)}
-            onChangeText={onChange}
-            value={value ?? ''}
-          />
+          >
+            <TextInput
+              style={[styles.input, { color: labelColor }]}
+              placeholder={placeholder}
+              placeholderTextColor={colors.text.disabled}
+              onBlur={() => {
+                onBlur();
+                setIsFocused(false);
+              }}
+              onFocus={() => setIsFocused(true)}
+              onChangeText={onChange}
+              value={value ?? ''}
+            />
+          </View>
         )}
       />
       {!errorMessage && hint && (
@@ -100,11 +104,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginLeft: Spacing.xs,
   },
+  inputWrapper: {
+    borderRadius: Radius.md,
+    overflow: 'hidden',
+    marginBottom: Spacing.sm,
+  },
   input: {
     ...Input,
-    borderWidth: Border.thin,
-    borderRadius: Radius.md,
-    marginBottom: Spacing.sm,
+    backgroundColor: 'transparent',
   },
   error: {
     ...TextStyles.label,
