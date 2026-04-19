@@ -1,22 +1,15 @@
 import React, { useState } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { GlassView } from 'expo-glass-effect';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
-import CustomTextAreaInput from '@/core/common/components/form/custom-text-area-input';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useCreateGroup from '../hooks/use-create-group';
+import NewGroupHeader from '@/features/groups/components/new-group.header';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const GROUP_ICONS = ['🏠', '👥', '✈️', '🍽️', '🏢', '🎮', '💪', '🎓', '⚽', '🎉', '☕'];
 const GROUP_COLORS = ['#1B7A48', '#E8920A', '#5C3E8A', '#185FA5', '#BA1A1A', '#71796F'];
@@ -43,29 +36,10 @@ export default function NewGroupScreen() {
 
   return (
     <ScreenContainer>
-      {/* ── Header ─────────────────────────────────────────────────── */}
-      <View style={styles.header}>
-        <GlassView tintColor={colors.surface} isInteractive style={styles.closeBtn}>
-          <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
-            <Ionicons name="close" size={20} color={colors.text.primary} />
-          </Pressable>
-        </GlassView>
-
-        <View style={styles.headerCenter}>
-          <Text style={[TextStyles.caption, { color: colors.text.secondary, letterSpacing: 0.6 }]}>
-            STEP 1 OF 2
-          </Text>
-          <Text style={[TextStyles.headingMedium, { color: colors.text.primary }]}>New group</Text>
-        </View>
-
-        <TouchableOpacity onPress={handleContinue} hitSlop={8}>
-          <Text style={[TextStyles.bodyMedium, { color: colors.text.secondary }]}>Next</Text>
-        </TouchableOpacity>
-      </View>
-
+      <NewGroupHeader />
       {/* ── Preview ────────────────────────────────────────────────── */}
       <View style={styles.previewContainer}>
-        <View style={[styles.iconPreview, { backgroundColor: selectedColor + '33' }]}>
+        <View style={[styles.iconPreview, { backgroundColor: selectedColor + '30' }]}>
           <Text style={styles.iconPreviewEmoji}>{selectedIcon}</Text>
         </View>
         <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
@@ -76,74 +50,104 @@ export default function NewGroupScreen() {
 
       {/* ── Group Name ─────────────────────────────────────────────── */}
       <View style={styles.section}>
-        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>GROUP NAME</Text>
         <CustomTextInput
+          label="GROUP NAME"
           id="name"
           formController={form}
-          placeholder="e.g. Family, Lagos Trip, Office lunch"
+          hint="e.g. Family, Lagos Trip, Office lunch"
           required
         />
       </View>
 
       {/* ── Description ────────────────────────────────────────────── */}
       <View style={styles.section}>
-        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>DESCRIPTION</Text>
-        <CustomTextAreaInput
+        <CustomTextInput
+          label="DESCRIPTION (optional)"
           id="description"
           formController={form}
           placeholder="What's this group for?"
-          numberOfLines={3}
-          maxLength={500}
         />
       </View>
 
       {/* ── Icon selector ──────────────────────────────────────────── */}
       <View style={styles.section}>
-        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>ICON</Text>
+        <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
+          ICON
+        </Text>
         <View style={styles.iconGrid}>
-          {GROUP_ICONS.map((icon) => {
-            const isSelected = selectedIcon === icon;
-            return (
-              <TouchableOpacity
-                key={icon}
-                onPress={() => setSelectedIcon(icon)}
-                style={[
+          {[0, 1].map((row) => (
+            <View key={row} style={styles.iconRow}>
+              {Array.from({ length: ICONS_PER_ROW }).map((_, col) => {
+                const idx = row * ICONS_PER_ROW + col;
+                const totalSlots = ICONS_PER_ROW * 2;
+                const isPlusSlot = idx === totalSlots - 1;
+                const icon = GROUP_ICONS[idx];
+
+                const baseStyle = [
                   styles.iconItem,
-                  {
-                    width: iconSize,
-                    height: iconSize,
-                    backgroundColor: colors.surface,
-                    borderColor: isSelected ? selectedColor : colors.border.subtle,
-                    borderWidth: isSelected ? 2 : Border.thin,
-                  },
-                ]}
-              >
-                <Text style={styles.iconEmoji}>{icon}</Text>
-              </TouchableOpacity>
-            );
-          })}
-          {/* Plus button — takes the last slot */}
-          <TouchableOpacity
-            onPress={() => {}}
-            style={[
-              styles.iconItem,
-              {
-                width: iconSize,
-                height: iconSize,
-                backgroundColor: colors.surface,
-                borderColor: colors.border.subtle,
-                borderWidth: Border.thin,
-              },
-            ]}
-          >
-            <Ionicons name="add" size={22} color={colors.text.secondary} />
-          </TouchableOpacity>
+                  { height: iconSize, backgroundColor: colors.surface },
+                ];
+
+                if (isPlusSlot) {
+                  return (
+                    <TouchableOpacity
+                      key={`plus`}
+                      onPress={() => {}}
+                      style={[
+                        ...baseStyle,
+                        {
+                          borderColor: colors.border.subtle,
+                          borderWidth: Border.thin,
+                        },
+                      ]}
+                    >
+                      <Ionicons name="add" size={22} color={colors.text.secondary} />
+                    </TouchableOpacity>
+                  );
+                }
+
+                if (icon) {
+                  const isSelected = selectedIcon === icon;
+                  return (
+                    <TouchableOpacity
+                      key={`icon-${idx}`}
+                      onPress={() => setSelectedIcon(icon)}
+                      style={[
+                        ...baseStyle,
+                        {
+                          borderColor: isSelected ? selectedColor : colors.border.subtle,
+                          borderWidth: isSelected ? 2 : Border.thin,
+                        },
+                      ]}
+                    >
+                      <Text style={styles.iconEmoji}>{icon}</Text>
+                    </TouchableOpacity>
+                  );
+                }
+
+                return (
+                  <View
+                    key={`empty-${idx}`}
+                    style={[
+                      ...baseStyle,
+                      {
+                        borderColor: colors.border.subtle,
+                        borderWidth: Border.thin,
+                      },
+                    ]}
+                  />
+                );
+              })}
+            </View>
+          ))}
         </View>
       </View>
 
       {/* ── Color selector ─────────────────────────────────────────── */}
       <View style={styles.section}>
-        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>COLOR</Text>
+        <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
+          COLOR
+        </Text>
         <View style={styles.colorRow}>
           {GROUP_COLORS.map((color) => {
             const isSelected = selectedColor === color;
@@ -171,7 +175,7 @@ export default function NewGroupScreen() {
           disabled={isCreating}
           style={[styles.continueBtn, { backgroundColor: colors.primary }]}
         >
-          <Ionicons name="person-add-outline" size={18} color={colors.onPrimary} />
+          <AntDesign name="user-add" size={24} color={colors.text.inverse} />
           <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
             Continue · invite members
           </Text>
@@ -205,7 +209,7 @@ const styles = StyleSheet.create({
   previewContainer: {
     alignItems: 'center',
     gap: Spacing.sm,
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.xs,
   },
   iconPreview: {
     width: 80,
@@ -213,6 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.xl,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Shadow.md,
   },
   iconPreviewEmoji: {
     fontSize: 40,
@@ -226,11 +231,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   iconGrid: {
+    flexDirection: 'column',
+    gap: ICON_GAP,
+  },
+  iconRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: ICON_GAP,
   },
   iconItem: {
+    flex: 1,
     borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',

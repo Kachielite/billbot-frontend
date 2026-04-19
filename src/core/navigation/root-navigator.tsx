@@ -91,16 +91,13 @@ const AuthenticatedStack = createNativeStackNavigator({
     NewGroup: {
       screen: NewGroupScreen,
       options: {
-        presentation: 'modal',
         headerShown: false,
       },
     },
     NewExpense: {
       screen: NewExpenseScreen,
       options: {
-        presentation: 'modal',
         headerShown: false,
-        sheetAllowedDetents: 'fitToContents',
       },
     },
   },

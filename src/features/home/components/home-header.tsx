@@ -1,11 +1,4 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
@@ -13,10 +6,8 @@ import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import useUserStore from '@/features/user/user.state';
 import { getGreetingForName } from '@/core/common/utils/helper';
-import { useNavigation } from '@react-navigation/native';
 
 const HomeHeader = () => {
-  const navigation = useNavigation();
   const { user } = useUserStore();
   const colors = useThemeColors();
   return (

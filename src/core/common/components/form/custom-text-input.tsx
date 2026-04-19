@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React, { JSX } from 'react';
+import React, { JSX, useState } from 'react';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Foundation } from '@expo/vector-icons';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
@@ -12,6 +12,7 @@ interface Props<T extends FieldValues> {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  hint?: string;
 }
 
 export default function CustomTextInput<T extends FieldValues>({
@@ -20,6 +21,7 @@ export default function CustomTextInput<T extends FieldValues>({
   id,
   formController,
   required,
+  hint,
 }: Props<T>): JSX.Element {
   const colors = useThemeColors();
 
@@ -29,8 +31,10 @@ export default function CustomTextInput<T extends FieldValues>({
   } = formController;
   const errorMessage = errors[id]?.message as string | undefined;
 
+  const [isFocused, setIsFocused] = useState(false);
+
   const labelColor = errorMessage ? colors.error : colors.text.primary;
-  const asteriskColor = errorMessage ? colors.error : colors.text.primary;
+  const asteriskColor = errorMessage ? colors.error : colors.primary;
   const inputBorderColor = errorMessage ? colors.error : colors.border.default;
 
   return (
@@ -50,17 +54,32 @@ export default function CustomTextInput<T extends FieldValues>({
               styles.input,
               {
                 color: labelColor,
-                borderColor: inputBorderColor,
+                borderColor: isFocused ? colors.primary : inputBorderColor,
+                borderWidth: isFocused ? 2 : Border.thin,
+              },
+              isFocused && {
+                shadowColor: colors.primary,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.25,
+                shadowRadius: 6,
+                elevation: 4,
               },
             ]}
             placeholder={placeholder}
-            placeholderTextColor={colors.text.inverse}
-            onBlur={onBlur}
+            placeholderTextColor={colors.text.disabled}
+            onBlur={() => {
+              onBlur();
+              setIsFocused(false);
+            }}
+            onFocus={() => setIsFocused(true)}
             onChangeText={onChange}
             value={value ?? ''}
           />
         )}
       />
+      {!errorMessage && hint && (
+        <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>{hint}</Text>
+      )}
       {errorMessage && <Text style={[styles.error, { color: colors.error }]}>{errorMessage}</Text>}
     </View>
   );

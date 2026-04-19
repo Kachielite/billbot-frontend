@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Foundation } from '@expo/vector-icons';
@@ -33,6 +33,8 @@ export default function CustomTextAreaInput<T extends FieldValues>({
   } = formController;
   const errorMessage = errors[id]?.message as string | undefined;
 
+  const [isFocused, setIsFocused] = useState(false);
+
   const labelColor = errorMessage ? colors.error : colors.text.primary;
   const asteriskColor = errorMessage ? colors.error : colors.text.primary;
   const inputBorderColor = errorMessage ? colors.error : colors.border.default;
@@ -54,12 +56,24 @@ export default function CustomTextAreaInput<T extends FieldValues>({
               styles.input,
               {
                 color: labelColor,
-                borderColor: inputBorderColor,
+                borderColor: isFocused ? colors.primary : inputBorderColor,
+                borderWidth: isFocused ? 2 : Border.thin,
+              },
+              isFocused && {
+                shadowColor: colors.primary,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.25,
+                shadowRadius: 6,
+                elevation: 4,
               },
             ]}
             placeholder={placeholder}
-            placeholderTextColor={colors.text.inverse}
-            onBlur={onBlur}
+            placeholderTextColor={colors.text.disabled}
+            onBlur={() => {
+              onBlur();
+              setIsFocused(false);
+            }}
+            onFocus={() => setIsFocused(true)}
             onChangeText={onChange}
             value={value ?? ''}
             multiline
