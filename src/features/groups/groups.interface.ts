@@ -9,6 +9,8 @@ export interface Group {
   id: string;
   name: string;
   description: string | null;
+  emoji: string | null;
+  color: string | null;
   inviteCode: string;
   createdBy: string | null;
   createdAt: Date;

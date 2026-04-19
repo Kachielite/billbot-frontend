@@ -15,6 +15,8 @@ const GROUPS_MOCK: Group[] = [
     id: '1',
     name: 'Family',
     description: 'A group for my family members',
+    emoji: '👨‍👩‍👧',
+    color: '#FF5733',
     inviteCode: 'FAMILY123',
     createdBy: 'user1',
     createdAt: new Date(),
@@ -25,6 +27,8 @@ const GROUPS_MOCK: Group[] = [
     id: '2',
     name: 'Friends',
     description: 'A group for my friends',
+    emoji: '🎉',
+    color: '#1E90FF',
     inviteCode: 'FRIENDS123',
     createdBy: 'user1',
     createdAt: new Date(),
@@ -35,6 +39,8 @@ const GROUPS_MOCK: Group[] = [
     id: '3',
     name: 'Work',
     description: 'A group for my work colleagues',
+    emoji: '💼',
+    color: '#32CD32',
     inviteCode: 'WORK123',
     createdBy: 'user1',
     createdAt: new Date(),
@@ -45,6 +51,8 @@ const GROUPS_MOCK: Group[] = [
     id: '4',
     name: 'Sports',
     description: 'A group for my sports team',
+    emoji: null,
+    color: null,
     inviteCode: 'SPORTS123',
     createdBy: 'user1',
     createdAt: new Date(),
@@ -52,6 +60,8 @@ const GROUPS_MOCK: Group[] = [
     balance: { totalOwed: 0, totalOwedToMe: 0, netBalance: 0, currency: 'NGN' },
   },
 ];
+
+const DEFAULT_EMOJI_BG = '#9370DB';
 
 const GroupCard = ({ group }: { group: Group }) => {
   const colors = useThemeColors();
@@ -61,6 +71,7 @@ const GroupCard = ({ group }: { group: Group }) => {
   const amountToDisplay = owedToMeIsGreatest ? totalOwedToMe : totalOwed;
   const prefix = owedToMeIsGreatest ? '+' : '-';
   const amountColor = owedToMeIsGreatest ? colors.primary : colors.error;
+  const bgColor = group.color ?? DEFAULT_EMOJI_BG;
 
   return (
     <View
@@ -69,6 +80,9 @@ const GroupCard = ({ group }: { group: Group }) => {
         { backgroundColor: colors.surface, borderColor: colors.border.subtle },
       ]}
     >
+      <View style={[groupCardStyles.emojiContainer, { backgroundColor: bgColor }]}>
+        <Text style={groupCardStyles.emoji}>{group.emoji ?? '👥'}</Text>
+      </View>
       <View>
         <Text style={[TextStyles.label, { color: colors.text.primary }]}>{group.name}</Text>
         <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>
@@ -97,6 +111,16 @@ const groupCardStyles = StyleSheet.create({
     padding: Spacing.md,
     borderRadius: Radius.lg,
     width: 170,
+  },
+  emojiContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emoji: {
+    fontSize: 22,
   },
 });
 

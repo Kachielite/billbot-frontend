@@ -4,7 +4,8 @@ import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Foundation } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
-import { Border, Fonts, Input, Radius, Spacing, TextStyles } from '@/core/common/constants/theme';
+import { Border, Input, Radius, Spacing } from '@/core/common/constants/theme';
+import { Fonts, TextStyles } from '@/core/common/constants/fonts';
 
 export interface DropdownOption<T = string | number> {
   label: string;
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
   asterisk: {
     marginTop: 2,
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     ...TextStyles.bodySmall,
   },
   error: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
   itemText: {
     ...TextStyles.bodySmall,

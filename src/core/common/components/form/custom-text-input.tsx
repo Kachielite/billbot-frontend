@@ -3,7 +3,8 @@ import React, { JSX } from 'react';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Foundation } from '@expo/vector-icons';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Border, Input, Radius, Spacing, TextStyles } from '@/core/common/constants/theme';
+import { Border, Input, Radius, Spacing } from '@/core/common/constants/theme';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 interface Props<T extends FieldValues> {
   id: Path<T>;
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   label: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
   asterisk: {
     marginTop: 2,
@@ -87,6 +88,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   error: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
 });

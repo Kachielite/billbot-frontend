@@ -14,6 +14,8 @@ export const mapGroupFromDto = (dto: GroupDto): Group => ({
   id: dto.id,
   name: dto.name,
   description: dto.description,
+  emoji: dto.emoji,
+  color: dto.color,
   inviteCode: dto.invite_code,
   createdBy: dto.created_by,
   createdAt: new Date(dto.created_at),
