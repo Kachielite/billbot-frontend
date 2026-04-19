@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
     `/groups/${groupId}/invites/${inviteId}`,
   GROUP_JOIN: (token: string) => `/groups/join/${token}`,
   GROUP_POOLS: (groupId: string) => `/groups/${groupId}/pools`,
+  GROUP_EXPENSES: (groupId: string) => `/groups/${groupId}/expenses`,
+  GROUP_BALANCES: (groupId: string) => `/groups/${groupId}/balances`,
   POOL_DETAIL: (poolId: string) => `/pools/${poolId}`,
   POOL_MEMBERS: (poolId: string) => `/pools/${poolId}/members`,
   POOL_REMOVE_MEMBER: (poolId: string, userId: string) => `/pools/${poolId}/members/${userId}`,

@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import React from 'react';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
@@ -64,6 +64,7 @@ const GROUPS_MOCK: Group[] = [
 const DEFAULT_EMOJI_BG = '#9370DB';
 
 const GroupCard = ({ group }: { group: Group }) => {
+  const scheme = useColorScheme();
   const colors = useThemeColors();
   const { totalOwed = 0, totalOwedToMe = 0, currency } = group.balance ?? {};
   const owedToMeIsGreatest = totalOwedToMe >= totalOwed;
@@ -72,34 +73,44 @@ const GroupCard = ({ group }: { group: Group }) => {
   const prefix = owedToMeIsGreatest ? '+' : '-';
   const amountColor = owedToMeIsGreatest ? colors.primary : colors.error;
   const bgColor = group.color ?? DEFAULT_EMOJI_BG;
+  const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
 
   return (
-    <View
-      style={[
-        groupCardStyles.groupCard,
-        { backgroundColor: colors.surface, borderColor: colors.border.subtle },
-      ]}
-    >
-      <View style={[groupCardStyles.emojiContainer, { backgroundColor: bgColor }]}>
-        <Text style={groupCardStyles.emoji}>{group.emoji ?? '👥'}</Text>
+    <TouchableOpacity>
+      <View
+        style={[
+          groupCardStyles.groupCard,
+          { backgroundColor: colors.surface, borderColor: colors.border.subtle },
+        ]}
+      >
+        <View style={groupCardStyles.groupInfoContainer}>
+          <View
+            style={[
+              groupCardStyles.emojiContainer,
+              { backgroundColor: bgColor + iconBackgroundOpacity },
+            ]}
+          >
+            <Text style={groupCardStyles.emoji}>{group.emoji ?? '👥'}</Text>
+          </View>
+          <View>
+            <Text style={[TextStyles.label, { color: colors.text.primary }]}>{group.name}</Text>
+            <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>
+              {group.memberCount} members
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
+            {prefix} {currency}{' '}
+            {amountToDisplay.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+          <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>{amountLabel}</Text>
+        </View>
       </View>
-      <View>
-        <Text style={[TextStyles.label, { color: colors.text.primary }]}>{group.name}</Text>
-        <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>
-          {group.memberCount} members
-        </Text>
-      </View>
-      <View>
-        <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
-          {prefix} {currency}{' '}
-          {amountToDisplay.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </Text>
-        <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>{amountLabel}</Text>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -111,6 +122,13 @@ const groupCardStyles = StyleSheet.create({
     padding: Spacing.md,
     borderRadius: Radius.lg,
     width: 170,
+  },
+  groupInfoContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: Spacing.sm,
   },
   emojiContainer: {
     width: 44,

@@ -7,6 +7,7 @@ export const mapPoolFromDto = (dto: PoolDto): Pool => ({
   name: dto.name,
   description: dto.description,
   status: dto.status,
+  activityStatus: dto.activity_status,
   splitType: dto.split_type,
   createdBy: dto.created_by,
   createdAt: new Date(dto.created_at),

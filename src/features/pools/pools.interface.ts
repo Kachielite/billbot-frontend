@@ -4,6 +4,7 @@ export interface Pool {
   name: string;
   description: string | null;
   status: 'active' | 'settled' | 'closed';
+  activityStatus: 'empty' | 'ongoing' | 'settled';
   splitType: string;
   createdBy: string | null;
   createdAt: Date;

@@ -20,6 +20,7 @@ export interface Expense {
   isRecurring: boolean;
   recurrenceFrequency: string | null;
   recurrenceEndDate: Date | null;
+  recurrenceParentId: string | null;
   nextOccurrenceAt: Date | null;
   splits: Split[];
 }

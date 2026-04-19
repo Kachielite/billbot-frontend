@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -18,12 +18,20 @@ export default function NewGroupScreen() {
   const scheme = useColorScheme();
   const colors = useThemeColors();
   const { form, isCreating, createGroup } = useCreateGroup();
-
   const { icons, setIcons } = useEmojiIconsStore();
+
   const groupColors = colors.groupColors;
   const [selectedIcon, setSelectedIcon] = useState(icons[0] ?? '🏠');
   const [selectedColor, setSelectedColor] = useState(groupColors[0].fill);
-  const iconBackgroundOpacity = scheme === 'dark' ? '80' : '30';
+  const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
+
+  // Keep emoji + color fields in sync with the form
+  useEffect(() => {
+    form.setValue('emoji', selectedIcon, { shouldValidate: true });
+  }, [selectedIcon]);
+  useEffect(() => {
+    form.setValue('color', selectedColor, { shouldValidate: true });
+  }, [selectedColor]);
 
   const groupName = form.watch('name');
 
