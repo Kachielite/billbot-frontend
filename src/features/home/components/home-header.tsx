@@ -22,23 +22,21 @@ const HomeHeader = () => {
   return (
     <View style={[styles.container]}>
       <View>
-        <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>
+        <Text
+          style={[TextStyles.bodySmall, { color: colors.text.primary, textTransform: 'uppercase' }]}
+        >
           {getGreetingForName()}
         </Text>
-        <Text style={[TextStyles.bodyMedium, { color: colors.text.secondary }]}>{user?.name}</Text>
+        <Text style={[TextStyles.headingLarge, { color: colors.text.secondary }]}>
+          Hey, {user?.name.split(' ')[0]} 👋
+        </Text>
       </View>
       <View style={styles.cta}>
         <TouchableOpacity
           style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
-          onPress={() => navigation.navigate('NewExpense')}
-        >
-          <Ionicons name="add-sharp" size={24} color={colors.text.primary} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
           onPress={() => {}}
         >
-          <Ionicons name="notifications" size={24} color={colors.text.primary} />
+          <Ionicons name="notifications-outline" size={24} color={colors.text.primary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
   notificationBtn: {
     width: 40,
     height: 40,
-    borderRadius: Radius.full,
+    borderRadius: Radius.md,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

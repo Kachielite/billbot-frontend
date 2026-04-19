@@ -51,7 +51,7 @@ export default function HomeBalances() {
           })}
         </Text>
         <Text style={[TextStyles.label, { color: colors.primaryCard.subtitleText }]}>
-          Across all groups
+          ACROSS ALL GROUPS
         </Text>
       </View>
       <View style={styles.balanceCardContainer}>
