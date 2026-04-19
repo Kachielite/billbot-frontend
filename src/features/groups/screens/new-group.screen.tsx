@@ -1,207 +1,271 @@
+import React, { useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
-import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Controller } from 'react-hook-form';
-import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Border, Radius, Spacing } from '@/core/common/constants/theme';
-import { TextStyles } from '@/core/common/constants/fonts';
+import { GlassView } from 'expo-glass-effect';
+import { Ionicons } from '@expo/vector-icons';
+import ScreenContainer from '@/core/common/components/layout/screen-container';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
 import CustomTextAreaInput from '@/core/common/components/form/custom-text-area-input';
-import useCreateGroup from '@/features/groups/hooks/use-create-group';
+import useThemeColors from '@/core/common/hooks/use-theme-colors';
+import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import { TextStyles } from '@/core/common/constants/fonts';
+import useCreateGroup from '../hooks/use-create-group';
 
-const PRESET_COLORS = [
-  '#FF5733',
-  '#FF8C00',
-  '#FFD700',
-  '#32CD32',
-  '#00CED1',
-  '#1E90FF',
-  '#9370DB',
-  '#FF69B4',
-  '#A0522D',
-  '#708090',
-];
+const GROUP_ICONS = ['🏠', '👥', '✈️', '🍽️', '🏢', '🎮', '💪', '🎓', '⚽', '🎉', '☕'];
+const GROUP_COLORS = ['#1B7A48', '#E8920A', '#5C3E8A', '#185FA5', '#BA1A1A', '#71796F'];
+const ICON_GAP = Spacing.sm;
+const ICONS_PER_ROW = 6;
+const SCREEN_H_PADDING = 12;
 
 export default function NewGroupScreen() {
-  const navigation = useNavigation();
   const colors = useThemeColors();
+  const navigation = useNavigation<any>();
   const { form, isCreating, createGroup } = useCreateGroup();
+  const { width } = useWindowDimensions();
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    await createGroup({
-      ...data,
-      emoji: data.emoji || undefined,
-      color: data.color || undefined,
-    });
-    navigation.goBack();
+  const [selectedIcon, setSelectedIcon] = useState(GROUP_ICONS[0]);
+  const [selectedColor, setSelectedColor] = useState(GROUP_COLORS[0]);
+
+  const groupName = form.watch('name');
+
+  const iconSize = (width - 2 * SCREEN_H_PADDING - (ICONS_PER_ROW - 1) * ICON_GAP) / ICONS_PER_ROW;
+
+  const handleContinue = form.handleSubmit(async (data) => {
+    await createGroup(data);
   });
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScreenContainer>
+      {/* ── Header ─────────────────────────────────────────────────── */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text.primary }]}>New Group</Text>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={[styles.closeButton, { backgroundColor: colors.primaryContainer }]}
-        >
-          <Text style={[styles.closeText, { color: colors.text.primary }]}>Cancel</Text>
-        </Pressable>
+        <GlassView tintColor={colors.surface} isInteractive style={styles.closeBtn}>
+          <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
+            <Ionicons name="close" size={20} color={colors.text.primary} />
+          </Pressable>
+        </GlassView>
+
+        <View style={styles.headerCenter}>
+          <Text style={[TextStyles.caption, { color: colors.text.secondary, letterSpacing: 0.6 }]}>
+            STEP 1 OF 2
+          </Text>
+          <Text style={[TextStyles.headingMedium, { color: colors.text.primary }]}>New group</Text>
+        </View>
+
+        <TouchableOpacity onPress={handleContinue} hitSlop={8}>
+          <Text style={[TextStyles.bodyMedium, { color: colors.text.secondary }]}>Next</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.form}>
+      {/* ── Preview ────────────────────────────────────────────────── */}
+      <View style={styles.previewContainer}>
+        <View style={[styles.iconPreview, { backgroundColor: selectedColor + '33' }]}>
+          <Text style={styles.iconPreviewEmoji}>{selectedIcon}</Text>
+        </View>
+        <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
+          {groupName || 'Group name'}
+        </Text>
+        <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>Preview</Text>
+      </View>
+
+      {/* ── Group Name ─────────────────────────────────────────────── */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>GROUP NAME</Text>
         <CustomTextInput
           id="name"
           formController={form}
-          label="Group Name"
-          placeholder="e.g. Trip to Lagos"
+          placeholder="e.g. Family, Lagos Trip, Office lunch"
           required
-        />
-
-        <CustomTextAreaInput
-          id="description"
-          formController={form}
-          label="Description"
-          placeholder="What is this group for?"
-          numberOfLines={3}
-          maxLength={500}
-        />
-
-        <Controller
-          control={form.control}
-          name="emoji"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.fieldContainer}>
-              <Text style={[TextStyles.label, { color: colors.text.primary }]}>
-                Emoji (optional)
-              </Text>
-              <TextInput
-                style={[
-                  styles.emojiInput,
-                  { color: colors.text.primary, borderColor: colors.border.default },
-                ]}
-                placeholder="e.g. ✈️"
-                placeholderTextColor={colors.text.inverse}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                maxLength={10}
-              />
-            </View>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name="color"
-          render={({ field: { onChange, value } }) => (
-            <View style={styles.fieldContainer}>
-              <Text style={[TextStyles.label, { color: colors.text.primary }]}>
-                Color (optional)
-              </Text>
-              <View style={styles.colorGrid}>
-                {PRESET_COLORS.map((hex) => (
-                  <TouchableOpacity
-                    key={hex}
-                    onPress={() => onChange(value === hex ? '' : hex)}
-                    style={[
-                      styles.colorSwatch,
-                      { backgroundColor: hex },
-                      value === hex && styles.colorSwatchSelected,
-                    ]}
-                  />
-                ))}
-              </View>
-            </View>
-          )}
         />
       </View>
 
-      <TouchableOpacity
-        onPress={onSubmit}
-        disabled={isCreating}
-        style={[
-          styles.submitButton,
-          { backgroundColor: colors.primary, opacity: isCreating ? 0.6 : 1 },
-        ]}
-      >
-        <Text style={[styles.submitText, { color: colors.onPrimary }]}>
-          {isCreating ? 'Creating…' : 'Create Group'}
+      {/* ── Description ────────────────────────────────────────────── */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>DESCRIPTION</Text>
+        <CustomTextAreaInput
+          id="description"
+          formController={form}
+          placeholder="What's this group for?"
+          numberOfLines={3}
+          maxLength={500}
+        />
+      </View>
+
+      {/* ── Icon selector ──────────────────────────────────────────── */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>ICON</Text>
+        <View style={styles.iconGrid}>
+          {GROUP_ICONS.map((icon) => {
+            const isSelected = selectedIcon === icon;
+            return (
+              <TouchableOpacity
+                key={icon}
+                onPress={() => setSelectedIcon(icon)}
+                style={[
+                  styles.iconItem,
+                  {
+                    width: iconSize,
+                    height: iconSize,
+                    backgroundColor: colors.surface,
+                    borderColor: isSelected ? selectedColor : colors.border.subtle,
+                    borderWidth: isSelected ? 2 : Border.thin,
+                  },
+                ]}
+              >
+                <Text style={styles.iconEmoji}>{icon}</Text>
+              </TouchableOpacity>
+            );
+          })}
+          {/* Plus button — takes the last slot */}
+          <TouchableOpacity
+            onPress={() => {}}
+            style={[
+              styles.iconItem,
+              {
+                width: iconSize,
+                height: iconSize,
+                backgroundColor: colors.surface,
+                borderColor: colors.border.subtle,
+                borderWidth: Border.thin,
+              },
+            ]}
+          >
+            <Ionicons name="add" size={22} color={colors.text.secondary} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* ── Color selector ─────────────────────────────────────────── */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionLabel, { color: colors.text.secondary }]}>COLOR</Text>
+        <View style={styles.colorRow}>
+          {GROUP_COLORS.map((color) => {
+            const isSelected = selectedColor === color;
+            return (
+              <TouchableOpacity
+                key={color}
+                onPress={() => setSelectedColor(color)}
+                style={[
+                  styles.colorCircle,
+                  { backgroundColor: color },
+                  isSelected && styles.colorCircleSelected,
+                ]}
+              >
+                {isSelected && <Ionicons name="checkmark" size={18} color="#FFFFFF" />}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+
+      {/* ── Continue button ────────────────────────────────────────── */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          onPress={handleContinue}
+          disabled={isCreating}
+          style={[styles.continueBtn, { backgroundColor: colors.primary }]}
+        >
+          <Ionicons name="person-add-outline" size={18} color={colors.onPrimary} />
+          <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
+            Continue · invite members
+          </Text>
+        </TouchableOpacity>
+        <Text style={[TextStyles.caption, { color: colors.text.secondary, textAlign: 'center' }]}>
+          Members come next. Groups hold your tabs — monthly
         </Text>
-      </TouchableOpacity>
-    </ScrollView>
+      </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.lg,
-    gap: Spacing.xl,
-  },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
+  closeBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Shadow.md,
   },
-  closeButton: {
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
+  headerCenter: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  previewContainer: {
+    alignItems: 'center',
+    gap: Spacing.sm,
     paddingVertical: Spacing.sm,
   },
-  closeText: {
-    fontWeight: '600',
-  },
-  form: {
-    gap: Spacing.lg,
-  },
-  fieldContainer: {
-    gap: Spacing.sm,
-  },
-  emojiInput: {
-    height: 48,
-    paddingHorizontal: 14,
-    borderWidth: Border.thin,
-    borderRadius: Radius.md,
-    fontSize: 20,
-  },
-  colorGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-  },
-  colorSwatch: {
-    width: 36,
-    height: 36,
-    borderRadius: Radius.full,
-  },
-  colorSwatchSelected: {
-    borderWidth: 3,
-    borderColor: '#fff',
-    transform: [{ scale: 1.15 }],
-  },
-  submitButton: {
-    height: 52,
-    borderRadius: Radius.lg,
+  iconPreview: {
+    width: 80,
+    height: 80,
+    borderRadius: Radius.xl,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  submitText: {
-    fontSize: 16,
-    fontWeight: '700',
+  iconPreviewEmoji: {
+    fontSize: 40,
+  },
+  section: {
+    gap: Spacing.sm,
+  },
+  sectionLabel: {
+    ...TextStyles.caption,
+    letterSpacing: 0.8,
+    fontWeight: '600',
+  },
+  iconGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: ICON_GAP,
+  },
+  iconItem: {
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconEmoji: {
+    fontSize: 26,
+  },
+  colorRow: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    alignItems: 'center',
+  },
+  colorCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: Radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  colorCircleSelected: {
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+    ...Shadow.md,
+  },
+  footer: {
+    gap: Spacing.md,
+    paddingTop: Spacing.sm,
+  },
+  continueBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    height: 52,
+    borderRadius: Radius.full,
+    ...Shadow.md,
   },
 });
