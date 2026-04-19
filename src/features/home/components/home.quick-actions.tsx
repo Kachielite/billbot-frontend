@@ -13,27 +13,27 @@ export default function HomeQuickActions() {
   const QUICK_ACTIONS = [
     {
       name: 'Add expense',
-      icon: <FontAwesome6 name="add" size={30} color={colors.primary} />,
+      icon: <FontAwesome6 name="add" size={24} color={colors.primary} />,
       action: () => navigation.navigate('NewExpense'),
       backgroundColor: colors.primaryContainer,
     },
     {
       name: 'Settle up',
-      icon: <FontAwesome6 name="arrow-right-arrow-left" size={30} color={colors.secondary} />,
+      icon: <FontAwesome6 name="arrow-right-arrow-left" size={24} color={colors.primary} />,
       action: () => console.log('Settle up action'),
-      backgroundColor: colors.secondaryContainer,
+      backgroundColor: colors.primaryContainer,
     },
     {
       name: 'New group',
-      icon: <FontAwesome6 name="user-group" size={30} color={colors.tertiary} />,
+      icon: <FontAwesome6 name="user-group" size={24} color={colors.primary} />,
       action: () => navigation.navigate('NewGroup'),
-      backgroundColor: colors.tertiaryContainer,
+      backgroundColor: colors.primaryContainer,
     },
     {
       name: 'New tab',
-      icon: <MaterialCommunityIcons name="folder-table" size={35} color={colors.quaternary} />,
+      icon: <MaterialCommunityIcons name="folder-table" size={24} color={colors.primary} />,
       action: () => console.log('New tab action'),
-      backgroundColor: colors.quaternaryContainer,
+      backgroundColor: colors.primaryContainer,
     },
   ];
   return (

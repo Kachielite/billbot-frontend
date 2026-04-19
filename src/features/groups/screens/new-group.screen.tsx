@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
@@ -13,6 +14,7 @@ import useEmojiIconsStore from '@/features/groups/emoji-icons.state';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function NewGroupScreen() {
+  const navigation = useNavigation() as any;
   const scheme = useColorScheme();
   const colors = useThemeColors();
   const { form, isCreating, createGroup } = useCreateGroup();
@@ -26,7 +28,12 @@ export default function NewGroupScreen() {
   const groupName = form.watch('name');
 
   const handleContinue = form.handleSubmit(async (data) => {
-    await createGroup(data);
+    const group = await createGroup({
+      ...data,
+      emoji: selectedIcon,
+      color: selectedColor,
+    });
+    navigation.navigate('InviteMembers', { groupId: group.id });
   });
 
   return (
