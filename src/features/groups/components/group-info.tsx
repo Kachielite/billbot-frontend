@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, type ViewStyle } from 'react-native';
 import React from 'react';
 import { Card, Radius, Spacing } from '@/core/common/constants/theme';
 import useGroupBalances from '@/features/balances/hooks/use-group-balances';
@@ -7,18 +7,11 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import { MemberSummary } from '@/features/balances/balances.interface';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import SkeletonCard from '@/core/common/components/skeleton-card';
+import getInitials from '@/core/common/utils/get-initials';
 
 const AVATAR_SIZE = 45;
 const AVATAR_OVERLAP = 12;
 const MAX_VISIBLE = 4;
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .slice(0, 2)
-    .map((part) => (part[0] ?? '').toUpperCase())
-    .join('');
-}
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -44,22 +37,39 @@ function MemberAvatars({
       {visibleMembers.map((member, index) => {
         const swatch = colors.groupColors[index % colors.groupColors.length];
         return (
-          <View
-            key={member.user.id}
-            style={[
-              styles.avatar,
-              {
-                backgroundColor: swatch.fill,
-                borderColor: colors.surface,
-                marginLeft: index === 0 ? 0 : -AVATAR_OVERLAP,
-                zIndex: MAX_VISIBLE - index,
-              },
-            ]}
-          >
-            <Text style={[styles.initials, { color: swatch.on }]}>
-              {getInitials(member.user.name)}
-            </Text>
-          </View>
+          <React.Fragment key={member.user.id}>
+            {member.user.avatarUrl ? (
+              <Image
+                source={{ uri: member.user.avatarUrl }}
+                style={[
+                  styles.avatar,
+                  {
+                    borderColor: colors.surface,
+                    marginLeft: index === 0 ? 0 : -AVATAR_OVERLAP,
+                    zIndex: MAX_VISIBLE - index,
+                  },
+                ]}
+                resizeMode="cover"
+              />
+            ) : (
+              <View
+                style={[
+                  styles.avatar,
+                  {
+                    backgroundColor: swatch.fill,
+                    borderColor: colors.surface,
+                    marginLeft: index === 0 ? 0 : -AVATAR_OVERLAP,
+                    zIndex: MAX_VISIBLE - index,
+                  },
+                ]}
+              >
+                <Text style={[styles.initials, { color: swatch.on }]}>
+                  {' '}
+                  {getInitials(member.user.name)}
+                </Text>
+              </View>
+            )}
+          </React.Fragment>
         );
       })}
 

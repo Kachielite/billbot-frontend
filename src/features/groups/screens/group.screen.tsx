@@ -5,6 +5,7 @@ import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import GroupHeader from '@/features/groups/components/group.header';
 import GroupInfo from '@/features/groups/components/group-info';
+import GroupMembers from '@/features/groups/components/group-members';
 
 type Props = StaticScreenProps<{ groupId: string }>;
 
@@ -24,6 +25,7 @@ export default function GroupScreen({ route }: Props) {
     <ScreenContainer>
       <GroupHeader groupName={group?.name} />
       <GroupInfo groupId={groupId} activePools={group.activePoolCount} />
+      <GroupMembers members={group.members} />
     </ScreenContainer>
   );
 }
