@@ -7,12 +7,14 @@ import HomeUpcoming from '@/features/home/components/home.upcoming';
 import HomeActivities from '@/features/home/components/home.activities';
 import { ScrollView } from 'react-native';
 import { Spacing } from '@/core/common/constants/theme';
+import HomeQuickActions from '@/features/home/components/home.quick-actions';
 
 const HomeScreen = () => {
   return (
     <ScreenContainer useScrollView={false}>
       <HomeHeader />
       <HomeBalances />
+      <HomeQuickActions />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{

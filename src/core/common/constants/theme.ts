@@ -38,6 +38,12 @@ export const LightColors = {
   tertiaryContainer: '#E6F2FF',
   onTertiaryContainer: '#003060',
 
+  // Quaternary — for future use if needed (e.g. a green-tinted surface for settled status badges)
+  quaternary: '#5C3E8A',
+  onQuaternary: '#EDE0FF',
+  quaternaryContainer: '#EDE0FF',
+  onQuaternaryContainer: '#21005E',
+
   // Error — destructive actions and error states
   // Usage: delete buttons, disputed status, form validation errors
   error: '#BA1A1A',
@@ -125,6 +131,12 @@ export const DarkColors = {
   onTertiary: '#003060',
   tertiaryContainer: '#174480',
   onTertiaryContainer: '#D6E3FF',
+
+  // Quaternary
+  quaternary: '#CEB3E5',
+  onQuaternary: '#42287A',
+  quaternaryContainer: '#42287A',
+  onQuaternaryContainer: '#EDE0FF',
 
   // Error
   error: '#FFB4AB',
