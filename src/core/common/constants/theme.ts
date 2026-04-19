@@ -99,6 +99,17 @@ export const LightColors = {
     subtitleText: 'rgba(255, 255, 255, 0.75)',
     pillBg: 'rgba(255, 255, 255, 0.15)',
   },
+  // Group palette — six swatches for group color pickers
+  // Each entry: fill = the swatch color, on = text/icon color rendered on top of it
+  groupColors: [
+    { fill: '#1B7A48', on: '#FFFFFF' }, // emerald green  (= primary)
+    { fill: '#E8920A', on: '#FFFFFF' }, // amber          (= secondary)
+    { fill: '#5C3E8A', on: '#FFFFFF' }, // violet         (= quaternary)
+    { fill: '#185FA5', on: '#FFFFFF' }, // blue           (= tertiary)
+    { fill: '#BA1A1A', on: '#FFFFFF' }, // red            (= error)
+    { fill: '#71796F', on: '#FFFFFF' }, // slate          (= text.disabled)
+  ],
+
   // Buttons — map directly to color tokens above
   // Primary button:     background=primary,          text=onPrimary
   // Secondary button:   background=primaryContainer, text=onPrimaryContainer
@@ -191,6 +202,16 @@ export const DarkColors = {
     subtitleText: 'rgba(0, 0, 0, 0.55)',
     pillBg: 'rgba(0, 0, 0, 0.10)',
   },
+
+  // Group palette — dark-mode lifted versions for legibility on dark surfaces
+  groupColors: [
+    { fill: '#6EDFA0', on: '#003920' }, // lifted green   (= primary dark)
+    { fill: '#FFB95A', on: '#462A00' }, // lifted amber   (= secondary dark)
+    { fill: '#CEB3E5', on: '#42287A' }, // lifted violet  (= quaternary dark)
+    { fill: '#9ECAFF', on: '#003060' }, // lifted blue    (= tertiary dark)
+    { fill: '#FFB4AB', on: '#690005' }, // lifted red     (= error dark)
+    { fill: '#8B9389', on: '#1A1C1A' }, // lifted slate   (= text.disabled dark)
+  ],
 };
 
 export const Spacing = {

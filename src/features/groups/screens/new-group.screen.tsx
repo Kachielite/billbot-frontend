@@ -1,34 +1,27 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useCreateGroup from '../hooks/use-create-group';
 import NewGroupHeader from '@/features/groups/components/new-group.header';
+import GroupIconSelector from '@/features/groups/components/group-icon-selector';
+import useEmojiIconsStore from '@/features/groups/emoji-icons.state';
 import AntDesign from '@expo/vector-icons/AntDesign';
-
-const GROUP_ICONS = ['🏠', '👥', '✈️', '🍽️', '🏢', '🎮', '💪', '🎓', '⚽', '🎉', '☕'];
-const GROUP_COLORS = ['#1B7A48', '#E8920A', '#5C3E8A', '#185FA5', '#BA1A1A', '#71796F'];
-const ICON_GAP = Spacing.sm;
-const ICONS_PER_ROW = 6;
-const SCREEN_H_PADDING = 12;
 
 export default function NewGroupScreen() {
   const colors = useThemeColors();
-  const navigation = useNavigation<any>();
   const { form, isCreating, createGroup } = useCreateGroup();
-  const { width } = useWindowDimensions();
 
-  const [selectedIcon, setSelectedIcon] = useState(GROUP_ICONS[0]);
-  const [selectedColor, setSelectedColor] = useState(GROUP_COLORS[0]);
+  const { icons, setIcons } = useEmojiIconsStore();
+  const groupColors = colors.groupColors;
+  const [selectedIcon, setSelectedIcon] = useState(icons[0] ?? '🏠');
+  const [selectedColor, setSelectedColor] = useState(groupColors[0].fill);
 
   const groupName = form.watch('name');
-
-  const iconSize = (width - 2 * SCREEN_H_PADDING - (ICONS_PER_ROW - 1) * ICON_GAP) / ICONS_PER_ROW;
 
   const handleContinue = form.handleSubmit(async (data) => {
     await createGroup(data);
@@ -74,73 +67,13 @@ export default function NewGroupScreen() {
         <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
           ICON
         </Text>
-        <View style={styles.iconGrid}>
-          {[0, 1].map((row) => (
-            <View key={row} style={styles.iconRow}>
-              {Array.from({ length: ICONS_PER_ROW }).map((_, col) => {
-                const idx = row * ICONS_PER_ROW + col;
-                const totalSlots = ICONS_PER_ROW * 2;
-                const isPlusSlot = idx === totalSlots - 1;
-                const icon = GROUP_ICONS[idx];
-
-                const baseStyle = [
-                  styles.iconItem,
-                  { height: iconSize, backgroundColor: colors.surface },
-                ];
-
-                if (isPlusSlot) {
-                  return (
-                    <TouchableOpacity
-                      key={`plus`}
-                      onPress={() => {}}
-                      style={[
-                        ...baseStyle,
-                        {
-                          borderColor: colors.border.subtle,
-                          borderWidth: Border.thin,
-                        },
-                      ]}
-                    >
-                      <Ionicons name="add" size={22} color={colors.text.secondary} />
-                    </TouchableOpacity>
-                  );
-                }
-
-                if (icon) {
-                  const isSelected = selectedIcon === icon;
-                  return (
-                    <TouchableOpacity
-                      key={`icon-${idx}`}
-                      onPress={() => setSelectedIcon(icon)}
-                      style={[
-                        ...baseStyle,
-                        {
-                          borderColor: isSelected ? selectedColor : colors.border.subtle,
-                          borderWidth: isSelected ? 2 : Border.thin,
-                        },
-                      ]}
-                    >
-                      <Text style={styles.iconEmoji}>{icon}</Text>
-                    </TouchableOpacity>
-                  );
-                }
-
-                return (
-                  <View
-                    key={`empty-${idx}`}
-                    style={[
-                      ...baseStyle,
-                      {
-                        borderColor: colors.border.subtle,
-                        borderWidth: Border.thin,
-                      },
-                    ]}
-                  />
-                );
-              })}
-            </View>
-          ))}
-        </View>
+        <GroupIconSelector
+          icons={icons}
+          selectedIcon={selectedIcon}
+          selectedColor={selectedColor}
+          onIconsChange={setIcons}
+          onSelectIcon={setSelectedIcon}
+        />
       </View>
 
       {/* ── Color selector ─────────────────────────────────────────── */}
@@ -149,19 +82,19 @@ export default function NewGroupScreen() {
           COLOR
         </Text>
         <View style={styles.colorRow}>
-          {GROUP_COLORS.map((color) => {
-            const isSelected = selectedColor === color;
+          {groupColors.map((swatch) => {
+            const isSelected = selectedColor === swatch.fill;
             return (
               <TouchableOpacity
-                key={color}
-                onPress={() => setSelectedColor(color)}
+                key={swatch.fill}
+                onPress={() => setSelectedColor(swatch.fill)}
                 style={[
                   styles.colorCircle,
-                  { backgroundColor: color },
+                  { backgroundColor: swatch.fill },
                   isSelected && styles.colorCircleSelected,
                 ]}
               >
-                {isSelected && <Ionicons name="checkmark" size={18} color="#FFFFFF" />}
+                {isSelected && <Ionicons name="checkmark" size={18} color={swatch.on} />}
               </TouchableOpacity>
             );
           })}
@@ -229,23 +162,6 @@ const styles = StyleSheet.create({
     ...TextStyles.caption,
     letterSpacing: 0.8,
     fontWeight: '600',
-  },
-  iconGrid: {
-    flexDirection: 'column',
-    gap: ICON_GAP,
-  },
-  iconRow: {
-    flexDirection: 'row',
-    gap: ICON_GAP,
-  },
-  iconItem: {
-    flex: 1,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconEmoji: {
-    fontSize: 26,
   },
   colorRow: {
     flexDirection: 'row',

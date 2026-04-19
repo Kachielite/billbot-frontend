@@ -55,6 +55,7 @@ export default function CustomTextAreaInput<T extends FieldValues>({
             style={[
               styles.input,
               {
+                backgroundColor: colors.surface,
                 color: labelColor,
                 borderColor: isFocused ? colors.primary : inputBorderColor,
                 borderWidth: isFocused ? 2 : Border.thin,
