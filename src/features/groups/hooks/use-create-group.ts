@@ -13,7 +13,7 @@ const useCreateGroup = () => {
   const form = useForm<CreateGroupSchemaType>({
     resolver: zodResolver(createGroupSchema),
     mode: 'onBlur',
-    defaultValues: { name: '', description: '' },
+    defaultValues: { name: '', description: '', emoji: '', color: '' },
   });
 
   const { isLoading: isCreating, mutateAsync: createGroup } = useMutation(

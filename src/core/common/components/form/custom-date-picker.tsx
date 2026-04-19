@@ -83,7 +83,10 @@ export default function CustomDatePicker<T extends FieldValues>({
       {/* Two fields in a row: Date and Time */}
       <View style={styles.row}>
         <Pressable
-          style={[styles.inputHalf, { borderColor: inputBorderColor }]}
+          style={[
+            styles.inputHalf,
+            { borderColor: inputBorderColor, backgroundColor: colors.surface },
+          ]}
           onPress={() => {
             setPickerMode('date');
             setShow(true);
@@ -96,7 +99,10 @@ export default function CustomDatePicker<T extends FieldValues>({
         </Pressable>
 
         <Pressable
-          style={[styles.inputHalf, { borderColor: inputBorderColor }]}
+          style={[
+            styles.inputHalf,
+            { borderColor: inputBorderColor, backgroundColor: colors.surface },
+          ]}
           onPress={() => {
             setPickerMode('time');
             setShow(true);

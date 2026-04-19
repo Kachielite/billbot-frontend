@@ -13,7 +13,8 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Foundation, MaterialIcons } from '@expo/vector-icons';
 import { MultiSelect } from 'react-native-element-dropdown';
 import type { IMultiSelectRef } from 'react-native-element-dropdown/lib/typescript/components/MultiSelect/model';
-import { Border, Input, Radius, Spacing, TextStyles } from '@/core/common/constants/theme';
+import { Border, Input, Radius, Spacing } from '@/core/common/constants/theme';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 export interface MultiSelectOption<T = string | number> {
   label: string;
@@ -78,7 +79,10 @@ export default function CustomMultiSelect<T extends FieldValues, V = string | nu
 
       <MultiSelect
         ref={multiSelectRef as any}
-        style={[styles.dropdown, { borderColor: inputBorderColor }]}
+        style={[
+          styles.dropdown,
+          { borderColor: inputBorderColor, backgroundColor: colors.surface },
+        ]}
         placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
         selectedTextStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
         itemTextStyle={[styles.itemText, { color: colors.text.primary }]}
@@ -165,7 +169,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
   asterisk: {
     marginTop: 2,
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
     ...TextStyles.bodySmall,
   },
   error: {
-    ...TextStyles.labelSmall,
+    ...TextStyles.label,
   },
   selectedChip: {
     borderWidth: Border.hairline,
@@ -198,7 +202,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
   },
   selectedChipText: {
-    ...TextStyles.bodyLarge,
+    ...TextStyles.body,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

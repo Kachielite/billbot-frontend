@@ -17,6 +17,14 @@ export const logExpenseSchema = z
   });
 export type LogExpenseSchemaType = z.infer<typeof logExpenseSchema>;
 
+export interface ExpenseListParams {
+  page?: number;
+  limit?: number;
+  status?: 'pending' | 'settled';
+  from?: string;
+  to?: string;
+}
+
 // ── Response DTOs ─────────────────────────────────────────────────────────────
 export interface SplitDto {
   id: string;
@@ -40,8 +48,9 @@ export interface ExpenseDto {
   is_recurring: boolean;
   recurrence_frequency: string | null;
   recurrence_end_date: string | null;
+  recurrence_parent_id: string | null;
   next_occurrence_at: string | null;
-  splits: SplitDto[];
+  splits?: SplitDto[];
 }
 
 export interface UpcomingExpenseDto {

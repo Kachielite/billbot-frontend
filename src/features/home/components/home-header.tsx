@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Radius, Shadow } from '@/core/common/constants/theme';
+import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import useUserStore from '@/features/user/user.state';
 import { getGreetingForName } from '@/core/common/utils/helper';
@@ -13,17 +13,23 @@ const HomeHeader = () => {
   return (
     <View style={[styles.container]}>
       <View>
-        <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>
+        <Text
+          style={[TextStyles.bodySmall, { color: colors.text.primary, textTransform: 'uppercase' }]}
+        >
           {getGreetingForName()}
         </Text>
-        <Text style={[TextStyles.bodyMedium, { color: colors.text.secondary }]}>{user?.name}</Text>
+        <Text style={[TextStyles.headingLarge, { color: colors.text.secondary }]}>
+          Hey, {user?.name.split(' ')[0]} 👋
+        </Text>
       </View>
-      <Pressable
-        style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
-        onPress={() => {}}
-      >
-        <Ionicons name="notifications" size={24} color={colors.text.primary} />
-      </Pressable>
+      <View style={styles.cta}>
+        <TouchableOpacity
+          style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
+          onPress={() => {}}
+        >
+          <Ionicons name="notifications-outline" size={24} color={colors.text.primary} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -39,11 +45,37 @@ const styles = StyleSheet.create({
   notificationBtn: {
     width: 40,
     height: 40,
-    borderRadius: Radius.full,
+    borderRadius: Radius.md,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     ...Shadow.sm,
+  },
+  cta: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  optionsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: Radius.lg,
+  },
+  option: {
+    padding: Spacing.xs,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  iconWrap: {
+    borderRadius: Radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.sm,
   },
 });
 

@@ -2,7 +2,7 @@ import { Asset } from 'react-native-image-picker';
 import { customAxios } from '@/core/common/network/custom-axios';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
 import { API_ENDPOINTS } from '@/core/common/network/api-endpoints';
-import { PaginatedResponse, PaginationParams } from '@/core/common/interface/pagination.interface';
+import { PaginatedResponse } from '@/core/common/interface/pagination.interface';
 import { Expense, ParseReceiptResult, UpcomingExpense } from './expenses.interface';
 import {
   mapExpenseFromDto,
@@ -11,6 +11,7 @@ import {
 } from './expenses.mapper';
 import {
   ExpenseDto,
+  ExpenseListParams,
   LogExpenseSchemaType,
   ParseReceiptResponseDto,
   UpcomingExpenseDto,
@@ -19,7 +20,7 @@ import {
 export const ExpensesService = {
   listExpenses: async (
     poolId: string,
-    params?: PaginationParams,
+    params?: ExpenseListParams,
   ): Promise<PaginatedResponse<Expense>> => {
     try {
       const response = await customAxios.get<{
@@ -112,8 +113,59 @@ export const ExpensesService = {
     }
   },
 
+  listGroupExpenses: async (
+    groupId: string,
+    params?: ExpenseListParams,
+  ): Promise<PaginatedResponse<Expense>> => {
+    try {
+      const response = await customAxios.get<{
+        page: number;
+        limit: number;
+        total_items: number;
+        pages: number;
+        items: ExpenseDto[];
+      }>(API_ENDPOINTS.GROUP_EXPENSES(groupId), { params });
+      return {
+        ...response.data,
+        items: response.data.items.map(mapExpenseFromDto),
+      };
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  logGroupExpense: async (
+    groupId: string,
+    data: LogExpenseSchemaType,
+    receipt?: Asset,
+  ): Promise<Expense> => {
+    try {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      });
+      if (receipt?.uri) {
+        formData.append('receipt', {
+          uri: receipt.uri,
+          type: receipt.type ?? 'image/jpeg',
+          name: receipt.fileName ?? 'receipt.jpg',
+        } as unknown as Blob);
+      }
+      const response = await customAxios.post<ExpenseDto>(
+        API_ENDPOINTS.GROUP_EXPENSES(groupId),
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+      return mapExpenseFromDto(response.data);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
   getUpcomingExpenses: async (
-    params?: PaginationParams,
+    params?: ExpenseListParams,
   ): Promise<PaginatedResponse<UpcomingExpense>> => {
     try {
       const response = await customAxios.get<{

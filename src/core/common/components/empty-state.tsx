@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Spacing } from '@/core/common/constants/theme';
+import { GlassView } from 'expo-glass-effect';
 
 type Props = {
   title?: string;
@@ -22,7 +23,10 @@ export default function EmptyState({
   const colors = useThemeColors();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface }]}>
+    <GlassView
+      tintColor={colors.surface}
+      style={[styles.container, { backgroundColor: colors.surface }]}
+    >
       <View style={[styles.iconWrap, { backgroundColor: colors.background }]}>
         <Ionicons name="folder-open-outline" size={28} color={colors.primary} />
       </View>
@@ -40,7 +44,7 @@ export default function EmptyState({
           <Text style={{ color: colors.text.onPrimary }}>{actionLabel}</Text>
         </TouchableOpacity>
       ) : null}
-    </View>
+    </GlassView>
   );
 }
 

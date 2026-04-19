@@ -9,3 +9,10 @@ export interface Invite {
   expiresAt: Date;
   createdAt: Date;
 }
+
+export interface InviteEntry {
+  id: string;
+  email: string;
+}
+
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

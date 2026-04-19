@@ -7,81 +7,108 @@ import { createStaticNavigation } from '@react-navigation/native';
 import AuthScreen from '@/features/auth/auth.screen';
 import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigation/bottom-tabs';
 import HomeScreen from '@/features/home/home.screen';
-import { Platform, useColorScheme } from 'react-native';
+import { Platform } from 'react-native';
 import ActivitiesScreen from '@/features/activities/activities.screen';
 import GroupsScreen from '@/features/groups/screens/groups.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
 import { isLiquidGlassSupported } from '@callstack/liquid-glass';
 import useAuthStore from '@/features/auth/auth.state';
 import type { Theme } from '@react-navigation/native';
-import { LightColors, DarkColors } from '@/core/common/constants/theme';
+import NewGroupScreen from '@/features/groups/screens/new-group.screen';
+import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
+import { BrandColors } from '@/core/common/constants/theme';
+import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 
 interface NavigationProps {
   theme?: Theme;
 }
 
-// Create tabs navigator definition outside component
-const createTabsNavigator = (colorScheme: string | null) => {
-  const isDark = colorScheme === 'dark';
-  const colors = isDark ? DarkColors : LightColors;
-
-  return createBottomTabNavigator({
-    screens: {
-      Home: createBottomTabScreen({
-        screen: HomeScreen,
-        options: {
-          title: 'Home',
-          tabBarIcon: ({ focused }) =>
-            Platform.select({
-              ios: { type: 'sfSymbol', name: focused ? 'house.fill' : 'house' },
-              android: { type: 'materialSymbol', name: 'home' },
-            }),
-        },
-      }),
-      Activity: createBottomTabScreen({
-        screen: ActivitiesScreen,
-        options: {
-          title: 'Activity',
-          tabBarIcon: ({ focused }) =>
-            Platform.select({
-              ios: { type: 'sfSymbol', name: focused ? 'chart.bar.fill' : 'chart.bar' },
-              android: { type: 'materialSymbol', name: 'trending_up' },
-            }),
-        },
-      }),
-      Groups: createBottomTabScreen({
-        screen: GroupsScreen,
-        options: {
-          title: 'Groups',
-          tabBarIcon: ({ focused }) =>
-            Platform.select({
-              ios: { type: 'sfSymbol', name: focused ? 'person.3.fill' : 'person.3' },
-              android: { type: 'materialSymbol', name: 'group' },
-            }),
-        },
-      }),
-      Profile: createBottomTabScreen({
-        screen: ProfileScreen,
-        options: {
-          title: 'Profile',
-          tabBarIcon: ({ focused }) =>
-            Platform.select({
-              ios: { type: 'sfSymbol', name: focused ? 'person.fill' : 'person' },
-              android: { type: 'materialSymbol', name: 'person' },
-            }),
-        },
-      }),
-    },
-    screenOptions: {
-      headerShown: false,
-      tabBarStyle: {
-        backgroundColor: isLiquidGlassSupported ? 'transparent' : colors.surface,
+const Tabs = createBottomTabNavigator({
+  screens: {
+    Home: createBottomTabScreen({
+      screen: HomeScreen,
+      options: {
+        title: 'Home',
+        tabBarIcon: ({ focused }) =>
+          Platform.select({
+            ios: { type: 'sfSymbol', name: focused ? 'house.fill' : 'house' },
+            android: { type: 'materialSymbol', name: 'home' },
+          }),
       },
-      tabBarActiveTintColor: colors.primary,
-      tabBarInactiveTintColor: colors.text.secondary,
+    }),
+    Activity: createBottomTabScreen({
+      screen: ActivitiesScreen,
+      options: {
+        title: 'Activity',
+        tabBarIcon: ({ focused }) =>
+          Platform.select({
+            ios: { type: 'sfSymbol', name: focused ? 'chart.bar.fill' : 'chart.bar' },
+            android: { type: 'materialSymbol', name: 'trending_up' },
+          }),
+      },
+    }),
+    Groups: createBottomTabScreen({
+      screen: GroupsScreen,
+      options: {
+        title: 'Groups',
+        tabBarIcon: ({ focused }) =>
+          Platform.select({
+            ios: { type: 'sfSymbol', name: focused ? 'person.3.fill' : 'person.3' },
+            android: { type: 'materialSymbol', name: 'group' },
+          }),
+      },
+    }),
+    Profile: createBottomTabScreen({
+      screen: ProfileScreen,
+      options: {
+        title: 'Profile',
+        tabBarIcon: ({ focused }) =>
+          Platform.select({
+            ios: { type: 'sfSymbol', name: focused ? 'person.fill' : 'person' },
+            android: { type: 'materialSymbol', name: 'person' },
+          }),
+      },
+    }),
+  },
+  screenOptions: {
+    headerShown: false,
+    tabBarStyle: {
+      backgroundColor: isLiquidGlassSupported ? 'transparent' : undefined,
     },
-  });
-};
+    tabBarActiveTintColor: BrandColors.primary,
+    animation: 'shift',
+  },
+});
+
+const AuthenticatedStack = createNativeStackNavigator({
+  screens: {
+    Tabs: {
+      screen: Tabs,
+      options: {
+        title: 'Tabs',
+        headerShown: false,
+      },
+    },
+    NewGroup: {
+      screen: NewGroupScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    InviteMembers: {
+      screen: InviteMembersScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    NewExpense: {
+      screen: NewExpenseScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+  },
+});
 
 const UnauthenticatedStack = createNativeStackNavigator({
   screens: {
@@ -95,31 +122,23 @@ const UnauthenticatedStack = createNativeStackNavigator({
   },
 });
 
+const TabsNavigation = createStaticNavigation(AuthenticatedStack);
 const UnauthenticatedNavigation = createStaticNavigation(UnauthenticatedStack);
 
 export function Navigation({ theme }: NavigationProps): React.JSX.Element {
   const token = useAuthStore((state) => state.token);
-  const colorScheme = useColorScheme();
-
-  // Create TabsNavigator with current color scheme
-  const Tabs = createTabsNavigator(colorScheme);
-  const TabsNavigation = createStaticNavigation(
-    createNativeStackNavigator({
-      screens: {
-        Tabs: createNativeStackScreen({
-          screen: Tabs,
-          options: {
-            title: 'Tabs',
-            headerShown: false,
-          },
-        }),
-      },
-    }),
-  );
 
   return token !== null ? (
     <TabsNavigation theme={theme} />
   ) : (
     <UnauthenticatedNavigation theme={theme} />
   );
+}
+
+type AuthenticatedStackType = typeof AuthenticatedStack;
+
+declare module '@react-navigation/core' {
+  // Required module augmentation pattern for React Navigation static API root typing.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface RootNavigator extends AuthenticatedStackType {}
 }

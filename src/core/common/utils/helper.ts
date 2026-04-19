@@ -24,6 +24,5 @@ export function getGreeting(date?: Date): string {
  * Example: getGreetingForName('Derrick') -> 'Good morning, Derrick'
  */
 export function getGreetingForName(date?: Date): string {
-  const greeting = getGreeting(date);
-  return `${greeting} 👋`;
+  return getGreeting(date);
 }

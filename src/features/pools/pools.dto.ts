@@ -22,6 +22,7 @@ export interface PoolDto {
   name: string;
   description: string | null;
   status: 'active' | 'settled' | 'closed';
+  activity_status: 'empty' | 'ongoing' | 'settled';
   split_type: string;
   created_by: string | null;
   created_at: string;

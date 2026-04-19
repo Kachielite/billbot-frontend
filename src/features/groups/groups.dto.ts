@@ -4,6 +4,8 @@ import { z } from 'zod';
 export const createGroupSchema = z.object({
   name: z.string().min(1, 'Group name is required').max(100),
   description: z.string().max(500).optional(),
+  emoji: z.string().min(1, 'Please select an icon'),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a valid hex color'),
 });
 export type CreateGroupSchemaType = z.infer<typeof createGroupSchema>;
 
@@ -25,6 +27,8 @@ export interface GroupDto {
   id: string;
   name: string;
   description: string | null;
+  emoji: string | null;
+  color: string | null;
   invite_code: string;
   created_by: string | null;
   created_at: string;

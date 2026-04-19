@@ -15,6 +15,17 @@ export const BalancesService = {
     }
   },
 
+  getGroupBalances: async (groupId: string): Promise<PoolBalances> => {
+    try {
+      const response = await customAxios.get<PoolBalancesDto>(
+        API_ENDPOINTS.GROUP_BALANCES(groupId),
+      );
+      return mapPoolBalancesFromDto(response.data);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
   getUserBalances: async (): Promise<UserBalances> => {
     try {
       const response = await customAxios.get<UserBalancesDto>(API_ENDPOINTS.BALANCES);

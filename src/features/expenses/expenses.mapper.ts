@@ -23,8 +23,9 @@ export const mapExpenseFromDto = (dto: ExpenseDto): Expense => ({
   isRecurring: dto.is_recurring,
   recurrenceFrequency: dto.recurrence_frequency,
   recurrenceEndDate: dto.recurrence_end_date ? new Date(dto.recurrence_end_date) : null,
+  recurrenceParentId: dto.recurrence_parent_id,
   nextOccurrenceAt: dto.next_occurrence_at ? new Date(dto.next_occurrence_at) : null,
-  splits: dto.splits.map(mapSplitFromDto),
+  splits: dto.splits?.map(mapSplitFromDto) ?? [],
 });
 
 export const mapUpcomingExpenseFromDto = (dto: UpcomingExpenseDto): UpcomingExpense => ({
