@@ -129,6 +129,7 @@ export default function GroupIconSelector({
                 onRequestClose={closePopover}
                 placement={PopoverPlacement.TOP}
                 backgroundStyle={{ backgroundColor: 'transparent' }}
+                popoverStyle={{ backgroundColor: colors.surface }}
               >
                 <View style={[styles.popoverContent, { backgroundColor: colors.surface }]}>
                   <TouchableOpacity style={styles.popoverOption} onPress={() => deleteIcon(idx)}>
