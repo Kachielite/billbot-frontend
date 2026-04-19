@@ -64,6 +64,7 @@ const GROUPS_MOCK: Group[] = [
 const DEFAULT_EMOJI_BG = '#9370DB';
 
 const GroupCard = ({ group }: { group: Group }) => {
+  const navigation = useNavigation();
   const scheme = useColorScheme();
   const colors = useThemeColors();
   const { totalOwed = 0, totalOwedToMe = 0, currency } = group.balance ?? {};
@@ -76,7 +77,7 @@ const GroupCard = ({ group }: { group: Group }) => {
   const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('Group', { groupId: group.id })}>
       <View
         style={[
           groupCardStyles.groupCard,
@@ -121,7 +122,7 @@ const groupCardStyles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.md,
     borderRadius: Radius.lg,
-    width: 170,
+    minWidth: 170,
   },
   groupInfoContainer: {
     display: 'flex',

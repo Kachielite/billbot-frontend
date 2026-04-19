@@ -18,6 +18,7 @@ import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
 import { BrandColors } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
+import GroupScreen from '@/features/groups/screens/group.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -91,6 +92,12 @@ const AuthenticatedStack = createNativeStackNavigator({
     },
     NewGroup: {
       screen: NewGroupScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    Group: {
+      screen: GroupScreen,
       options: {
         headerShown: false,
       },

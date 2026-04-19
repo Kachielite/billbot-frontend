@@ -10,4 +10,3 @@ const GroupsScreen = () => {
   );
 };
 export default GroupsScreen;
-const styles = StyleSheet.create({});
