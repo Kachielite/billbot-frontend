@@ -2,8 +2,9 @@ import axios from 'axios';
 import zustandStorage from '@/core/common/utils/zustandStorage';
 import { IAuth } from '@/features/auth/auth.interface';
 import { mapAxiosErrorToAppError } from '@/core/common/error';
+import ENV from '@/core/common/constants/env';
 
-const BASE_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+const BASE_URL = ENV.BASE_URL;
 
 // Token store that reads from storage on every access to stay in sync
 const tokenStore = {

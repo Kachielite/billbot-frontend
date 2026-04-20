@@ -57,19 +57,36 @@ export const AuthenticationService = {
   },
   loginGoogle: async (): Promise<IAuth> => {
     GoogleSignin.configure({
+      webClientId: ENV.WEB_CLIENT_ID,
       iosClientId: ENV.IOS_CLIENT_ID,
     });
     try {
       await GoogleSignin.hasPlayServices();
       const googleAuthResponse = await GoogleSignin.signIn();
 
+      const idToken = googleAuthResponse?.data?.idToken;
+      if (!idToken) {
+        // idToken is only returned when a valid Web OAuth client ID is configured.
+        const errorObj = {
+          status: 400,
+          error: {
+            code: 400,
+            message:
+              'Google did not return an idToken. Check EXPO_PUBLIC_WEB_CLIENT_ID configuration.',
+          },
+        };
+        throw mapAxiosErrorToAppError(errorObj);
+      }
+
       const request: GoogleAuthRequest = {
-        idToken: googleAuthResponse?.data?.idToken as string,
+        idToken,
       };
 
+      console.log('Google Sign-In successful, sending token to backend:', googleAuthResponse);
       const response = await axios.post<AuthResponse>(`${BASE_URL}${PATH}/google`, request);
       return mapAuthResponseToAuth(response.data);
     } catch (error) {
+      console.log('Google Sign-In error:', error);
       const createErrorObj = (message: string) => ({
         status: 400,
         error: {
