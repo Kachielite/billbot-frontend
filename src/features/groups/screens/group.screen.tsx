@@ -37,7 +37,11 @@ export default function GroupScreen({ route }: Props) {
 
   return (
     <ScreenContainer useScrollView={false}>
-      <GroupHeader groupId={groupId} onDeletePress={() => setShowDeleteModal(true)} />
+      <GroupHeader
+        groupId={groupId}
+        members={group.members}
+        onDeletePress={() => setShowDeleteModal(true)}
+      />
       <GroupInfo group={group} />
       <GroupMembers members={group.members} />
       <GroupTabs groupId={groupId} />

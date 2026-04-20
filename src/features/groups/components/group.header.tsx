@@ -7,6 +7,8 @@ import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Popover, { PopoverPlacement } from 'react-native-popover-view';
+import useProfile from '@/features/user/hooks/use-profile';
+import type { GroupMember } from '@/features/groups/groups.interface';
 
 const MENU_ITEMS = [
   { label: 'Edit Group', icon: 'create-outline' as const },
@@ -16,14 +18,18 @@ const MENU_ITEMS = [
 
 interface GroupHeaderProps {
   groupId: string;
+  members?: GroupMember[];
   onDeletePress: () => void;
 }
 
-export default function GroupHeader({ groupId, onDeletePress }: GroupHeaderProps) {
+export default function GroupHeader({ groupId, members = [], onDeletePress }: GroupHeaderProps) {
   const navigation = useNavigation() as any;
   const colors = useThemeColors();
   const [popoverOpen, setPopoverOpen] = React.useState(false);
   const [pendingDelete, setPendingDelete] = React.useState(false);
+  const { profile } = useProfile();
+
+  const isAdmin = !!profile && members.some((m) => m.userId === profile.id && m.role === 'admin');
 
   return (
     <View style={[styles.container]}>
@@ -45,67 +51,69 @@ export default function GroupHeader({ groupId, onDeletePress }: GroupHeaderProps
         </View>
       </View>
 
-      <Popover
-        isVisible={popoverOpen}
-        onRequestClose={() => setPopoverOpen(false)}
-        onCloseComplete={() => {
-          if (pendingDelete) {
-            setPendingDelete(false);
-            onDeletePress();
-          }
-        }}
-        placement={PopoverPlacement.BOTTOM}
-        from={(sourceRef, openPopover) => (
-          <TouchableOpacity
-            ref={sourceRef as unknown as React.RefObject<View>}
-            style={[styles.optionBtn, { backgroundColor: colors.surface }]}
-            onPress={() => setPopoverOpen(true)}
-          >
-            <Ionicons name="ellipsis-horizontal-sharp" size={18} color={colors.text.primary} />
-          </TouchableOpacity>
-        )}
-        popoverStyle={[styles.popover, { backgroundColor: colors.surface }]}
-        backgroundStyle={{ backgroundColor: 'rgba(0,0,0,0.15)' }}
-      >
-        <View>
-          {MENU_ITEMS.map((item, index) => (
+      {isAdmin && (
+        <Popover
+          isVisible={popoverOpen}
+          onRequestClose={() => setPopoverOpen(false)}
+          onCloseComplete={() => {
+            if (pendingDelete) {
+              setPendingDelete(false);
+              onDeletePress();
+            }
+          }}
+          placement={PopoverPlacement.BOTTOM}
+          from={(sourceRef, _openPopover) => (
             <TouchableOpacity
-              key={item.label}
-              style={[
-                styles.menuItem,
-                index < MENU_ITEMS.length - 1 && {
-                  borderBottomWidth: Border.thin,
-                  borderBottomColor: colors.border.subtle,
-                },
-              ]}
-              onPress={() => {
-                setPopoverOpen(false);
-                if (item.label === 'Edit Group') {
-                  navigation.navigate('EditGroup', { groupId });
-                } else if (item.label === 'Manage Members') {
-                  navigation.navigate('ManageMembers', { groupId });
-                } else if (item.label === 'Delete Group') {
-                  setPendingDelete(true);
-                }
-              }}
+              ref={sourceRef as unknown as React.RefObject<View>}
+              style={[styles.optionBtn, { backgroundColor: colors.surface }]}
+              onPress={() => setPopoverOpen(true)}
             >
-              <Ionicons
-                name={item.icon}
-                size={17}
-                color={item.destructive ? colors.error : colors.text.secondary}
-              />
-              <Text
-                style={[
-                  TextStyles.bodySmall,
-                  { color: item.destructive ? colors.error : colors.text.primary },
-                ]}
-              >
-                {item.label}
-              </Text>
+              <Ionicons name="ellipsis-horizontal-sharp" size={18} color={colors.text.primary} />
             </TouchableOpacity>
-          ))}
-        </View>
-      </Popover>
+          )}
+          popoverStyle={[styles.popover, { backgroundColor: colors.surface }]}
+          backgroundStyle={{ backgroundColor: 'rgba(0,0,0,0.15)' }}
+        >
+          <View>
+            {MENU_ITEMS.map((item, index) => (
+              <TouchableOpacity
+                key={item.label}
+                style={[
+                  styles.menuItem,
+                  index < MENU_ITEMS.length - 1 && {
+                    borderBottomWidth: Border.thin,
+                    borderBottomColor: colors.border.subtle,
+                  },
+                ]}
+                onPress={() => {
+                  setPopoverOpen(false);
+                  if (item.label === 'Edit Group') {
+                    navigation.navigate('EditGroup', { groupId });
+                  } else if (item.label === 'Manage Members') {
+                    navigation.navigate('ManageMembers', { groupId });
+                  } else if (item.label === 'Delete Group') {
+                    setPendingDelete(true);
+                  }
+                }}
+              >
+                <Ionicons
+                  name={item.icon}
+                  size={17}
+                  color={item.destructive ? colors.error : colors.text.secondary}
+                />
+                <Text
+                  style={[
+                    TextStyles.bodySmall,
+                    { color: item.destructive ? colors.error : colors.text.primary },
+                  ]}
+                >
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </Popover>
+      )}
     </View>
   );
 }

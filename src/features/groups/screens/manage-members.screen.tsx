@@ -23,6 +23,7 @@ import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import useCreateInvite from '@/features/invites/hooks/use-create-invite';
 import useRemoveMember from '@/features/groups/hooks/use-remove-member';
 import useUpdateMemberRole from '@/features/groups/hooks/use-update-member-role';
+import useProfile from '@/features/user/hooks/use-profile';
 import type { GroupMember } from '@/features/groups/groups.interface';
 import getInitials from '@/core/common/utils/get-initials';
 
@@ -148,6 +149,7 @@ function MemberRow({
   isRemoving,
   onRoleChange,
   isUpdatingRole,
+  isSelf,
 }: {
   member: GroupMember;
   index: number;
@@ -155,6 +157,7 @@ function MemberRow({
   isRemoving: boolean;
   onRoleChange: (role: 'admin' | 'member') => void;
   isUpdatingRole: boolean;
+  isSelf: boolean;
 }) {
   const colors = useThemeColors();
   const swatch = colors.groupColors[index % colors.groupColors.length];
@@ -200,28 +203,32 @@ function MemberRow({
           </View>
         </View>
 
-        {/* actions */}
+        {/* actions — hidden for the logged-in user's own row */}
         <View style={styles.rowActions}>
-          <TouchableOpacity
-            onPress={() => setShowRolePicker((v) => !v)}
-            disabled={isUpdatingRole}
-            style={styles.iconBtn}
-            accessibilityLabel="Edit role"
-          >
-            <FontAwesome5
-              name="user-edit"
-              size={16}
-              color={showRolePicker ? colors.primary : colors.text.secondary}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onRemove}
-            disabled={isRemoving}
-            style={styles.iconBtn}
-            accessibilityLabel="Remove member"
-          >
-            <Ionicons name="trash-outline" size={18} color={colors.error} />
-          </TouchableOpacity>
+          {!isSelf && (
+            <>
+              <TouchableOpacity
+                onPress={() => setShowRolePicker((v) => !v)}
+                disabled={isUpdatingRole}
+                style={styles.iconBtn}
+                accessibilityLabel="Edit role"
+              >
+                <FontAwesome5
+                  name="user-edit"
+                  size={16}
+                  color={showRolePicker ? colors.primary : colors.text.secondary}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={onRemove}
+                disabled={isRemoving}
+                style={styles.iconBtn}
+                accessibilityLabel="Remove member"
+              >
+                <Ionicons name="trash-outline" size={18} color={colors.error} />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
 
@@ -283,6 +290,7 @@ export default function ManageMembersScreen() {
   const { createInvite, isInviting } = useCreateInvite(groupId);
   const { removeMember, isRemoving } = useRemoveMember();
   const { updateMemberRole, isUpdatingRole } = useUpdateMemberRole(groupId);
+  const { profile } = useProfile();
 
   // ── invite input ─────────────────────────────────────────────────────────
   const addInputRef = useRef<TextInput>(null);
@@ -405,6 +413,7 @@ export default function ManageMembersScreen() {
                 isRemoving={isRemoving}
                 onRoleChange={(role) => updateMemberRole({ userId: item.userId, role })}
                 isUpdatingRole={isUpdatingRole}
+                isSelf={!!profile && item.userId === profile.id}
               />
             );
           }}
