@@ -9,6 +9,14 @@ export const mapPoolFromDto = (dto: PoolDto): Pool => ({
   status: dto.status,
   activityStatus: dto.activity_status,
   expenseCount: dto.expense_count,
+  balance: dto.balance
+    ? {
+        totalOwed: dto.balance.total_owed,
+        totalOwedToMe: dto.balance.total_owed_to_me,
+        netBalance: dto.balance.net_balance,
+        currency: dto.balance.currency,
+      }
+    : undefined,
   splitType: dto.split_type,
   createdBy: dto.created_by,
   createdAt: new Date(dto.created_at),

@@ -9,7 +9,7 @@ const useGroupPools = (groupId: string) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
 
-  const { data, isLoading, error, refetch } = useQuery(
+  const { data, isLoading, isFetching, error, refetch } = useQuery(
     [QUERY_KEYS.GROUP_POOLS, groupId, page, limit],
     () => PoolsService.listGroupPools(groupId, { page, limit }),
     {
@@ -26,6 +26,7 @@ const useGroupPools = (groupId: string) => {
       ? { page: data.page, limit: data.limit, totalItems: data.totalItems, pages: data.pages }
       : undefined,
     isLoading,
+    isFetching,
     error,
     refetch,
     page,

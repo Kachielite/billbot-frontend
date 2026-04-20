@@ -16,6 +16,13 @@ export const updatePoolSchema = z.object({
 export type UpdatePoolSchemaType = z.infer<typeof updatePoolSchema>;
 
 // ── Response DTOs ─────────────────────────────────────────────────────────────
+export interface PoolBalanceDto {
+  total_owed: number;
+  total_owed_to_me: number;
+  net_balance: number;
+  currency: string;
+}
+
 export interface PoolDto {
   id: string;
   group_id: string;
@@ -24,6 +31,7 @@ export interface PoolDto {
   status: 'active' | 'settled' | 'closed';
   activity_status: 'empty' | 'ongoing' | 'settled';
   expense_count: number;
+  balance?: PoolBalanceDto;
   split_type: string;
   created_by: string | null;
   created_at: string;

@@ -6,6 +6,7 @@ import ScreenContainer from '@/core/common/components/layout/screen-container';
 import GroupHeader from '@/features/groups/components/group.header';
 import GroupInfo from '@/features/groups/components/group-info';
 import GroupMembers from '@/features/groups/components/group-members';
+import GroupTabs from '@/features/groups/components/group.tab';
 
 type Props = StaticScreenProps<{ groupId: string }>;
 
@@ -22,10 +23,11 @@ export default function GroupScreen({ route }: Props) {
   }
 
   return (
-    <ScreenContainer>
+    <ScreenContainer useScrollView={false}>
       <GroupHeader groupName={group?.name} />
       <GroupInfo groupId={groupId} activePools={group.activePoolCount} />
       <GroupMembers members={group.members} />
+      <GroupTabs groupId={groupId} />
     </ScreenContainer>
   );
 }

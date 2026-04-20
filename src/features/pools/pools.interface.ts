@@ -1,3 +1,10 @@
+export interface PoolBalance {
+  totalOwed: number;
+  totalOwedToMe: number;
+  netBalance: number;
+  currency: string;
+}
+
 export interface Pool {
   id: string;
   groupId: string;
@@ -6,6 +13,7 @@ export interface Pool {
   status: 'active' | 'settled' | 'closed';
   activityStatus: 'empty' | 'ongoing' | 'settled';
   expenseCount: number;
+  balance?: PoolBalance;
   splitType: string;
   createdBy: string | null;
   createdAt: Date;
