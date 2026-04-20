@@ -12,8 +12,8 @@ const useRemoveMember = () => {
     async ({ groupId, userId }: { groupId: string; userId: string }) =>
       GroupsService.removeMember(groupId, userId),
     {
-      onSuccess: (_data, { groupId }) => {
-        queryClient.invalidateQueries([QUERY_KEYS.GROUP_DETAIL, groupId]);
+      onSuccess: async (_data, { groupId }) => {
+        await queryClient.invalidateQueries([QUERY_KEYS.GROUP_DETAIL, groupId]);
         Toast.success('Member removed');
       },
       onError: (error: AppError) => {

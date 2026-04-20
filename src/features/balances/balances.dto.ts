@@ -7,18 +7,18 @@ export interface BalanceEntryDto {
 
 export interface MemberSummaryDto {
   user: { id: string; name: string };
-  totalPaid: number;
-  totalOwed: number;
-  netBalance: number;
+  total_paid: number;
+  total_owed: number;
+  net_balance: number;
 }
 
 export interface PoolBalancesDto {
   balances: BalanceEntryDto[];
-  memberSummary: MemberSummaryDto[];
+  member_summary: MemberSummaryDto[];
 }
 
 export interface UserBalancesDto {
-  totalOwed: number;
-  totalOwedToMe: number;
+  total_owed: number;
+  total_owed_to_me: number;
   currency: string;
 }

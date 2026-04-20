@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EmojiPicker from 'rn-emoji-keyboard';
@@ -43,6 +43,15 @@ export default function GroupIconSelector({
   const [showPicker, setShowPicker] = useState(false);
 
   const closePopover = () => setPopoverIndex(null);
+
+  useEffect(() => {
+    if (popoverIndex === null) return;
+    const activeRef = slotRefs.current[popoverIndex]?.current;
+    // Clear stale popover targets if list updates or view is not mounted.
+    if (!activeRef || !icons[popoverIndex]) {
+      setPopoverIndex(null);
+    }
+  }, [icons, popoverIndex]);
 
   const deleteIcon = (index: number) => {
     setPopoverIndex(null);
@@ -99,9 +108,13 @@ export default function GroupIconSelector({
 
         if (icon) {
           cells.push(
-            <View key={`icon-${icon}`} style={styles.slotWrapper}>
+            <View
+              key={`icon-${icon}`}
+              ref={slotRefs.current[idx]}
+              collapsable={false}
+              style={styles.slotWrapper}
+            >
               <TouchableOpacity
-                ref={slotRefs.current[idx]}
                 onPress={() => {
                   setShowPicker(false);
                   onSelectIcon(icon);
@@ -123,21 +136,23 @@ export default function GroupIconSelector({
                 <Text style={styles.iconEmoji}>{icon}</Text>
               </TouchableOpacity>
 
-              <Popover
-                isVisible={popoverIndex === idx}
-                from={slotRefs.current[idx] as React.RefObject<React.Component>}
-                onRequestClose={closePopover}
-                placement={PopoverPlacement.TOP}
-                backgroundStyle={{ backgroundColor: 'transparent' }}
-                popoverStyle={{ backgroundColor: colors.surface }}
-              >
-                <View style={[styles.popoverContent, { backgroundColor: colors.surface }]}>
-                  <TouchableOpacity style={styles.popoverOption} onPress={() => deleteIcon(idx)}>
-                    <Ionicons name="trash-outline" size={16} color={colors.error} />
-                    <Text style={[TextStyles.label, { color: colors.error }]}>Delete</Text>
-                  </TouchableOpacity>
-                </View>
-              </Popover>
+              {popoverIndex === idx && slotRefs.current[idx]?.current && (
+                <Popover
+                  isVisible
+                  from={slotRefs.current[idx] as React.RefObject<View>}
+                  onRequestClose={closePopover}
+                  placement={PopoverPlacement.TOP}
+                  backgroundStyle={{ backgroundColor: 'transparent' }}
+                  popoverStyle={{ backgroundColor: colors.surface }}
+                >
+                  <View style={[styles.popoverContent, { backgroundColor: colors.surface }]}>
+                    <TouchableOpacity style={styles.popoverOption} onPress={() => deleteIcon(idx)}>
+                      <Ionicons name="trash-outline" size={16} color={colors.error} />
+                      <Text style={[TextStyles.label, { color: colors.error }]}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Popover>
+              )}
             </View>,
           );
           continue;

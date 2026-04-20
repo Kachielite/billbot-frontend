@@ -21,6 +21,7 @@ const GROUPS_MOCK: Group[] = [
     createdBy: 'user1',
     createdAt: new Date(),
     memberCount: 3,
+    activePoolCount: 1,
     balance: { totalOwed: 50.0, totalOwedToMe: 20.0, netBalance: -30.0, currency: 'NGN' },
   },
   {
@@ -33,6 +34,7 @@ const GROUPS_MOCK: Group[] = [
     createdBy: 'user1',
     createdAt: new Date(),
     memberCount: 5,
+    activePoolCount: 2,
     balance: { totalOwed: 0, totalOwedToMe: 75.5, netBalance: 75.5, currency: 'NGN' },
   },
   {
@@ -45,6 +47,7 @@ const GROUPS_MOCK: Group[] = [
     createdBy: 'user1',
     createdAt: new Date(),
     memberCount: 8,
+    activePoolCount: 3,
     balance: { totalOwed: 120.0, totalOwedToMe: 0, netBalance: -120.0, currency: 'NGN' },
   },
   {
@@ -57,6 +60,7 @@ const GROUPS_MOCK: Group[] = [
     createdBy: 'user1',
     createdAt: new Date(),
     memberCount: 11,
+    activePoolCount: 0,
     balance: { totalOwed: 0, totalOwedToMe: 0, netBalance: 0, currency: 'NGN' },
   },
 ];
@@ -64,6 +68,7 @@ const GROUPS_MOCK: Group[] = [
 const DEFAULT_EMOJI_BG = '#9370DB';
 
 const GroupCard = ({ group }: { group: Group }) => {
+  const navigation = useNavigation();
   const scheme = useColorScheme();
   const colors = useThemeColors();
   const { totalOwed = 0, totalOwedToMe = 0, currency } = group.balance ?? {};
@@ -76,7 +81,7 @@ const GroupCard = ({ group }: { group: Group }) => {
   const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('Group', { groupId: group.id })}>
       <View
         style={[
           groupCardStyles.groupCard,
@@ -121,7 +126,7 @@ const groupCardStyles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.md,
     borderRadius: Radius.lg,
-    width: 170,
+    minWidth: 170,
   },
   groupInfoContainer: {
     display: 'flex',

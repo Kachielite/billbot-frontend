@@ -299,12 +299,15 @@ export const ModalContainer = {
 };
 
 export const Card = {
-  paddingSm: 12,
-  padding: 16,
-  paddingLg: 20,
-  gap: 12,
-  gapLg: 16,
-  radius: Radius.md,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+  gap: Spacing.md,
+  padding: Spacing.md,
+  borderRadius: Radius.lg,
+  width: '100%',
+  ...Shadow.sm,
 };
 
 export const Border = {

@@ -15,9 +15,12 @@ import { isLiquidGlassSupported } from '@callstack/liquid-glass';
 import useAuthStore from '@/features/auth/auth.state';
 import type { Theme } from '@react-navigation/native';
 import NewGroupScreen from '@/features/groups/screens/new-group.screen';
+import EditGroupScreen from '@/features/groups/screens/edit-group.screen';
+import ManageMembersScreen from '@/features/groups/screens/manage-members.screen';
 import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
 import { BrandColors } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
+import GroupScreen from '@/features/groups/screens/group.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -95,11 +98,25 @@ const AuthenticatedStack = createNativeStackNavigator({
         headerShown: false,
       },
     },
+    Group: {
+      screen: GroupScreen,
+      options: {
+        headerShown: false,
+      },
+    },
     InviteMembers: {
       screen: InviteMembersScreen,
       options: {
         headerShown: false,
       },
+    },
+    EditGroup: {
+      screen: EditGroupScreen,
+      options: { headerShown: false },
+    },
+    ManageMembers: {
+      screen: ManageMembersScreen,
+      options: { headerShown: false },
     },
     NewExpense: {
       screen: NewExpenseScreen,

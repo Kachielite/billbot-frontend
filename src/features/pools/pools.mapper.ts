@@ -1,5 +1,5 @@
-import { PoolDetailDto, PoolDto, PoolMemberDto } from './pools.dto';
-import { Pool, PoolDetail, PoolMember } from './pools.interface';
+import { PaginatedPoolsDto, PoolDetailDto, PoolDto, PoolMemberDto } from './pools.dto';
+import { PaginatedPools, Pool, PoolDetail, PoolMember } from './pools.interface';
 
 export const mapPoolFromDto = (dto: PoolDto): Pool => ({
   id: dto.id,
@@ -8,9 +8,26 @@ export const mapPoolFromDto = (dto: PoolDto): Pool => ({
   description: dto.description,
   status: dto.status,
   activityStatus: dto.activity_status,
+  expenseCount: dto.expense_count,
+  balance: dto.balance
+    ? {
+        totalOwed: dto.balance.total_owed,
+        totalOwedToMe: dto.balance.total_owed_to_me,
+        netBalance: dto.balance.net_balance,
+        currency: dto.balance.currency,
+      }
+    : undefined,
   splitType: dto.split_type,
   createdBy: dto.created_by,
   createdAt: new Date(dto.created_at),
+});
+
+export const mapPaginatedPoolsFromDto = (dto: PaginatedPoolsDto): PaginatedPools => ({
+  page: dto.page,
+  limit: dto.limit,
+  totalItems: dto.total_items,
+  pages: dto.pages,
+  pools: dto.items.map(mapPoolFromDto),
 });
 
 export const mapPoolMemberFromDto = (dto: PoolMemberDto): PoolMember => ({

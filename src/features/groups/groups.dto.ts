@@ -9,6 +9,23 @@ export const createGroupSchema = z.object({
 });
 export type CreateGroupSchemaType = z.infer<typeof createGroupSchema>;
 
+export const updateMemberRoleSchema = z.object({
+  role: z.enum(['admin', 'member']),
+});
+export type UpdateMemberRoleSchemaType = z.infer<typeof updateMemberRoleSchema>;
+
+export const updateGroupSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  description: z.string().max(500).nullable().optional(),
+  emoji: z.string().max(10).nullable().optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a valid hex color')
+    .nullable()
+    .optional(),
+});
+export type UpdateGroupSchemaType = z.infer<typeof updateGroupSchema>;
+
 export interface ListGroupsParamsDto {
   page?: number;
   limit?: number;
@@ -33,6 +50,7 @@ export interface GroupDto {
   created_by: string | null;
   created_at: string;
   member_count: number;
+  active_pool_count: number;
   members?: GroupMemberDto[];
   balance?: GroupBalanceDto;
 }

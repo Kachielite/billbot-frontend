@@ -20,6 +20,7 @@ export const mapGroupFromDto = (dto: GroupDto): Group => ({
   createdBy: dto.created_by,
   createdAt: new Date(dto.created_at),
   memberCount: dto.member_count,
+  activePoolCount: dto.active_pool_count,
   members: dto.members?.map(mapGroupMemberFromDto),
   balance: dto.balance
     ? {
