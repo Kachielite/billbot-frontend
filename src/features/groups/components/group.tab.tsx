@@ -160,6 +160,7 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
               <TabCard pool={item} key={item.id} isLast={index === data.length - 1} />
             )}
             keyExtractor={(item) => item.id}
+            scrollEnabled={false}
             onEndReachedThreshold={0.6}
             onEndReached={loadMore}
             ListFooterComponent={() =>

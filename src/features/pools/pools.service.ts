@@ -21,7 +21,6 @@ export const PoolsService = {
         API_ENDPOINTS.GROUP_POOLS(groupId),
         { params },
       );
-      console.log('Received paginated pools response:', response.data);
       return mapPaginatedPoolsFromDto(response.data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);

@@ -75,11 +75,9 @@ const Tabs = createBottomTabNavigator({
   },
   screenOptions: {
     headerShown: false,
-    tabBarStyle: {
-      backgroundColor: isLiquidGlassSupported ? 'transparent' : undefined,
-    },
+    tabBarShowLabel: true,
     tabBarActiveTintColor: BrandColors.primary,
-    animation: 'shift',
+    animation: Platform.OS === 'android' ? 'fade' : 'shift',
   },
 });
 
