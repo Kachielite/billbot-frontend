@@ -16,12 +16,14 @@ const MENU_ITEMS = [
 
 interface GroupHeaderProps {
   groupId: string;
+  onDeletePress: () => void;
 }
 
-export default function GroupHeader({ groupId }: GroupHeaderProps) {
+export default function GroupHeader({ groupId, onDeletePress }: GroupHeaderProps) {
   const navigation = useNavigation() as any;
   const colors = useThemeColors();
-  const popoverRef = React.useRef<Popover>(null);
+  const [popoverOpen, setPopoverOpen] = React.useState(false);
+  const [pendingDelete, setPendingDelete] = React.useState(false);
 
   return (
     <View style={[styles.container]}>
@@ -44,13 +46,20 @@ export default function GroupHeader({ groupId }: GroupHeaderProps) {
       </View>
 
       <Popover
-        ref={popoverRef}
+        isVisible={popoverOpen}
+        onRequestClose={() => setPopoverOpen(false)}
+        onCloseComplete={() => {
+          if (pendingDelete) {
+            setPendingDelete(false);
+            onDeletePress();
+          }
+        }}
         placement={PopoverPlacement.BOTTOM}
         from={(sourceRef, openPopover) => (
           <TouchableOpacity
             ref={sourceRef as unknown as React.RefObject<View>}
             style={[styles.optionBtn, { backgroundColor: colors.surface }]}
-            onPress={openPopover}
+            onPress={() => setPopoverOpen(true)}
           >
             <Ionicons name="ellipsis-horizontal-sharp" size={18} color={colors.text.primary} />
           </TouchableOpacity>
@@ -70,11 +79,13 @@ export default function GroupHeader({ groupId }: GroupHeaderProps) {
                 },
               ]}
               onPress={() => {
-                popoverRef.current?.setState({ isVisible: false });
+                setPopoverOpen(false);
                 if (item.label === 'Edit Group') {
                   navigation.navigate('EditGroup', { groupId });
                 } else if (item.label === 'Manage Members') {
                   navigation.navigate('ManageMembers', { groupId });
+                } else if (item.label === 'Delete Group') {
+                  setPendingDelete(true);
                 }
               }}
             >
