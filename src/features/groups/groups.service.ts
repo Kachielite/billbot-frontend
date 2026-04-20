@@ -10,6 +10,7 @@ import {
   ListGroupsParamsDto,
   PaginatedGroupsDto,
   UpdateGroupSchemaType,
+  UpdateMemberRoleSchemaType,
 } from './groups.dto';
 
 export const GroupsService = {
@@ -52,6 +53,18 @@ export const GroupsService = {
   deleteGroup: async (groupId: string): Promise<void> => {
     try {
       await customAxios.delete(API_ENDPOINTS.GROUP_DETAIL(groupId));
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  updateMemberRole: async (
+    groupId: string,
+    userId: string,
+    data: UpdateMemberRoleSchemaType,
+  ): Promise<void> => {
+    try {
+      await customAxios.patch(API_ENDPOINTS.GROUP_UPDATE_MEMBER_ROLE(groupId, userId), data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }

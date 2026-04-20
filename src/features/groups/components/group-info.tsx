@@ -154,7 +154,7 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
               {group.name ?? 'Group Name'}
             </Text>
             {group.description && (
-              <Text style={[TextStyles.label, { color: colors.text.secondary }]}>
+              <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>
                 {group.description}
               </Text>
             )}

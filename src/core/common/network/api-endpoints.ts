@@ -8,6 +8,8 @@ export const API_ENDPOINTS = {
   GROUPS: '/groups',
   GROUP_DETAIL: (groupId: string) => `/groups/${groupId}`,
   GROUP_REMOVE_MEMBER: (groupId: string, userId: string) => `/groups/${groupId}/members/${userId}`,
+  GROUP_UPDATE_MEMBER_ROLE: (groupId: string, userId: string) =>
+    `/groups/${groupId}/members/${userId}/role`,
   GROUP_INVITES: (groupId: string) => `/groups/${groupId}/invites`,
   GROUP_INVITE_CANCEL: (groupId: string, inviteId: string) =>
     `/groups/${groupId}/invites/${inviteId}`,

@@ -24,7 +24,7 @@ export default function GroupScreen({ route }: Props) {
 
   return (
     <ScreenContainer useScrollView={false}>
-      <GroupHeader />
+      <GroupHeader groupId={groupId} />
       <GroupInfo group={group} />
       <GroupMembers members={group.members} />
       <GroupTabs groupId={groupId} />
