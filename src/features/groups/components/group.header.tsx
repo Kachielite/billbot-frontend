@@ -7,7 +7,7 @@ import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function GroupHeader({ groupName }: { groupName: string }) {
+export default function GroupHeader() {
   const navigation = useNavigation();
   const colors = useThemeColors();
   return (
@@ -24,16 +24,8 @@ export default function GroupHeader({ groupName }: { groupName: string }) {
           </TouchableOpacity>
         </View>
         <View>
-          <Text
-            style={[
-              TextStyles.bodySmall,
-              { color: colors.text.primary, textTransform: 'uppercase' },
-            ]}
-          >
+          <Text style={[TextStyles.headingMedium, { color: colors.text.secondary }]}>
             GROUP DETAILS
-          </Text>
-          <Text style={[TextStyles.headingLarge, { color: colors.text.secondary }]}>
-            {groupName}
           </Text>
         </View>
       </View>
@@ -57,7 +49,7 @@ const styles = StyleSheet.create({
   headerRight: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: Spacing.md,
   },
   backBtn: {

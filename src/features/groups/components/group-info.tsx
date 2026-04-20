@@ -1,4 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, type ViewStyle } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  type ViewStyle,
+  useColorScheme,
+} from 'react-native';
 import React from 'react';
 import { Card, Radius, Spacing } from '@/core/common/constants/theme';
 import useGroupBalances from '@/features/balances/hooks/use-group-balances';
@@ -8,6 +16,7 @@ import { MemberSummary } from '@/features/balances/balances.interface';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import SkeletonCard from '@/core/common/components/skeleton-card';
 import getInitials from '@/core/common/utils/get-initials';
+import { GroupDetail } from '@/features/groups/groups.interface';
 
 const AVATAR_SIZE = 45;
 const AVATAR_OVERLAP = 12;
@@ -93,58 +102,161 @@ function MemberAvatars({
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
+const DEFAULT_EMOJI_BG = '#9370DB';
 
-export default function GroupInfo({
-  groupId,
-  activePools,
-}: {
-  groupId: string;
-  activePools: number;
-}) {
+export default function GroupInfo({ group }: { group: GroupDetail }) {
+  const scheme = useColorScheme();
   const colors = useThemeColors();
-  const { isLoading, memberSummary, balances } = useGroupBalances(groupId);
+  const { isLoading, memberSummary, balances } = useGroupBalances(group.id);
   // find total owed and total owes across all groups from memberSummary
   const currency = balances[0]?.currency || '$'; // Default to $ if currency is not available
   const totalOwedByMe = memberSummary.reduce((sum, member) => sum + member.totalOwed, 0);
   const totalOwedToMe = memberSummary.reduce((sum, member) => sum + member.totalPaid, 0);
   const netBalance = totalOwedToMe - totalOwedByMe;
 
+  // measure amounts so both stat boxes can grow to the same width
+  const [owedToMeWidth, setOwedToMeWidth] = React.useState(0);
+  const [owedByMeWidth, setOwedByMeWidth] = React.useState(0);
+  // also measure title widths so titles are never truncated
+  const [owedToMeTitleWidth, setOwedToMeTitleWidth] = React.useState(0);
+  const [owedByMeTitleWidth, setOwedByMeTitleWidth] = React.useState(0);
+  const statContentPadding = Spacing.sm * 2;
+  const statBoxWidth = Math.max(
+    owedToMeWidth,
+    owedByMeWidth,
+    owedToMeTitleWidth,
+    owedByMeTitleWidth,
+  )
+    ? Math.max(owedToMeWidth, owedByMeWidth, owedToMeTitleWidth, owedByMeTitleWidth) +
+      statContentPadding
+    : undefined;
+
+  const bgColor = group.color ?? DEFAULT_EMOJI_BG;
+  const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
+
   return (
-    <View style={[Card as ViewStyle, { backgroundColor: colors.surface }]}>
-      <View style={styles.sectionHeader}>
-        {isLoading ? (
-          <SkeletonCard containerStyle={{ width: '100%' }} tintColor={colors.surface} />
-        ) : memberSummary.length === 0 ? (
-          <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>No members yet</Text>
-        ) : (
-          <MemberAvatars memberSummary={memberSummary} colors={colors} />
-        )}
-        <TouchableOpacity
-          style={[styles.inviteButton, { backgroundColor: colors.primaryContainer }]}
-        >
-          <Ionicons name="add" size={12} color={colors.primary} />
-          <Text style={[TextStyles.label, { color: colors.primary }]}>Invite</Text>
-        </TouchableOpacity>
+    <View style={[{ gap: Spacing.xl }]}>
+      <View
+        style={[
+          Card as ViewStyle,
+          styles.sectionHeader,
+          { backgroundColor: colors.surface, borderColor: colors.border.subtle },
+        ]}
+      >
+        <View style={[styles.row, { gap: Spacing.sm }]}>
+          <View
+            style={[styles.emojiContainer, { backgroundColor: bgColor + iconBackgroundOpacity }]}
+          >
+            <Text style={styles.emoji}>{group.emoji ?? '👥'}</Text>
+          </View>
+          <View>
+            <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
+              {group.name ?? 'Group Name'}
+            </Text>
+            {group.description && (
+              <Text style={[TextStyles.label, { color: colors.text.secondary }]}>
+                {group.description}
+              </Text>
+            )}
+          </View>
+        </View>
+        <View style={[styles.inviteButton, { backgroundColor: colors.primaryContainer }]}>
+          <Text style={[TextStyles.caption, { color: colors.primary }]}>
+            {group.memberCount > 0
+              ? `${group.memberCount} ${group.memberCount === 1 ? 'member' : 'members'}`
+              : 'No members yet'}
+          </Text>
+        </View>
       </View>
-      <View style={styles.totalBalance}>
-        <Text style={[TextStyles.subtitleSmall, { color: colors.text.disabled }]}>
-          YOUR NET BALANCE
-        </Text>
+      <View>
         <Text
+          style={[TextStyles.subtitle, { color: colors.text.primary, marginBottom: Spacing.md }]}
+        >
+          Balances
+        </Text>
+
+        <View
           style={[
-            TextStyles.amountLarge,
-            { color: netBalance >= 0 ? colors.primary : colors.error },
+            Card as ViewStyle,
+            styles.totalBalance,
+            { backgroundColor: colors.surface, borderColor: colors.border.subtle },
           ]}
         >
-          {currency}{' '}
-          {netBalance.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </Text>
-        <Text style={[TextStyles.label, { color: colors.text.disabled }]}>
-          Across {activePools} active {activePools === 1 ? 'tab' : 'tabs'}
-        </Text>
+          <View style={styles.balanceRow}>
+            <View style={styles.netColumn}>
+              <Text
+                style={[
+                  TextStyles.amountLarge,
+                  { color: netBalance >= 0 ? colors.primary : colors.error },
+                ]}
+              >
+                {currency}{' '}
+                {netBalance.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </Text>
+              <Text
+                style={[TextStyles.label, { color: colors.text.disabled, marginTop: Spacing.md }]}
+              >
+                Across {group.activePoolCount} active {group.activePoolCount === 1 ? 'tab' : 'tabs'}
+              </Text>
+            </View>
+
+            <View style={styles.sideStats}>
+              <View
+                style={[
+                  styles.statBox,
+                  { backgroundColor: colors.primaryContainer, width: statBoxWidth },
+                ]}
+              >
+                <Text
+                  style={[styles.statLabel, { color: colors.onPrimaryContainer }]}
+                  onLayout={(e) => setOwedToMeTitleWidth(e.nativeEvent.layout.width)}
+                >
+                  Owed to you
+                </Text>
+                <Text
+                  onLayout={(e) => setOwedToMeWidth(e.nativeEvent.layout.width)}
+                  style={[styles.statAmount, { color: colors.primary }]}
+                >
+                  {currency}{' '}
+                  {totalOwedToMe.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.statBox,
+                  {
+                    backgroundColor: colors.errorContainer,
+                    marginTop: Spacing.xs,
+                    width: statBoxWidth,
+                  },
+                ]}
+              >
+                <Text
+                  style={[styles.statLabel, { color: colors.onErrorContainer }]}
+                  onLayout={(e) => setOwedByMeTitleWidth(e.nativeEvent.layout.width)}
+                >
+                  You owe
+                </Text>
+                <Text
+                  onLayout={(e) => setOwedByMeWidth(e.nativeEvent.layout.width)}
+                  style={[styles.statAmount, { color: colors.error }]}
+                >
+                  {currency}{' '}
+                  {totalOwedByMe.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -185,8 +297,51 @@ const styles = StyleSheet.create({
   },
   totalBalance: {
     display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: Spacing.xs,
+  },
+  balanceRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: Spacing.md,
+  },
+  netColumn: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  sideStats: {
+    width: 160,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    marginLeft: 'auto',
+  },
+  statBox: {
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: Radius.md,
+    alignItems: 'flex-end',
+  },
+  statLabel: {
+    fontSize: 12,
+  },
+  statAmount: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  emojiContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emoji: {
+    fontSize: 22,
   },
 });

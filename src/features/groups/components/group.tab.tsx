@@ -137,7 +137,7 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Pools</Text>
+        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Tabs</Text>
         {pagination && pagination?.totalItems > 8 ? (
           <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
         ) : null}
@@ -176,6 +176,10 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
           />
         )}
       </View>
+      <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
+        Tabs collect related expenses together. You can have a tab for each trip, event, or category
+        of expenses.
+      </Text>
     </View>
   );
 }

@@ -9,6 +9,7 @@ import {
   GroupDto,
   ListGroupsParamsDto,
   PaginatedGroupsDto,
+  UpdateGroupSchemaType,
 } from './groups.dto';
 
 export const GroupsService = {
@@ -33,6 +34,15 @@ export const GroupsService = {
   createGroup: async (data: CreateGroupSchemaType): Promise<Group> => {
     try {
       const response = await customAxios.post<GroupDto>(API_ENDPOINTS.GROUPS, data);
+      return mapGroupFromDto(response.data);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
+  updateGroup: async (groupId: string, data: UpdateGroupSchemaType): Promise<Group> => {
+    try {
+      const response = await customAxios.patch<GroupDto>(API_ENDPOINTS.GROUP_DETAIL(groupId), data);
       return mapGroupFromDto(response.data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
