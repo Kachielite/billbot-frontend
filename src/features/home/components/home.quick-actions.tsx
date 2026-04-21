@@ -32,7 +32,7 @@ export default function HomeQuickActions() {
     {
       name: 'New tab',
       icon: <MaterialCommunityIcons name="folder-table" size={24} color={colors.primary} />,
-      action: () => console.log('New tab action'),
+      action: () => navigation.navigate('NewPool'),
       backgroundColor: colors.primaryContainer,
     },
   ];

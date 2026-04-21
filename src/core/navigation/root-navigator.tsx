@@ -21,6 +21,7 @@ import InviteMembersScreen from '@/features/invites/screens/invite-members.scree
 import { BrandColors } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 import GroupScreen from '@/features/groups/screens/group.screen';
+import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -118,6 +119,12 @@ const AuthenticatedStack = createNativeStackNavigator({
     },
     NewExpense: {
       screen: NewExpenseScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    NewPool: {
+      screen: NewPoolScreen,
       options: {
         headerShown: false,
       },
