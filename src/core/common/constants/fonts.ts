@@ -124,6 +124,11 @@ export const TextStyles = {
     fontSize: FontSize.xs,
     lineHeight: LineHeight.xs,
   },
+  captionBold: {
+    fontFamily: Fonts.medium,
+    fontSize: FontSize.xs,
+    lineHeight: LineHeight.xs,
+  },
   error: {
     fontFamily: Fonts.regular,
     fontSize: FontSize.xs,
