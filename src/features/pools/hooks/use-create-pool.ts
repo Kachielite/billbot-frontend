@@ -31,7 +31,11 @@ const useCreatePool = (groupId: string) => {
     },
   );
 
-  return { form, isCreating, createPool };
+  const createPoolHandler = async () => {
+    await form.handleSubmit((data) => createPool(data))();
+  };
+
+  return { form, isCreating, createPoolHandler };
 };
 
 export default useCreatePool;

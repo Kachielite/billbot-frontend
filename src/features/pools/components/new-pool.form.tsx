@@ -10,12 +10,14 @@ import MemberAvatar from '@/core/common/components/member-avatar';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useProfile from '@/features/user/hooks/use-profile';
+import CustomButton from '@/core/common/components/form/custom-button';
 
 interface NewPoolFormProps {
   formController: UseFormReturn<CreatePoolSchemaType>;
+  onCreatePool: () => Promise<void>;
 }
 
-export default function NewPoolForm({ formController }: NewPoolFormProps) {
+export default function NewPoolForm({ formController, onCreatePool }: NewPoolFormProps) {
   const colors = useThemeColors();
   const { profile } = useProfile();
   const { selectedGroup } = useGroupsStore();
@@ -39,6 +41,8 @@ export default function NewPoolForm({ formController }: NewPoolFormProps) {
       : [...current, userId];
     onMemberIdsChange(updated);
   };
+
+  const memberIdsError = formController.formState.errors.memberIds;
 
   return (
     <View style={styles.formContainer}>
@@ -74,7 +78,7 @@ export default function NewPoolForm({ formController }: NewPoolFormProps) {
                   style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}
                 >
                   <MemberAvatar name={option.label} avatarUrl={option.avatarUrl} />
-                  <Text style={{ color: colors.text.primary }}>
+                  <Text style={[TextStyles.label, { color: colors.text.primary }]}>
                     {option.label.split(' ')[0]} {option.value === profile?.id && '(You)'}
                   </Text>
                 </View>
@@ -93,12 +97,17 @@ export default function NewPoolForm({ formController }: NewPoolFormProps) {
             );
           })}
         </View>
-        {formController.formState.errors.memberIds && (
-          <Text style={{ color: colors.error ?? '#D32F2F', fontSize: 12 }}>
-            {formController.formState.errors.memberIds.message as string}
+        {formController.formState.errors.memberIds ? (
+          <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
+            Inherits from the group. Uncheck to exclude.
+          </Text>
+        ) : (
+          <Text style={{ color: colors.error, ...TextStyles.caption }}>
+            {memberIdsError?.message as string}
           </Text>
         )}
       </View>
+      <CustomButton label={'Create Tab'} onPress={onCreatePool} />
     </View>
   );
 }

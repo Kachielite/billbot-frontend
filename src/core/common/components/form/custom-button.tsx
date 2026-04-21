@@ -3,6 +3,7 @@ import React, { ReactElement } from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { GlassView } from 'expo-glass-effect';
 import { TextStyles } from '@/core/common/constants/fonts';
+import { Radius } from '@/core/common/constants/theme';
 
 type CustomButtonProps = {
   label: string;
@@ -19,7 +20,11 @@ const CustomButton = ({ label, onPress, loading, icon }: CustomButtonProps) => {
   }
 
   return (
-    <GlassView tintColor={colors.primary} isInteractive style={[styles.btn]}>
+    <GlassView
+      tintColor={colors.primary}
+      isInteractive
+      style={[styles.btn, { backgroundColor: colors.primary }]}
+    >
       <TouchableOpacity onPress={onPress} disabled={loading}>
         {icon}
         <Text style={[styles.buttonLabel, { color: colors.onPrimary }]}>{label}</Text>
@@ -33,9 +38,9 @@ const styles = StyleSheet.create({
     ...TextStyles.button,
   },
   btn: {
-    width: '97%',
+    width: '100%',
     height: 50,
-    borderRadius: 45,
+    borderRadius: Radius.md,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

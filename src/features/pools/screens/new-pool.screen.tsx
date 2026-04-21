@@ -11,7 +11,7 @@ type Props = StaticScreenProps<{ groupId: string }>;
 
 export default function NewPoolScreen({ route }: Props) {
   const { groupId } = route.params;
-  const { form } = useCreatePool(groupId);
+  const { form, createPoolHandler } = useCreatePool(groupId);
 
   return (
     <KeyboardAvoidingView
@@ -21,7 +21,7 @@ export default function NewPoolScreen({ route }: Props) {
     >
       <NewPoolHeader />
       <PoolInfo />
-      <NewPoolForm formController={form} />
+      <NewPoolForm formController={form} onCreatePool={createPoolHandler} />
     </KeyboardAvoidingView>
   );
 }
