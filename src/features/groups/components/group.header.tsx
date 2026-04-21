@@ -11,6 +11,7 @@ import useProfile from '@/features/user/hooks/use-profile';
 import type { GroupMember } from '@/features/groups/groups.interface';
 
 const MENU_ITEMS = [
+  { label: 'Add Tab', icon: 'folder-open-outline' as const },
   { label: 'Edit Group', icon: 'create-outline' as const },
   { label: 'Manage Members', icon: 'people-outline' as const },
   { label: 'Delete Group', icon: 'trash-outline' as const, destructive: true },
@@ -93,6 +94,8 @@ export default function GroupHeader({ groupId, members = [], onDeletePress }: Gr
                     navigation.navigate('ManageMembers', { groupId });
                   } else if (item.label === 'Delete Group') {
                     setPendingDelete(true);
+                  } else if (item.label === 'Add Tab') {
+                    navigation.navigate('NewPool', { groupId });
                   }
                 }}
               >

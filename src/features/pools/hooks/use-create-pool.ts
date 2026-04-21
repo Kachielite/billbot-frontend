@@ -20,8 +20,8 @@ const useCreatePool = (groupId: string) => {
     'create-pool',
     async (data: CreatePoolSchemaType) => PoolsService.createPool(groupId, data),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, groupId]);
+      onSuccess: async () => {
+        await queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, groupId]);
         Toast.success('Pool created successfully');
         form.reset();
       },
