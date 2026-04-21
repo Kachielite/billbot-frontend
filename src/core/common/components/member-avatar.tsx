@@ -6,7 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 type AvatarProps = {
   name: string;
   avatarSize?: number;
-  avatarUrl?: string;
+  avatarUrl: string | null;
 };
 
 export default function MemberAvatar({ name, avatarSize = 45, avatarUrl }: AvatarProps) {

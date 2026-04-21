@@ -14,16 +14,6 @@ export default function NewPoolHeader() {
   return (
     <View style={[styles.container]}>
       <View style={styles.headerRight}>
-        <View style={styles.backBtnContainer}>
-          <TouchableOpacity
-            style={[styles.backBtn, { backgroundColor: colors.surface }]}
-            onPress={() => {
-              if (navigation.canGoBack()) navigation.goBack();
-            }}
-          >
-            <Ionicons name="close" size={24} color={colors.text.primary} />
-          </TouchableOpacity>
-        </View>
         <View>
           <Text
             style={[
@@ -38,9 +28,16 @@ export default function NewPoolHeader() {
           </Text>
         </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('InviteMembers')}>
-        <Text style={[TextStyles.headingSmall, { color: colors.text.disabled }]}>Next</Text>
-      </TouchableOpacity>
+      <View style={styles.backBtnContainer}>
+        <TouchableOpacity
+          style={[styles.backBtn, { backgroundColor: colors.surface }]}
+          onPress={() => {
+            if (navigation.canGoBack()) navigation.goBack();
+          }}
+        >
+          <Ionicons name="close" size={24} color={colors.text.primary} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

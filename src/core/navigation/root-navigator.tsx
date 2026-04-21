@@ -17,13 +17,7 @@ import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import EditGroupScreen from '@/features/groups/screens/edit-group.screen';
 import ManageMembersScreen from '@/features/groups/screens/manage-members.screen';
 import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
-import {
-  BrandColors,
-  DarkColors,
-  LightColors,
-  Radius,
-  Spacing,
-} from '@/core/common/constants/theme';
+import { BrandColors, DarkColors, LightColors, Radius } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 import GroupScreen from '@/features/groups/screens/group.screen';
 import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
@@ -134,13 +128,11 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         options: {
           headerShown: false,
           presentation: 'formSheet',
-          sheetAllowedDetents: [0.25, 0.75],
-          sheetInitialDetentIndex: 1,
+          sheetAllowedDetents: [0.5, 1],
           sheetGrabberVisible: true,
           sheetCornerRadius: Radius.xl,
           contentStyle: {
             height: '100%',
-            paddingTop: Platform.OS === 'android' ? 0 : Spacing.xxl,
             backgroundColor: sheetBackgroundColor,
           },
         },
