@@ -4,6 +4,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  useColorScheme,
   View,
 } from 'react-native';
 import React from 'react';
@@ -20,12 +21,18 @@ type Props = StaticScreenProps<{ groupId: string }>;
 
 export default function NewPoolScreen({ route }: Props) {
   const { groupId } = route.params;
-  const { form, createPoolHandler } = useCreatePool(groupId);
+  const scheme = useColorScheme();
+  const { form, createPoolHandler, isCreating } = useCreatePool(groupId);
   const colors = useThemeColors();
   const navigation = useNavigation();
 
   return (
-    <View style={styles.overlay}>
+    <View
+      style={[
+        styles.overlay,
+        { backgroundColor: scheme === 'light' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.1)' },
+      ]}
+    >
       {/* Tap outside to dismiss */}
       <Pressable
         style={StyleSheet.absoluteFill}
@@ -44,7 +51,11 @@ export default function NewPoolScreen({ route }: Props) {
           >
             <NewPoolHeader />
             <PoolInfo />
-            <NewPoolForm formController={form} onCreatePool={createPoolHandler} />
+            <NewPoolForm
+              formController={form}
+              onCreatePool={createPoolHandler}
+              isCreating={isCreating}
+            />
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
@@ -56,7 +67,6 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   sheet: {
     borderTopLeftRadius: Radius.xl,
@@ -64,16 +74,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingBottom: Platform.OS === 'ios' ? Spacing.lg : Spacing.xl,
   },
-  grabber: {
-    alignSelf: 'center',
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.sm,
-  },
   content: {
-    paddingVertical: Spacing.lg,
+    paddingVertical: Spacing.xl,
     paddingHorizontal: Spacing.md,
     gap: Spacing.lg,
   },

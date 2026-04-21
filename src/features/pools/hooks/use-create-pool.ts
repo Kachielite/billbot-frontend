@@ -38,6 +38,9 @@ const useCreatePool = (groupId: string) => {
     await form.handleSubmit((data) => createPool(data))();
   };
 
+  console.log('Form errors:', form.formState.errors);
+  console.log('Form values:', form.getValues());
+
   return { form, isCreating, createPoolHandler };
 };
 

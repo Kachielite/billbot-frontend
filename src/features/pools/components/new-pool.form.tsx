@@ -15,9 +15,14 @@ import CustomButton from '@/core/common/components/form/custom-button';
 interface NewPoolFormProps {
   formController: UseFormReturn<CreatePoolSchemaType>;
   onCreatePool: () => Promise<void>;
+  isCreating: boolean;
 }
 
-export default function NewPoolForm({ formController, onCreatePool }: NewPoolFormProps) {
+export default function NewPoolForm({
+  formController,
+  onCreatePool,
+  isCreating,
+}: NewPoolFormProps) {
   const colors = useThemeColors();
   const { profile } = useProfile();
   const { selectedGroup } = useGroupsStore();
@@ -107,7 +112,11 @@ export default function NewPoolForm({ formController, onCreatePool }: NewPoolFor
           </Text>
         )}
       </View>
-      <CustomButton label={'Create Tab'} onPress={onCreatePool} />
+      <CustomButton
+        loading={isCreating}
+        label={isCreating ? 'Creating...' : 'Create Tab'}
+        onPress={async () => onCreatePool()}
+      />
     </View>
   );
 }

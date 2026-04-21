@@ -39,7 +39,9 @@ export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean
       ]}
     >
       <View style={[poolCardStyles.emojiContainer, { backgroundColor: colors.primaryContainer }]}>
-        <Text>{getInitials(pool.name)}</Text>
+        <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
+          {getInitials(pool.name)}
+        </Text>
       </View>
       <View style={poolCardStyles.contentRow}>
         <View style={poolCardStyles.leftColumn}>
@@ -50,10 +52,10 @@ export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean
         </View>
         <View style={poolCardStyles.rightColumn}>
           <View style={poolCardStyles.rightTopRow}>
-            <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
+            <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
               {pool.balance?.currency}
             </Text>
-            <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
+            <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
               {pool.balance?.netBalance}
             </Text>
           </View>
@@ -95,7 +97,7 @@ const poolCardStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   rightColumn: {
     display: 'flex',
@@ -134,6 +136,8 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
       setData((prev) => [...prev, ...pools]);
     }
   }, [pools, page]);
+
+  console.log(pools);
 
   return (
     <View style={styles.container}>

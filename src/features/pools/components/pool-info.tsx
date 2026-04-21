@@ -18,8 +18,10 @@ export default function PoolInfo() {
         <Ionicons name="information-circle-outline" size={24} color={colors.text.inverse} />
       </View>
       <View style={styles.infoTextContainer}>
-        <Text style={[TextStyles.label, styles.wrapText]}>A tab collects related expenses.</Text>
-        <Text style={[TextStyles.caption, styles.wrapText]}>
+        <Text style={[TextStyles.label, styles.wrapText, { color: colors.text.primary }]}>
+          A tab collects related expenses.
+        </Text>
+        <Text style={[TextStyles.caption, styles.wrapText, { color: colors.text.primary }]}>
           Think monthly bills, a trip, or an event, so you settle them together instead of one by
           one.
         </Text>
