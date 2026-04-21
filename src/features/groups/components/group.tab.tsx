@@ -3,7 +3,7 @@ import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Pool } from '@/features/pools/pools.interface';
-import { Card, Radius, Spacing } from '@/core/common/constants/theme';
+import { Card, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import getInitials from '@/core/common/utils/get-initials';
 import useGroupPools from '@/features/pools/hooks/use-group-pools';
 import SkeletonBox from '@/core/common/components/skeleton-box';
@@ -32,6 +32,7 @@ export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean
       style={[
         poolCardStyles.poolCard,
         {
+          padding: Spacing.md,
           borderBottomColor: colors.border.subtle,
           borderBottomWidth: isLast ? 0 : 1,
         },
@@ -143,7 +144,7 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
         ) : null}
       </View>
 
-      <View style={[Card as ViewStyle, { backgroundColor: colors.surface, width: '100%' }]}>
+      <View style={[styles.tabContainer, { backgroundColor: colors.surface, width: '100%' }]}>
         {isLoading ? (
           // show a few skeletons while loading first page
           <View>
@@ -196,5 +197,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  tabContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    gap: Spacing.md,
+    width: '100%',
+    ...Shadow.sm,
+    borderRadius: Radius.lg,
   },
 });

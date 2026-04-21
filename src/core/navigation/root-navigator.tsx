@@ -127,14 +127,8 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         screen: NewPoolScreen,
         options: {
           headerShown: false,
-          presentation: 'formSheet',
-          sheetAllowedDetents: [0.5, 1],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: Radius.xl,
-          contentStyle: {
-            height: '100%',
-            backgroundColor: sheetBackgroundColor,
-          },
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
         },
       },
     },

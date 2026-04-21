@@ -6,9 +6,11 @@ import { QUERY_KEYS } from '@/core/common/constants/query-keys';
 import { AppError } from '@/core/common/error';
 import { createPoolSchema, CreatePoolSchemaType } from '../pools.dto';
 import { PoolsService } from '../pools.service';
+import { useNavigation } from '@react-navigation/native';
 
 const useCreatePool = (groupId: string) => {
   const queryClient = useQueryClient();
+  const navigation = useNavigation();
 
   const form = useForm<CreatePoolSchemaType>({
     resolver: zodResolver(createPoolSchema),
@@ -22,8 +24,9 @@ const useCreatePool = (groupId: string) => {
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, groupId]);
-        Toast.success('Pool created successfully');
         form.reset();
+        navigation.goBack();
+        Toast.success('Pool created successfully');
       },
       onError: (error: AppError) => {
         Toast.error(error.message ?? 'An error occurred');

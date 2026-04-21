@@ -97,12 +97,12 @@ export default function NewPoolForm({ formController, onCreatePool }: NewPoolFor
             );
           })}
         </View>
-        {formController.formState.errors.memberIds ? (
+        {!memberIdsError ? (
           <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
             Inherits from the group. Uncheck to exclude.
           </Text>
         ) : (
-          <Text style={{ color: colors.error, ...TextStyles.caption }}>
+          <Text style={{ color: colors.error, ...TextStyles.label }}>
             {memberIdsError?.message as string}
           </Text>
         )}
