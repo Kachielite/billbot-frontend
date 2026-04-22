@@ -80,7 +80,12 @@ export default function GroupMembers({ members }: { members: GroupMember[] }) {
           </TouchableOpacity>
         ) : null}
       </View>
-      <View style={[Card as ViewStyle, { backgroundColor: colors.surface }]}>
+      <View
+        style={[
+          Card as ViewStyle,
+          { backgroundColor: colors.surface, borderColor: colors.border.default },
+        ]}
+      >
         {(seeAll ? members : members.slice(0, 4)).map((member, index) => (
           <MemberCard key={member.userId} member={member} index={index} />
         ))}

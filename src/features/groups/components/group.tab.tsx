@@ -137,8 +137,6 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
     }
   }, [pools, page]);
 
-  console.log(pools);
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -148,7 +146,12 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
         ) : null}
       </View>
 
-      <View style={[styles.tabContainer, { backgroundColor: colors.surface, width: '100%' }]}>
+      <View
+        style={[
+          styles.tabContainer,
+          { backgroundColor: colors.surface, borderColor: colors.border.default },
+        ]}
+      >
         {isLoading ? (
           // show a few skeletons while loading first page
           <View>
@@ -165,7 +168,7 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
               <TabCard pool={item} key={item.id} isLast={index === data.length - 1} />
             )}
             keyExtractor={(item) => item.id}
-            scrollEnabled={false}
+            scrollEnabled
             onEndReachedThreshold={0.6}
             onEndReached={loadMore}
             ListFooterComponent={() =>
@@ -207,9 +210,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    gap: Spacing.md,
-    width: '100%',
-    ...Shadow.sm,
-    borderRadius: Radius.lg,
+    borderRadius: Radius.xl,
+    overflow: 'hidden',
+    borderWidth: 1,
   },
 });

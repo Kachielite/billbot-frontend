@@ -25,8 +25,8 @@ const useCreatePool = (groupId: string) => {
       onSuccess: async () => {
         await queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, groupId]);
         form.reset();
-        navigation.goBack();
         Toast.success('Pool created successfully');
+        navigation.goBack();
       },
       onError: (error: AppError) => {
         Toast.error(error.message ?? 'An error occurred');
