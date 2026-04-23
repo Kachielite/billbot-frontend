@@ -137,7 +137,12 @@ export default function PoolBalances({
         >
           <View
             style={[
-              { width: `${percentageCollected}%`, backgroundColor: colors.onPrimaryContainer },
+              {
+                width: `${percentageCollected}%`,
+                height: '100%',
+                borderRadius: Radius.full,
+                backgroundColor: colors.primaryContainer,
+              },
             ]}
           />
         </View>

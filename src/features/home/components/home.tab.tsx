@@ -38,9 +38,7 @@ export default function HomeTab({ onCancel }: { onCancel: () => void }) {
         <View style={styles.backBtnContainer}>
           <TouchableOpacity
             style={[styles.backBtn, { backgroundColor: colors.surface }]}
-            onPress={() => {
-              if (navigation.canGoBack()) navigation.goBack();
-            }}
+            onPress={onCancel}
           >
             <Ionicons name="close" size={24} color={colors.text.primary} />
           </TouchableOpacity>

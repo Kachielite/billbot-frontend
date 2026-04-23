@@ -37,6 +37,9 @@ export default function MemberAvatar({ name, avatarSize = 45, avatarUrl }: Avata
             {
               backgroundColor: swatch.fill,
               borderColor: colors.surface,
+              width: avatarSize,
+              height: avatarSize,
+              borderRadius: avatarSize / 2,
             },
           ]}
         >

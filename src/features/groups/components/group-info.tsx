@@ -207,7 +207,7 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
               <View
                 style={[
                   styles.statBox,
-                  { backgroundColor: colors.primaryContainer, width: statBoxWidth },
+                  { backgroundColor: colors.primaryContainer, minWidth: statBoxWidth },
                 ]}
               >
                 <Text
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sideStats: {
-    width: 160,
+    minWidth: 160,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',
