@@ -10,7 +10,7 @@ import Popover, { PopoverPlacement } from 'react-native-popover-view';
 
 const MENU_ITEMS = [
   { label: 'Add Expense', icon: 'add-sharp' as const, destructive: false },
-  { label: 'Edit Pool', icon: 'pencil-outline' as const, destructive: false },
+  { label: 'Edit Pool', icon: 'create-outline' as const, destructive: false },
   { label: 'Delete Pool', icon: 'trash-outline' as const, destructive: true },
 ];
 
@@ -31,6 +31,13 @@ export default function PoolHeader({
   const colors = useThemeColors();
   const [popoverOpen, setPopoverOpen] = React.useState(false);
   const [pendingDelete, setPendingDelete] = React.useState(false);
+  const visibleMenuItems = MENU_ITEMS.filter((item) => {
+    if (poolName === 'General') {
+      return item.label === 'Add Expense';
+    }
+
+    return true;
+  });
 
   return (
     <View style={styles.container}>
@@ -81,12 +88,12 @@ export default function PoolHeader({
           backgroundStyle={{ backgroundColor: 'rgba(0,0,0,0.15)' }}
         >
           <View>
-            {MENU_ITEMS.map((item, index) => (
+            {visibleMenuItems.map((item, index) => (
               <TouchableOpacity
                 key={item.label}
                 style={[
                   styles.menuItem,
-                  index < MENU_ITEMS.length - 1 && {
+                  index < visibleMenuItems.length - 1 && {
                     borderBottomWidth: Border.thin,
                     borderBottomColor: colors.border.subtle,
                   },
