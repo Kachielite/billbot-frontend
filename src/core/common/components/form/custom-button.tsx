@@ -10,10 +10,12 @@ type CustomButtonProps = {
   onPress?: () => void;
   loading?: boolean;
   icon?: ReactElement;
+  disabled?: boolean;
 };
 
-const CustomButton = ({ label, onPress, loading, icon }: CustomButtonProps) => {
+const CustomButton = ({ label, onPress, loading, icon, disabled }: CustomButtonProps) => {
   const colors = useThemeColors();
+  const isDisabled = Boolean(disabled || loading);
 
   if (loading) {
     return <ActivityIndicator size="small" color={colors.text.primary} />;
@@ -21,13 +23,25 @@ const CustomButton = ({ label, onPress, loading, icon }: CustomButtonProps) => {
 
   return (
     <GlassView
-      tintColor={colors.primary}
-      isInteractive
-      style={[styles.btn, { backgroundColor: colors.primary }]}
+      tintColor={isDisabled ? colors.primaryContainer : colors.primary}
+      isInteractive={!isDisabled}
+      style={[
+        styles.btn,
+        {
+          backgroundColor: isDisabled ? colors.primaryContainer : colors.primary,
+        },
+      ]}
     >
-      <TouchableOpacity onPress={onPress} disabled={loading}>
+      <TouchableOpacity onPress={onPress} disabled={isDisabled} style={styles.touchable}>
         {icon}
-        <Text style={[styles.buttonLabel, { color: colors.onPrimary }]}>{label}</Text>
+        <Text
+          style={[
+            styles.buttonLabel,
+            { color: isDisabled ? colors.onPrimaryContainer : colors.onPrimary },
+          ]}
+        >
+          {label}
+        </Text>
       </TouchableOpacity>
     </GlassView>
   );
@@ -45,6 +59,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
+  },
+  touchable: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
 });
 

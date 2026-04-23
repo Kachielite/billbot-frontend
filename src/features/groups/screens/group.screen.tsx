@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import React from 'react';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -10,22 +10,44 @@ import GroupInfo from '@/features/groups/components/group-info';
 import GroupMembers from '@/features/groups/components/group-members';
 import GroupTabs from '@/features/groups/components/group.tab';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
+import useThemeColors from '@/core/common/hooks/use-theme-colors';
 
-type Props = StaticScreenProps<{ groupId: string }>;
+type Props = StaticScreenProps<{ groupId: string; fromQuickActions?: boolean }>;
 
 export default function GroupScreen({ route }: Props) {
   const { groupId } = route.params;
-  const navigation = useNavigation() as any;
-  const { group } = useGroupDetail(groupId);
+  const fromQuickActions = Boolean(route.params.fromQuickActions);
+  const navigation = useNavigation();
+  const { canGoBack, goBack, navigate } = navigation;
+  const colors = useThemeColors();
+  const { group, isLoading } = useGroupDetail(groupId);
   const { deleteGroup, isDeleting } = useDeleteGroup();
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const hasHandledQuickAction = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!fromQuickActions || isLoading || !group || hasHandledQuickAction.current) return;
+
+    hasHandledQuickAction.current = true;
+    navigate('NewPool', { groupId });
+  }, [fromQuickActions, group, isLoading, navigate, groupId]);
 
   const handleConfirmDelete = async () => {
     await deleteGroup(groupId);
     setShowDeleteModal(false);
-    if (navigation.canGoBack()) navigation.goBack();
+    if (canGoBack()) goBack();
   };
+
+  if (isLoading) {
+    return (
+      <ScreenContainer>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="small" color={colors.text.primary} />
+        </View>
+      </ScreenContainer>
+    );
+  }
 
   if (!group) {
     return (

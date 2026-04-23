@@ -6,10 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import BottomModal from '@/core/common/components/layout/bottom-modal';
+import HomeTab from '@/features/home/components/home.tab';
 
 export default function HomeQuickActions() {
   const navigation = useNavigation();
   const colors = useThemeColors();
+  const [showNewTabModal, setShowNewTabModal] = React.useState(false);
+
   const QUICK_ACTIONS = [
     {
       name: 'Add expense',
@@ -32,10 +36,11 @@ export default function HomeQuickActions() {
     {
       name: 'New tab',
       icon: <MaterialCommunityIcons name="folder-table" size={24} color={colors.primary} />,
-      action: () => console.log('New tab action'),
+      action: () => setShowNewTabModal(true),
       backgroundColor: colors.primaryContainer,
     },
   ];
+
   return (
     <View style={[styles.container, { backgroundColor: colors.surface }]}>
       {QUICK_ACTIONS.map((action, index) => (
@@ -53,6 +58,9 @@ export default function HomeQuickActions() {
           </Text>
         </View>
       ))}
+      <BottomModal visible={showNewTabModal} onCancel={() => setShowNewTabModal(false)}>
+        <HomeTab onCancel={() => setShowNewTabModal(false)} />
+      </BottomModal>
     </View>
   );
 }

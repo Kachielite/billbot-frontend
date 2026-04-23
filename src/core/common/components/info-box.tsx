@@ -1,11 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { Radius, Spacing } from '@/core/common/constants/theme';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Ionicons } from '@expo/vector-icons';
 import { TextStyles } from '@/core/common/constants/fonts';
+import { Radius, Spacing } from '@/core/common/constants/theme';
 
-export default function PoolInfo() {
+type InfoBoxProps = {
+  title: string;
+  description: string;
+};
+
+export default function InfoBox({ title, description }: InfoBoxProps) {
   const colors = useThemeColors();
   return (
     <View
@@ -19,16 +24,16 @@ export default function PoolInfo() {
       </View>
       <View style={styles.infoTextContainer}>
         <Text style={[TextStyles.label, styles.wrapText, { color: colors.text.primary }]}>
-          A tab collects related expenses.
+          {title}
         </Text>
         <Text style={[TextStyles.caption, styles.wrapText, { color: colors.text.primary }]}>
-          Think monthly bills, a trip, or an event, so you settle them together instead of one by
-          one.
+          {description}
         </Text>
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
