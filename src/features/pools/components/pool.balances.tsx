@@ -60,7 +60,9 @@ export default function PoolBalances({
       style={[styles.container, { backgroundColor: colors.primary }]}
     >
       <View style={styles.totalBalance}>
-        <Text style={[TextStyles.label, { color: colors.primaryCard.labelText }]}>TAB TOTAL</Text>
+        <Text style={[TextStyles.captionBold, { color: colors.primaryCard.labelText }]}>
+          TAB TOTAL
+        </Text>
         <Text style={[TextStyles.displayLarge, { color: colors.text.onPrimary }]}>
           {currency}{' '}
           {totalAmount.toLocaleString(undefined, {
@@ -92,7 +94,9 @@ export default function PoolBalances({
       </View>
       <View style={styles.balanceBar}>
         <View style={styles.balanceBarLabel}>
-          <Text style={[TextStyles.label, { color: colors.primaryCard.labelText }]}>COLLECTED</Text>
+          <Text style={[TextStyles.captionBold, { color: colors.primaryCard.labelText }]}>
+            COLLECTED
+          </Text>
           <View style={styles.balanceBarLabel}>
             <Text style={[TextStyles.captionBold, { color: colors.text.onPrimary }]}>
               {currency}{' '}
