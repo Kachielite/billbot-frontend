@@ -69,4 +69,12 @@ export const PoolsService = {
       throw mapAxiosErrorToAppError(error);
     }
   },
+
+  deletePool: async (poolId: string): Promise<void> => {
+    try {
+      await customAxios.delete(API_ENDPOINTS.POOL_DETAIL(poolId));
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
 };

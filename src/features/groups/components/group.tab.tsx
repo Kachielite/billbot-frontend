@@ -7,8 +7,10 @@ import { Card, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import getInitials from '@/core/common/utils/get-initials';
 import useGroupPools from '@/features/pools/hooks/use-group-pools';
 import SkeletonBox from '@/core/common/components/skeleton-box';
+import { useNavigation } from '@react-navigation/native';
 
 export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean }) => {
+  const navigation = useNavigation();
   const colors = useThemeColors();
   const amountColor =
     pool.balance?.netBalance && pool.balance.netBalance < 0 ? colors.error : colors.primary;
@@ -37,6 +39,9 @@ export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean
           borderBottomWidth: isLast ? 0 : 1,
         },
       ]}
+      onPress={() => {
+        navigation.navigate('Pool', { poolId: pool.id });
+      }}
     >
       <View style={[poolCardStyles.emojiContainer, { backgroundColor: colors.primaryContainer }]}>
         <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>

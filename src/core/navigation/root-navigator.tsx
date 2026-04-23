@@ -21,6 +21,7 @@ import { BrandColors, DarkColors, LightColors, Radius } from '@/core/common/cons
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 import GroupScreen from '@/features/groups/screens/group.screen';
 import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
+import PoolScreen from '@/features/pools/screens/pool.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -130,6 +131,12 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           presentation: 'transparentModal',
           animation: 'slide_from_bottom',
           animationDuration: 50,
+        },
+      },
+      Pool: {
+        screen: PoolScreen,
+        options: {
+          headerShown: false,
         },
       },
     },
