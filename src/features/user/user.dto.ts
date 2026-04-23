@@ -19,6 +19,7 @@ export const updateProfileSchema = z.object({
     .nullable()
     .optional(),
   avatar_url: z.string().url().nullable().optional(),
+  currency: z.string().optional(),
 });
 export type UpdateProfileSchemaType = z.infer<typeof updateProfileSchema>;
 
@@ -29,6 +30,7 @@ export interface UserProfileDto {
   phone: string | null;
   email: string | null;
   avatar_url: string | null;
+  currency: string;
   created_at: string;
 }
 

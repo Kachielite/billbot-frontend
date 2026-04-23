@@ -17,6 +17,7 @@ export const mapUserProfileFromDto = (dto: UserProfileDto): UserProfile => ({
   phone: dto.phone,
   email: dto.email,
   avatarUrl: dto.avatar_url,
+  currency: dto.currency,
   createdAt: new Date(dto.created_at),
 });
 

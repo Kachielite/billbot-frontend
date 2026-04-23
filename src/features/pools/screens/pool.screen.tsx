@@ -1,10 +1,9 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text } from 'react-native';
 import React from 'react';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
-import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import usePoolDetail from '@/features/pools/hooks/use-pool-detail';
 import useDeletePool from '@/features/pools/hooks/use-delete-pool';
 import useGroupDetail from '@/features/groups/hooks/use-group-detail';
@@ -12,19 +11,27 @@ import useProfile from '@/features/user/hooks/use-profile';
 import PoolHeader from '@/features/pools/components/pool.header';
 import usePoolBalances from '@/features/balances/hooks/use-pool-balances';
 import ScreenLoader from '@/core/common/components/screen.loader';
+import PoolBalances from '@/features/pools/components/pool.balances';
+import usePoolExpenses from '@/features/expenses/hooks/use-pool-expenses';
 
 type Props = StaticScreenProps<{ poolId: string }>;
 
 export default function PoolScreen({ route }: Props) {
   const { poolId } = route.params;
   const { canGoBack, goBack } = useNavigation();
-  const colors = useThemeColors();
 
   const { pool, isLoading } = usePoolDetail(poolId);
-  const { isLoading: isLoadingBalance, balances, memberSummary } = usePoolBalances(poolId);
+  const {
+    isLoading: isLoadingBalance,
+    balances,
+    memberSummary,
+    totalAmount,
+    amountCollected,
+  } = usePoolBalances(poolId);
   const { group } = useGroupDetail(pool?.groupId ?? '');
   const { profile } = useProfile();
   const { deletePool, isDeleting } = useDeletePool(poolId, pool?.groupId ?? '');
+  const { isLoading: isLoadingExpenses, pagination } = usePoolExpenses(poolId);
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
@@ -59,7 +66,15 @@ export default function PoolScreen({ route }: Props) {
         poolName={pool.name}
         groupName={group?.name as string}
       />
-
+      <PoolBalances
+        poolBalances={balances}
+        memberSummary={memberSummary}
+        totalAmount={totalAmount}
+        splitType={pool.splitType}
+        totalExpenses={pagination?.total_items ?? 0}
+        amountCollected={amountCollected}
+        isLoading={isLoadingBalance || isLoadingExpenses}
+      />
       <ConfirmDeleteModal
         visible={showDeleteModal}
         icon="trash-outline"

@@ -12,6 +12,7 @@ export interface UserProfile {
   phone: string | null;
   email: string | null;
   avatarUrl: string | null;
+  currency: string;
   createdAt: Date;
 }
 

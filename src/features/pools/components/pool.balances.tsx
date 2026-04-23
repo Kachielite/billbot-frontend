@@ -1,0 +1,187 @@
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { GlassView } from 'expo-glass-effect';
+import useThemeColors from '@/core/common/hooks/use-theme-colors';
+import { Radius, Spacing } from '@/core/common/constants/theme';
+import { TextStyles } from '@/core/common/constants/fonts';
+import SkeletonCard from '@/core/common/components/skeleton-card';
+import { BalanceEntry, MemberSummary } from '@/features/balances/balances.interface';
+import useProfile from '@/features/user/hooks/use-profile';
+
+type PoolBalancesProps = {
+  isLoading: boolean;
+  poolBalances: BalanceEntry[];
+  memberSummary: MemberSummary[];
+  totalAmount: number;
+  amountCollected: number;
+  totalExpenses: number;
+  splitType: string;
+};
+
+export default function PoolBalances({
+  isLoading,
+  poolBalances,
+  memberSummary,
+  totalAmount,
+  amountCollected,
+  totalExpenses,
+  splitType,
+}: PoolBalancesProps) {
+  const colors = useThemeColors();
+  const { profile, isLoading: isLoadingUserProfile } = useProfile();
+  if (isLoading || isLoadingUserProfile) {
+    return (
+      <SkeletonCard
+        tintColor={colors.primary}
+        containerStyle={[styles.container, { backgroundColor: colors.primary }]}
+        cardBg={colors.primaryCard?.pillBg}
+      />
+    );
+  }
+
+  const userBalances = memberSummary.find((m) => m.user.id === profile?.id);
+  const balances = [
+    {
+      label: 'YOUR SHARE',
+      amount: userBalances?.totalPaid ?? 0,
+    },
+    {
+      label: 'YOU OWE',
+      amount: userBalances?.totalOwed ?? 0,
+    },
+  ];
+
+  const currency = profile?.currency || '$';
+  const percentageCollected = totalAmount > 0 ? (amountCollected / totalAmount) * 100 : 0;
+
+  return (
+    <GlassView
+      tintColor={colors.primary}
+      style={[styles.container, { backgroundColor: colors.primary }]}
+    >
+      <View style={styles.totalBalance}>
+        <Text style={[TextStyles.label, { color: colors.primaryCard.labelText }]}>TAB TOTAL</Text>
+        <Text style={[TextStyles.displayLarge, { color: colors.text.onPrimary }]}>
+          {currency}{' '}
+          {totalAmount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+        <Text style={[TextStyles.caption, { color: colors.primaryCard.labelText }]}>
+          {totalExpenses} expenses · {splitType === 'equal' ? 'Equal' : 'Unequal'} split
+        </Text>
+        <View style={[styles.divider, { backgroundColor: colors.text.inverse }]} />
+      </View>
+      <View style={styles.balanceCardContainer}>
+        {balances.map((balance, index) => (
+          <View
+            key={index}
+            style={[styles.balanceCard, { backgroundColor: colors.primaryCard.pillBg }]}
+          >
+            <Text style={[TextStyles.label, { color: colors.text.inverse }]}>{balance.label}</Text>
+            <Text style={[TextStyles.headingSmall, { color: colors.text.onPrimary }]}>
+              {currency}{' '}
+              {balance.amount.toLocaleString('US-EN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Text>
+          </View>
+        ))}
+      </View>
+      <View style={styles.balanceBar}>
+        <View style={styles.balanceBarLabel}>
+          <Text style={[TextStyles.label, { color: colors.primaryCard.labelText }]}>COLLECTED</Text>
+          <View style={styles.balanceBarLabel}>
+            <Text style={[TextStyles.captionBold, { color: colors.text.onPrimary }]}>
+              {currency}{' '}
+              {amountCollected.toLocaleString('US-EN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Text>
+            <Text
+              style={[
+                [
+                  TextStyles.captionBold,
+                  { color: colors.text.onPrimary, marginHorizontal: Spacing.xs },
+                ],
+              ]}
+            >
+              /
+            </Text>
+            <Text style={[TextStyles.captionBold, { color: colors.text.onPrimary }]}>
+              {currency}{' '}
+              {totalAmount.toLocaleString('US-EN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={[
+            styles.balanceBar,
+            {
+              backgroundColor: colors.primaryCard.pillBg,
+              height: 10,
+              borderRadius: Radius.sm,
+              overflow: 'hidden',
+            },
+          ]}
+        >
+          <View
+            style={[
+              { width: `${percentageCollected}%`, backgroundColor: colors.onPrimaryContainer },
+            ]}
+          />
+        </View>
+      </View>
+    </GlassView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+  },
+  totalBalance: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    gap: Spacing.xs,
+  },
+  balanceCardContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: Spacing.md,
+    alignItems: 'center',
+    marginTop: Spacing.xs,
+  },
+  balanceCard: {
+    flex: 1,
+    padding: Spacing.md,
+    borderRadius: Radius.lg,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: Spacing.sm,
+  },
+  divider: {
+    width: '100%',
+    height: 0.2,
+    marginVertical: Spacing.md,
+  },
+  balanceBar: {
+    marginTop: Spacing.md,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  balanceBarLabel: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+});
