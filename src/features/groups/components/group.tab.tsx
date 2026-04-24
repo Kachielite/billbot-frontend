@@ -1,126 +1,15 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Pool } from '@/features/pools/pools.interface';
-import { Card, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
-import getInitials from '@/core/common/utils/get-initials';
+import { Spacing } from '@/core/common/constants/theme';
 import useGroupPools from '@/features/pools/hooks/use-group-pools';
 import SkeletonBox from '@/core/common/components/skeleton-box';
+import { TabCard } from '@/features/pools/components/pool.card';
 import { useNavigation } from '@react-navigation/native';
 
-export const TabCard = ({ pool }: { pool: Pool }) => {
-  const navigation = useNavigation();
-  const colors = useThemeColors();
-  const amountColor =
-    pool.balance?.netBalance && pool.balance.netBalance < 0 ? colors.error : colors.primary;
-  let activityStatus = '';
-  switch (pool.activityStatus) {
-    case 'empty':
-      activityStatus = 'No activity';
-      break;
-    case 'ongoing':
-      activityStatus = 'Ongoing';
-      break;
-    case 'settled':
-      activityStatus = 'Settled';
-      break;
-    default:
-      activityStatus = '';
-  }
-
-  return (
-    <TouchableOpacity
-      style={[
-        poolCardStyles.poolCard,
-        {
-          padding: Spacing.md,
-          borderColor: colors.border.default,
-          borderWidth: 1,
-          backgroundColor: colors.surface,
-        },
-      ]}
-      onPress={() => {
-        navigation.navigate('Pool', { poolId: pool.id });
-      }}
-    >
-      <View style={[poolCardStyles.emojiContainer, { backgroundColor: colors.primaryContainer }]}>
-        <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
-          {getInitials(pool.name)}
-        </Text>
-      </View>
-      <View style={poolCardStyles.contentRow}>
-        <View style={poolCardStyles.leftColumn}>
-          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>{pool.name}</Text>
-          <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
-            {pool.expenseCount} expenses
-          </Text>
-        </View>
-        <View style={poolCardStyles.rightColumn}>
-          <View style={poolCardStyles.rightTopRow}>
-            <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
-              {pool.balance?.currency}
-            </Text>
-            <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
-              {pool.balance?.netBalance}
-            </Text>
-          </View>
-          <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
-            {activityStatus}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const poolCardStyles = StyleSheet.create({
-  poolCard: {
-    borderRadius: Radius.lg,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-    width: '100%',
-  },
-  emojiContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: Radius.md,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  contentRow: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: Spacing.xs,
-  },
-  leftColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  rightColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  rightTopRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: Spacing.xs,
-  },
-});
-
 export default function GroupTabs({ groupId }: { groupId: string }) {
+  const navigation = useNavigation();
   const colors = useThemeColors();
   const { isLoading, pagination, pools } = useGroupPools(groupId);
 
@@ -129,7 +18,9 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Tabs</Text>
         {pagination && pagination?.totalItems > 6 ? (
-          <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Pools', { groupId })}>
+            <Text style={[TextStyles.label, { color: colors.onPrimaryContainer }]}>See All</Text>
+          </TouchableOpacity>
         ) : null}
       </View>
 
@@ -179,25 +70,3 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
 });
-
-// <FlatList
-//   data={data}
-//   renderItem={({ item, index }) => (
-//     <TabCard pool={item} key={item.id} isLast={index === data.length - 1} />
-//   )}
-//   keyExtractor={(item) => item.id}
-//   scrollEnabled
-//   onEndReachedThreshold={0.6}
-//   onEndReached={loadMore}
-//   ListFooterComponent={() =>
-//     isFetching && page > 1 ? (
-//       <View style={{ paddingVertical: Spacing.sm }}>
-//         <SkeletonBox width={'100%'} height={64} bg={colors.surface} />
-//       </View>
-//     ) : null
-//   }
-//   refreshing={isLoading}
-//   onRefresh={() => {
-//     setPage(1);
-//   }}
-// />
