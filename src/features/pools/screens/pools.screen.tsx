@@ -43,7 +43,7 @@ export default function PoolsScreen({ route }: Props) {
       <PoolsHeader
         totalPools={pagination?.totalItems || 0}
         groupName={group?.name as string}
-        refetch={refetch}
+        groupId={groupId}
       />
       <FlatList
         data={data}

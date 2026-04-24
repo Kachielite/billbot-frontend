@@ -10,10 +10,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 interface PoolsHeaderProps {
   totalPools: number;
   groupName: string;
-  refetch: () => void;
+  groupId: string;
 }
 
-export default function PoolsHeader({ totalPools, groupName, refetch }: PoolsHeaderProps) {
+export default function PoolsHeader({ totalPools, groupName, groupId }: PoolsHeaderProps) {
   const navigation = useNavigation();
   const colors = useThemeColors();
 
@@ -43,10 +43,12 @@ export default function PoolsHeader({ totalPools, groupName, refetch }: PoolsHea
         </View>
       </View>
       <TouchableOpacity
-        style={[styles.backBtn, { backgroundColor: colors.surface }]}
-        onPress={refetch}
+        onPress={() => navigation.navigate('NewPool', { groupId: groupId })}
+        style={[styles.newBtn, { backgroundColor: colors.primary }]}
+        accessibilityLabel="Create new group"
       >
-        <Ionicons name="reload-outline" size={24} color={colors.text.primary} />
+        <Ionicons name="add" size={20} color={colors.onPrimary} />
+        <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
       </TouchableOpacity>
     </View>
   );
@@ -96,5 +98,14 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
+  },
+  newBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.full,
+    ...Shadow.sm,
   },
 });
