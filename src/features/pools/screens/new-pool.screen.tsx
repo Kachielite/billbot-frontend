@@ -6,11 +6,11 @@ import type { StaticScreenProps } from '@react-navigation/native';
 import CustomFormSheet from '@/core/common/components/layout/custom-formsheet';
 import InfoBox from '@/core/common/components/info-box';
 
-type Props = StaticScreenProps<{ poolId: string }>;
+type Props = StaticScreenProps<{ groupId: string }>;
 
 export default function NewPoolScreen({ route }: Props) {
-  const { poolId } = route.params;
-  const { form, createPoolHandler, isCreating } = useCreatePool(poolId);
+  const { groupId } = route.params;
+  const { form, createPoolHandler, isCreating } = useCreatePool(groupId);
 
   return (
     <CustomFormSheet>
