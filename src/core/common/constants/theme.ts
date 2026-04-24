@@ -309,7 +309,7 @@ export const Card = {
   padding: Spacing.md,
   borderRadius: Radius.lg,
   width: '100%',
-  ...Shadow.sm,
+  borderWidth: 1,
 };
 
 export const Border = {

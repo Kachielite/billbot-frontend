@@ -20,10 +20,22 @@ const useGroupBalances = (groupId: string) => {
     },
   );
 
+  const totalAmount = data?.totalAmount ?? 0;
+  const amountCollected = data?.amountCollected ?? 0;
+  const outstanding = data?.outstanding ?? 0;
   const balances: BalanceEntry[] = data?.balances ?? [];
   const memberSummary: MemberSummary[] = data?.memberSummary ?? [];
 
-  return { balances, memberSummary, isLoading, error, refetch };
+  return {
+    totalAmount,
+    amountCollected,
+    outstanding,
+    balances,
+    memberSummary,
+    isLoading,
+    error,
+    refetch,
+  };
 };
 
 export default useGroupBalances;

@@ -6,9 +6,11 @@ import { QUERY_KEYS } from '@/core/common/constants/query-keys';
 import { AppError } from '@/core/common/error';
 import { createPoolSchema, CreatePoolSchemaType } from '../pools.dto';
 import { PoolsService } from '../pools.service';
+import { useNavigation } from '@react-navigation/native';
 
 const useCreatePool = (groupId: string) => {
   const queryClient = useQueryClient();
+  const navigation = useNavigation();
 
   const form = useForm<CreatePoolSchemaType>({
     resolver: zodResolver(createPoolSchema),
@@ -20,10 +22,11 @@ const useCreatePool = (groupId: string) => {
     'create-pool',
     async (data: CreatePoolSchemaType) => PoolsService.createPool(groupId, data),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, groupId]);
-        Toast.success('Pool created successfully');
+      onSuccess: async () => {
+        await queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, groupId]);
         form.reset();
+        Toast.success('Pool created successfully');
+        navigation.goBack();
       },
       onError: (error: AppError) => {
         Toast.error(error.message ?? 'An error occurred');
@@ -31,7 +34,14 @@ const useCreatePool = (groupId: string) => {
     },
   );
 
-  return { form, isCreating, createPool };
+  const createPoolHandler = async () => {
+    await form.handleSubmit((data) => createPool(data))();
+  };
+
+  console.log('Form errors:', form.formState.errors);
+  console.log('Form values:', form.getValues());
+
+  return { form, isCreating, createPoolHandler };
 };
 
 export default useCreatePool;

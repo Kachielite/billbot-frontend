@@ -38,9 +38,11 @@ export default function ConfirmDeleteModal({
   const colors = useThemeColors();
 
   return (
-    <Modal transparent animationType="fade" visible={visible} onRequestClose={onCancel}>
+    <Modal transparent animationType="slide" visible={visible} onRequestClose={onCancel}>
       <View style={styles.backdrop}>
         <View style={[styles.sheet, { backgroundColor: colors.background }]}>
+          <View style={[styles.grabber, { backgroundColor: colors.border.default }]} />
+
           {/* icon circle */}
           <View style={[styles.iconWrap, { backgroundColor: colors.errorContainer ?? '#fde8e8' }]}>
             <Ionicons name={icon} size={28} color={colors.error} />
@@ -84,17 +86,24 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.45)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: Spacing.xl,
+    justifyContent: 'flex-end',
   },
   sheet: {
     width: '100%',
-    borderRadius: Radius.xl,
+    borderTopLeftRadius: Radius.xl,
+    borderTopRightRadius: Radius.xl,
+    borderBottomLeftRadius: Radius.lg,
+    borderBottomRightRadius: Radius.lg,
     padding: Spacing.xl,
     alignItems: 'center',
     gap: Spacing.md,
     ...Shadow.md,
+  },
+  grabber: {
+    width: 44,
+    height: 4,
+    borderRadius: Radius.full,
+    marginBottom: Spacing.sm,
   },
   iconWrap: {
     width: 60,
@@ -113,7 +122,7 @@ const styles = StyleSheet.create({
   btn: {
     flex: 1,
     height: 48,
-    borderRadius: Radius.full,
+    borderRadius: Radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
     ...Shadow.sm,

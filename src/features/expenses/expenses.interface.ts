@@ -15,6 +15,7 @@ export interface Expense {
   currency: string;
   description: string | null;
   categoryId: string | null;
+  categoryEmoji: string | null;
   receiptUrl: string | null;
   createdAt: Date;
   isRecurring: boolean;
@@ -33,6 +34,7 @@ export interface UpcomingExpense {
   currency: string;
   description: string | null;
   categoryId: string | null;
+  categoryEmoji: string | null;
   receiptUrl: string | null;
   isRecurring: true;
   recurrenceFrequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';

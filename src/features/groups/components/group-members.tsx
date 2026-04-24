@@ -6,6 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Card, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import getInitials from '@/core/common/utils/get-initials';
+import useProfile from '@/features/user/hooks/use-profile';
 
 const AVATAR_SIZE = 45;
 
@@ -17,6 +18,7 @@ function formatJoinedDate(dateInput: string | Date): string {
 const MemberCard = ({ member, index }: { member: GroupMember; index: number }) => {
   const colors = useThemeColors();
   const swatch = colors.groupColors[index % colors.groupColors.length];
+  const { profile } = useProfile();
   return (
     <View style={[styles.memberContainer, { backgroundColor: colors.surface }]}>
       <View style={styles.memberInfo}>
@@ -40,7 +42,9 @@ const MemberCard = ({ member, index }: { member: GroupMember; index: number }) =
           </View>
         )}
         <View>
-          <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>{member.name}</Text>
+          <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
+            {member.name.split(' ')[0]} {profile?.id === member.userId && '(You)'}
+          </Text>
           <Text
             style={[
               TextStyles.caption,
@@ -80,7 +84,12 @@ export default function GroupMembers({ members }: { members: GroupMember[] }) {
           </TouchableOpacity>
         ) : null}
       </View>
-      <View style={[Card as ViewStyle, { backgroundColor: colors.surface }]}>
+      <View
+        style={[
+          Card as ViewStyle,
+          { backgroundColor: colors.surface, borderColor: colors.border.default },
+        ]}
+      >
         {(seeAll ? members : members.slice(0, 4)).map((member, index) => (
           <MemberCard key={member.userId} member={member} index={index} />
         ))}

@@ -43,6 +43,7 @@ export interface ExpenseDto {
   currency: string;
   description: string | null;
   category_id: string | null;
+  category_emoji: string | null;
   receipt_url: string | null;
   created_at: string;
   is_recurring: boolean;
@@ -61,6 +62,7 @@ export interface UpcomingExpenseDto {
   currency: string;
   description: string | null;
   category_id: string | null;
+  category_emoji: string | null;
   receipt_url: string | null;
   is_recurring: true;
   recurrence_frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';

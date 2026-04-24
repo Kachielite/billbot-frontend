@@ -11,16 +11,19 @@ import { Platform } from 'react-native';
 import ActivitiesScreen from '@/features/activities/activities.screen';
 import GroupsScreen from '@/features/groups/screens/groups.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
-import { isLiquidGlassSupported } from '@callstack/liquid-glass';
 import useAuthStore from '@/features/auth/auth.state';
 import type { Theme } from '@react-navigation/native';
 import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import EditGroupScreen from '@/features/groups/screens/edit-group.screen';
 import ManageMembersScreen from '@/features/groups/screens/manage-members.screen';
 import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
-import { BrandColors } from '@/core/common/constants/theme';
+import { BrandColors, DarkColors, LightColors, Radius } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 import GroupScreen from '@/features/groups/screens/group.screen';
+import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
+import PoolScreen from '@/features/pools/screens/pool.screen';
+import PoolsScreen from '@/features/pools/screens/pools.screen';
+import EditPoolScreen from '@/features/pools/screens/edit-pool.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -81,49 +84,80 @@ const Tabs = createBottomTabNavigator({
   },
 });
 
-const AuthenticatedStack = createNativeStackNavigator({
-  screens: {
-    Tabs: {
-      screen: Tabs,
-      options: {
-        title: 'Tabs',
-        headerShown: false,
+const createAuthenticatedStack = (sheetBackgroundColor: string) =>
+  createNativeStackNavigator({
+    screens: {
+      Tabs: {
+        screen: Tabs,
+        options: {
+          title: 'Tabs',
+          headerShown: false,
+        },
+      },
+      NewGroup: {
+        screen: NewGroupScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      Group: {
+        screen: GroupScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      InviteMembers: {
+        screen: InviteMembersScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      EditGroup: {
+        screen: EditGroupScreen,
+        options: { headerShown: false },
+      },
+      ManageMembers: {
+        screen: ManageMembersScreen,
+        options: { headerShown: false },
+      },
+      NewExpense: {
+        screen: NewExpenseScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      NewPool: {
+        screen: NewPoolScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+        },
+      },
+      EditPool: {
+        screen: EditPoolScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+        },
+      },
+      Pool: {
+        screen: PoolScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      Pools: {
+        screen: PoolsScreen,
+        options: {
+          headerShown: false,
+        },
       },
     },
-    NewGroup: {
-      screen: NewGroupScreen,
-      options: {
-        headerShown: false,
-      },
-    },
-    Group: {
-      screen: GroupScreen,
-      options: {
-        headerShown: false,
-      },
-    },
-    InviteMembers: {
-      screen: InviteMembersScreen,
-      options: {
-        headerShown: false,
-      },
-    },
-    EditGroup: {
-      screen: EditGroupScreen,
-      options: { headerShown: false },
-    },
-    ManageMembers: {
-      screen: ManageMembersScreen,
-      options: { headerShown: false },
-    },
-    NewExpense: {
-      screen: NewExpenseScreen,
-      options: {
-        headerShown: false,
-      },
-    },
-  },
-});
+  });
 
 const UnauthenticatedStack = createNativeStackNavigator({
   screens: {
@@ -137,11 +171,21 @@ const UnauthenticatedStack = createNativeStackNavigator({
   },
 });
 
-const TabsNavigation = createStaticNavigation(AuthenticatedStack);
 const UnauthenticatedNavigation = createStaticNavigation(UnauthenticatedStack);
 
 export function Navigation({ theme }: NavigationProps): React.JSX.Element {
   const token = useAuthStore((state) => state.token);
+  const sheetBackgroundColor = theme?.dark ? DarkColors.background : LightColors.background;
+
+  const AuthenticatedStack = React.useMemo(
+    () => createAuthenticatedStack(sheetBackgroundColor),
+    [sheetBackgroundColor],
+  );
+
+  const TabsNavigation = React.useMemo(
+    () => createStaticNavigation(AuthenticatedStack),
+    [AuthenticatedStack],
+  );
 
   return token !== null ? (
     <TabsNavigation theme={theme} />
@@ -150,7 +194,7 @@ export function Navigation({ theme }: NavigationProps): React.JSX.Element {
   );
 }
 
-type AuthenticatedStackType = typeof AuthenticatedStack;
+type AuthenticatedStackType = ReturnType<typeof createAuthenticatedStack>;
 
 declare module '@react-navigation/core' {
   // Required module augmentation pattern for React Navigation static API root typing.

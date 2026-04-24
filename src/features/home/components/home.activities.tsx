@@ -10,48 +10,6 @@ import useActivities from '@/features/activities/hooks/use-activities';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 
-// TODO: Remove this mock data once you create the data
-const ACTIVITIES_MOCK: Activity[] = [
-  {
-    id: 'a1',
-    actor: { id: 'u1', name: 'Derrick', avatarUrl: null },
-    pool: { id: 'p1', name: 'Household' },
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-    type: 'expense.created',
-    metadata: {
-      expenseId: 'e1',
-      amount: 1250.5,
-      currency: 'NGN',
-      description: 'Groceries',
-      category: { id: 'c1', name: 'Food', emoji: '🍎' },
-    },
-  },
-  {
-    id: 'a2',
-    actor: { id: 'u2', name: 'Ada', avatarUrl: null },
-    pool: { id: 'p2', name: 'Trip' },
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    type: 'expense.deleted',
-    metadata: { expenseId: 'e2' },
-  },
-  {
-    id: 'a3',
-    actor: { id: 'u3', name: 'Tobi', avatarUrl: null },
-    pool: { id: 'p3', name: 'Office' },
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
-    type: 'settlement.confirmed',
-    metadata: { settlementId: 's2', amount: 200, currency: 'NGN', fromUserId: 'u2' },
-  },
-  {
-    id: 'a4',
-    actor: { id: 'u4', name: 'Simi', avatarUrl: null },
-    pool: { id: 'p1', name: 'Household' },
-    createdAt: new Date(Date.now() - 1000 * 60 * 10), // 10 minutes ago
-    type: 'settlement.submitted',
-    metadata: { settlementId: 's1', amount: 500, currency: 'NGN', toUserId: 'u1' },
-  },
-];
-
 const ActivityCard = ({ activity }: { activity: Activity }) => {
   const colors = useThemeColors();
 

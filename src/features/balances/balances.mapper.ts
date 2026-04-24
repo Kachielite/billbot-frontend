@@ -2,6 +2,9 @@ import { PoolBalancesDto, UserBalancesDto } from './balances.dto';
 import { PoolBalances, UserBalances } from './balances.interface';
 
 export const mapPoolBalancesFromDto = (dto: PoolBalancesDto): PoolBalances => ({
+  totalAmount: dto.total_amount,
+  amountCollected: dto.amount_collected,
+  outstanding: dto.outstanding,
   balances: dto.balances.map((b) => ({
     from: { id: b.from.id, name: b.from.name, email: null, avatarUrl: null },
     to: { id: b.to.id, name: b.to.name, email: null, avatarUrl: null },
