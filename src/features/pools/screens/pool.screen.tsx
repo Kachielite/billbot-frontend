@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { Platform, ScrollView, Text } from 'react-native';
 import React from 'react';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +14,8 @@ import ScreenLoader from '@/core/common/components/screen.loader';
 import PoolBalances from '@/features/pools/components/pool.balances';
 import usePoolExpenses from '@/features/expenses/hooks/use-pool-expenses';
 import PoolMemberSummary from '@/features/pools/components/pool.member-summary';
+import PoolSettlement from '@/features/pools/components/pool.settlement';
+import { Spacing } from '@/core/common/constants/theme';
 
 type Props = StaticScreenProps<{ poolId: string }>;
 
@@ -27,6 +29,7 @@ export default function PoolScreen({ route }: Props) {
     memberSummary,
     totalAmount,
     amountCollected,
+    balances,
   } = usePoolBalances(poolId);
   const { group } = useGroupDetail(pool?.groupId ?? '');
   const { profile } = useProfile();
@@ -74,11 +77,17 @@ export default function PoolScreen({ route }: Props) {
         amountCollected={amountCollected}
         isLoading={isLoadingBalance || isLoadingExpenses}
       />
-      <PoolMemberSummary
-        memberSummary={memberSummary}
-        totalAmount={totalAmount}
-        isLoading={isLoadingBalance}
-      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: Platform.OS === 'ios' ? Spacing.xxl : 100,
+          gap: 16,
+        }}
+      >
+        <PoolMemberSummary memberSummary={memberSummary} isLoading={isLoadingBalance} />
+        <PoolSettlement isLoading={isLoadingBalance} balances={balances} />
+      </ScrollView>
+
       <ConfirmDeleteModal
         visible={showDeleteModal}
         icon="trash-outline"

@@ -9,7 +9,6 @@ import useGetName from '@/core/common/hooks/use-get-name';
 type Props = {
   memberSummary: MemberSummary[];
   isLoading: boolean;
-  totalAmount: number;
 };
 
 const POSITIVE_BG = '#5DBF7E';
