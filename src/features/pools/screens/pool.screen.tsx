@@ -16,6 +16,7 @@ import usePoolExpenses from '@/features/expenses/hooks/use-pool-expenses';
 import PoolMemberSummary from '@/features/pools/components/pool.member-summary';
 import PoolSettlement from '@/features/pools/components/pool.settlement';
 import { Spacing } from '@/core/common/constants/theme';
+import PoolExpenses from '@/features/pools/components/pool.expenses';
 
 type Props = StaticScreenProps<{ poolId: string }>;
 
@@ -86,6 +87,10 @@ export default function PoolScreen({ route }: Props) {
         />
         <PoolMemberSummary memberSummary={memberSummary} isLoading={isLoadingBalance} />
         <PoolSettlement isLoading={isLoadingBalance} balances={balances} />
+        <PoolExpenses
+          expenses={pagination?.items.slice(0, 6) ?? []}
+          isLoading={isLoadingExpenses}
+        />
       </ScrollView>
 
       <ConfirmDeleteModal

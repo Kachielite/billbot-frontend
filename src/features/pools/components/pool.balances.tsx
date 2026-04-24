@@ -41,7 +41,7 @@ export default function PoolBalances({
   const net = userBalances?.netBalance ?? 0;
   const balances = [
     {
-      label: 'YOUR PAID',
+      label: 'YOU PAID',
       amount: userBalances?.totalPaid ?? 0,
       isOwe: false,
     },
