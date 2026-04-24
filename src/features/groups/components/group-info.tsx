@@ -16,6 +16,7 @@ import { MemberSummary } from '@/features/balances/balances.interface';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import SkeletonCard from '@/core/common/components/skeleton-card';
 import getInitials from '@/core/common/utils/get-initials';
+import Tooltip from '@/core/common/components/tooltip';
 import { GroupDetail } from '@/features/groups/groups.interface';
 import useUserStore from '@/features/user/user.state';
 
@@ -194,11 +195,10 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
         </View>
       </View>
       <View>
-        <Text
-          style={[TextStyles.subtitle, { color: colors.text.primary, marginBottom: Spacing.md }]}
-        >
-          Balances
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md }}>
+          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Balances</Text>
+          <Tooltip description="Summary of unsettled amounts across active tabs in this group." />
+        </View>
 
         <View
           style={[

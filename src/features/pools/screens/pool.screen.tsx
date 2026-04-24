@@ -69,21 +69,21 @@ export default function PoolScreen({ route }: Props) {
         poolName={pool.name}
         groupName={group?.name as string}
       />
-      <PoolBalances
-        memberSummary={memberSummary}
-        totalAmount={totalAmount}
-        splitType={pool.splitType}
-        totalExpenses={pagination?.total_items ?? 0}
-        amountCollected={amountCollected}
-        isLoading={isLoadingBalance || isLoadingExpenses}
-      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: Platform.OS === 'ios' ? Spacing.xxl : 100,
-          gap: 16,
+          gap: Spacing.xxl,
         }}
       >
+        <PoolBalances
+          memberSummary={memberSummary}
+          totalAmount={totalAmount}
+          splitType={pool.splitType}
+          totalExpenses={pagination?.total_items ?? 0}
+          amountCollected={amountCollected}
+          isLoading={isLoadingBalance || isLoadingExpenses}
+        />
         <PoolMemberSummary memberSummary={memberSummary} isLoading={isLoadingBalance} />
         <PoolSettlement isLoading={isLoadingBalance} balances={balances} />
       </ScrollView>

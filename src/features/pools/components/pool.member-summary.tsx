@@ -6,6 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useGetName from '@/core/common/hooks/use-get-name';
 import SkeletonBox from '@/core/common/components/skeleton-box';
+import Tooltip from '@/core/common/components/tooltip';
 
 type Props = {
   memberSummary: MemberSummary[];
@@ -102,7 +103,17 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Members Summary</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: Spacing.xs,
+        }}
+      >
+        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Members Summary</Text>
+        <Tooltip description="See how much each member owes or is owed in this pool, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
+      </View>
       <View
         style={[
           styles.summaryContainer,

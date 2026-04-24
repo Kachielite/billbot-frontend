@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { BalanceEntry } from '@/features/balances/balances.interface';
 import useGetName from '@/core/common/hooks/use-get-name';
+import useProfile from '@/features/user/hooks/use-profile';
 import SkeletonBox from '@/core/common/components/skeleton-box';
+import Tooltip from '@/core/common/components/tooltip';
 
 type Props = {
   balances: BalanceEntry[];
@@ -15,12 +17,23 @@ type Props = {
 export default function PoolSettlement({ balances, isLoading }: Props) {
   const colors = useThemeColors();
   const getName = useGetName();
+  const { profile } = useProfile();
 
   return (
     <View style={styles.container}>
-      <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>
-        Settlement Breakdown
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: Spacing.xs,
+        }}
+      >
+        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>
+          Settlement Breakdown
+        </Text>
+        <Tooltip description="Red indicates a member owes money; green indicates a member is owed money." />
+      </View>
       <View
         style={[
           styles.summaryContainer,
@@ -101,10 +114,24 @@ export default function PoolSettlement({ balances, isLoading }: Props) {
                       {getName({ id: toId, name: to })}
                     </Text>
                   </View>
-                  <View>
+                  <View style={{ alignItems: 'flex-end' }}>
                     <Text style={[TextStyles.amountSmall, { color: colors.error }]}>
                       {currency} {amount}
                     </Text>
+                    {/* If the current user is the debtor (from), show a dummy "Settle" button */}
+                    {profile?.id === entry.from.id && (
+                      <TouchableOpacity
+                        style={[
+                          styles.settleBtn,
+                          { backgroundColor: colors.primaryContainer, borderColor: colors.primary },
+                        ]}
+                        onPress={() => {
+                          // dummy handler for now
+                        }}
+                      >
+                        <Text style={[TextStyles.label, { color: colors.primary }]}>Settle</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               );
@@ -148,5 +175,12 @@ const styles = StyleSheet.create({
     width: 1.5,
     alignSelf: 'stretch',
     marginHorizontal: Spacing.xs,
+  },
+  settleBtn: {
+    marginTop: Spacing.md,
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
+    borderWidth: 1,
   },
 });

@@ -86,7 +86,11 @@ export default function PoolBalances({
             <Text
               style={[
                 TextStyles.headingSmall,
-                { color: (balance as any).isOwe ? colors.error : colors.text.onPrimary },
+                {
+                  color: (balance as any).isOwe
+                    ? colors.status.disputedContainer
+                    : colors.text.onPrimary,
+                },
               ]}
             >
               {currency}{' '}
