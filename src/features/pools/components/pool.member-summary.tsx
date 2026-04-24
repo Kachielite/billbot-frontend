@@ -128,12 +128,16 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
         ]}
       >
         {memberSummary.map((item) => {
-          const isPositive = item.netBalance >= 0;
-          const pillBg = isPositive ? POSITIVE_BG : NEGATIVE_BG;
-          const label = formatAmount(item.netBalance, currency);
+          const net = item.netBalance ?? 0;
+          const isZero = net === 0;
+          const isPositive = net > 0;
           const displayName = item.user.name;
 
-          // Square the corner that sits against the divider line
+          // For positive/negative we render a colored pill; for zero show a simple "✅ Settled" label
+          const label = isZero ? '✅ Settled' : formatAmount(net, currency);
+          const pillBg = isPositive ? POSITIVE_BG : NEGATIVE_BG;
+
+          // Square the corner that sits against the divider line for pills
           const pillRadius = isPositive
             ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }
             : { borderTopRightRadius: 0, borderBottomRightRadius: 0 };
@@ -142,7 +146,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
             <View key={item.user.id} style={styles.row}>
               {/* Left half */}
               <View style={styles.half}>
-                {isPositive ? (
+                {isPositive || isZero ? (
                   <Text
                     style={[styles.nameRight, { color: colors.text.primary }]}
                     numberOfLines={1}
@@ -176,6 +180,8 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
                       </Text>
                     </View>
                   </View>
+                ) : isZero ? (
+                  <Text style={[styles.settledText, { color: colors.primary }]}>{label}</Text>
                 ) : (
                   <Text
                     style={[styles.nameLeft, { color: colors.text.primary }]}
@@ -255,5 +261,9 @@ const styles = StyleSheet.create({
   pillText: {
     ...TextStyles.label,
     color: PILL_TEXT,
+  },
+  settledText: {
+    ...TextStyles.label,
+    fontWeight: '600',
   },
 });
