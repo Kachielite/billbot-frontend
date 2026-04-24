@@ -15,12 +15,18 @@ const GroupCard = ({ group }: { group: Group }) => {
   const navigation = useNavigation();
   const scheme = useColorScheme();
   const colors = useThemeColors();
-  const { totalOwed = 0, totalOwedToMe = 0, currency } = group.balance ?? {};
-  const owedToMeIsGreatest = totalOwedToMe >= totalOwed;
-  const amountLabel = owedToMeIsGreatest ? 'Owed to you' : 'You owe';
-  const amountToDisplay = owedToMeIsGreatest ? totalOwedToMe : totalOwed;
-  const prefix = owedToMeIsGreatest ? '+' : '-';
-  const amountColor = owedToMeIsGreatest ? colors.primary : colors.error;
+  const {
+    totalOwed = 0,
+    totalOwedToMe = 0,
+    netBalance: netFromServer,
+    currency,
+  } = group.balance ?? {};
+  // prefer server-provided netBalance when available, otherwise compute locally
+  const net = typeof netFromServer === 'number' ? netFromServer : totalOwedToMe - totalOwed;
+  const amountLabel = net > 0 ? 'Owed to you' : net < 0 ? 'You owe' : 'Settled';
+  const amountToDisplay = Math.abs(net);
+  const prefix = net > 0 ? '+' : net < 0 ? '-' : '';
+  const amountColor = net > 0 ? colors.primary : colors.error;
   const bgColor = group.color ?? DEFAULT_EMOJI_BG;
   const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
 
@@ -49,7 +55,7 @@ const GroupCard = ({ group }: { group: Group }) => {
           </View>
         </View>
         <View>
-          <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
+          <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
             {prefix} {currency}{' '}
             {amountToDisplay.toLocaleString(undefined, {
               minimumFractionDigits: 2,

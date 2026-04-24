@@ -17,6 +17,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import SkeletonCard from '@/core/common/components/skeleton-card';
 import getInitials from '@/core/common/utils/get-initials';
 import { GroupDetail } from '@/features/groups/groups.interface';
+import useUserStore from '@/features/user/user.state';
 
 const AVATAR_SIZE = 45;
 const AVATAR_OVERLAP = 12;
@@ -107,11 +108,35 @@ const DEFAULT_EMOJI_BG = '#9370DB';
 export default function GroupInfo({ group }: { group: GroupDetail }) {
   const scheme = useColorScheme();
   const colors = useThemeColors();
+  const { user } = useUserStore();
   const { isLoading, memberSummary, balances } = useGroupBalances(group.id);
-  // find total owed and total owes across all groups from memberSummary
-  const currency = balances[0]?.currency || '$'; // Default to $ if currency is not available
-  const totalOwedByMe = memberSummary.reduce((sum, member) => sum + member.totalOwed, 0);
-  const totalOwedToMe = memberSummary.reduce((sum, member) => sum + member.totalPaid, 0);
+  // find total owed and total owes across the group using unsettled balances
+  const currency = balances?.[0]?.currency || '$'; // Default to $ if currency is not available
+
+  // Rules:
+  // - totalOwedByMe: splits where user is the debtor (from.id === user.id), paidBy !== user.id, unsettled
+  // - totalOwedToMe: splits where user is the creditor (to.id === user.id), paidBy !== user.id, unsettled
+  const userId = user?.id;
+  let totalOwedByMe = 0;
+  let totalOwedToMe = 0;
+
+  if (userId && Array.isArray(balances)) {
+    balances.forEach((b) => {
+      // ensure amount is positive and entries are between distinct users
+      const amt = Math.abs(b.amount ?? 0);
+      const fromId = b.from?.id;
+      const toId = b.to?.id;
+
+      if (fromId === userId && toId && toId !== userId) {
+        // user owes someone
+        totalOwedByMe += amt;
+      } else if (toId === userId && fromId && fromId !== userId) {
+        // someone owes user
+        totalOwedToMe += amt;
+      }
+    });
+  }
+
   const netBalance = totalOwedToMe - totalOwedByMe;
 
   // measure amounts so both stat boxes can grow to the same width
@@ -186,6 +211,19 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
             <View style={styles.netColumn}>
               <Text
                 style={[
+                  TextStyles.label,
+                  { color: colors.text.disabled, marginBottom: Spacing.xs },
+                ]}
+              >
+                {netBalance > 0
+                  ? 'Amount owed to you'
+                  : netBalance < 0
+                    ? 'Amount you owe'
+                    : 'All settled up'}{' '}
+                across {group.activePoolCount} active {group.activePoolCount === 1 ? 'tab' : 'tabs'}
+              </Text>
+              <Text
+                style={[
                   TextStyles.amountLarge,
                   { color: netBalance >= 0 ? colors.primary : colors.error },
                 ]}
@@ -196,64 +234,6 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
                   maximumFractionDigits: 2,
                 })}
               </Text>
-              <Text
-                style={[TextStyles.label, { color: colors.text.disabled, marginTop: Spacing.md }]}
-              >
-                Across {group.activePoolCount} active {group.activePoolCount === 1 ? 'tab' : 'tabs'}
-              </Text>
-            </View>
-
-            <View style={styles.sideStats}>
-              <View
-                style={[
-                  styles.statBox,
-                  { backgroundColor: colors.primaryContainer, minWidth: statBoxWidth },
-                ]}
-              >
-                <Text
-                  style={[styles.statLabel, { color: colors.onPrimaryContainer }]}
-                  onLayout={(e) => setOwedToMeTitleWidth(e.nativeEvent.layout.width)}
-                >
-                  Owed to you
-                </Text>
-                <Text
-                  onLayout={(e) => setOwedToMeWidth(e.nativeEvent.layout.width)}
-                  style={[styles.statAmount, { color: colors.primary }]}
-                >
-                  {currency}{' '}
-                  {totalOwedToMe.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </Text>
-              </View>
-              <View
-                style={[
-                  styles.statBox,
-                  {
-                    backgroundColor: colors.errorContainer,
-                    marginTop: Spacing.xs,
-                    width: statBoxWidth,
-                  },
-                ]}
-              >
-                <Text
-                  style={[styles.statLabel, { color: colors.onErrorContainer }]}
-                  onLayout={(e) => setOwedByMeTitleWidth(e.nativeEvent.layout.width)}
-                >
-                  You owe
-                </Text>
-                <Text
-                  onLayout={(e) => setOwedByMeWidth(e.nativeEvent.layout.width)}
-                  style={[styles.statAmount, { color: colors.error }]}
-                >
-                  {currency}{' '}
-                  {totalOwedByMe.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </Text>
-              </View>
             </View>
           </View>
         </View>
