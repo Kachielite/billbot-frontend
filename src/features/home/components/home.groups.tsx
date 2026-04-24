@@ -8,6 +8,7 @@ import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 import { useNavigation } from '@react-navigation/native';
 import { Group } from '@/features/groups/groups.interface';
+import useGroupsStore from '@/features/groups/groups.state';
 
 const DEFAULT_EMOJI_BG = '#9370DB';
 
@@ -15,6 +16,7 @@ const GroupCard = ({ group }: { group: Group }) => {
   const navigation = useNavigation();
   const scheme = useColorScheme();
   const colors = useThemeColors();
+  const { setSelectedGroup } = useGroupsStore();
   const {
     totalOwed = 0,
     totalOwedToMe = 0,
@@ -31,7 +33,12 @@ const GroupCard = ({ group }: { group: Group }) => {
   const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Group', { groupId: group.id })}>
+    <TouchableOpacity
+      onPress={() => {
+        setSelectedGroup(group);
+        navigation.navigate('Group', { groupId: group.id });
+      }}
+    >
       <View
         style={[
           groupCardStyles.groupCard,

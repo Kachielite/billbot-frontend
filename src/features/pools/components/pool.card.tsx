@@ -6,9 +6,11 @@ import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import getInitials from '@/core/common/utils/get-initials';
 import { Pool } from '@/features/pools/pools.interface';
+import usePoolsStore from '@/features/pools/pools.state';
 
 export const TabCard = ({ pool }: { pool: Pool }) => {
   const navigation = useNavigation();
+  const { setSelectedPool } = usePoolsStore();
   const colors = useThemeColors();
   const amountColor =
     pool.balance?.netBalance && pool.balance.netBalance < 0 ? colors.error : colors.primary;
@@ -39,6 +41,7 @@ export const TabCard = ({ pool }: { pool: Pool }) => {
         },
       ]}
       onPress={() => {
+        setSelectedPool(pool);
         navigation.navigate('Pool', { poolId: pool.id });
       }}
     >

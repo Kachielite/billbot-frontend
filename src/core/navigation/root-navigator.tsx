@@ -23,6 +23,7 @@ import GroupScreen from '@/features/groups/screens/group.screen';
 import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
 import PoolScreen from '@/features/pools/screens/pool.screen';
 import PoolsScreen from '@/features/pools/screens/pools.screen';
+import EditPoolScreen from '@/features/pools/screens/edit-pool.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -127,6 +128,15 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
       },
       NewPool: {
         screen: NewPoolScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+        },
+      },
+      EditPool: {
+        screen: EditPoolScreen,
         options: {
           headerShown: false,
           presentation: 'transparentModal',

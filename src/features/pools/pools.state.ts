@@ -4,6 +4,8 @@ import { Pool } from './pools.interface';
 type PoolsStore = {
   poolsByGroup: Record<string, Pool[]>;
   setGroupPools: (groupId: string, pools: Pool[]) => void;
+  selectedPool: Pool | null;
+  setSelectedPool: (pool: Pool | null) => void;
   addPool: (groupId: string, pool: Pool) => void;
   updatePool: (groupId: string, pool: Pool) => void;
 };
@@ -12,6 +14,8 @@ const usePoolsStore = create<PoolsStore>((set) => ({
   poolsByGroup: {},
   setGroupPools: (groupId, pools) =>
     set((state) => ({ poolsByGroup: { ...state.poolsByGroup, [groupId]: pools } })),
+  selectedPool: null,
+  setSelectedPool: (pool) => set({ selectedPool: pool }),
   addPool: (groupId, pool) =>
     set((state) => ({
       poolsByGroup: {

@@ -7,7 +7,7 @@ import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import useGroupsStore from '@/features/groups/groups.state';
 
-export default function NewPoolHeader() {
+export default function NewPoolHeader({ mode = 'create' }: { mode?: 'create' | 'edit' }) {
   const navigation = useNavigation();
   const colors = useThemeColors();
   const { selectedGroup } = useGroupsStore();
@@ -24,7 +24,7 @@ export default function NewPoolHeader() {
             {selectedGroup ? `${selectedGroup.name}` : 'NEW GROUP'}
           </Text>
           <Text style={[TextStyles.headingLarge, { color: colors.text.secondary }]}>
-            Create Tab
+            {mode === 'create' ? 'Create' : 'Edit'} Tab
           </Text>
         </View>
       </View>

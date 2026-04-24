@@ -5,6 +5,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { useNavigation } from '@react-navigation/native';
 import { Group } from '@/features/groups/groups.interface';
+import useGroupsStore from '@/features/groups/groups.state';
 
 const DEFAULT_EMOJI_BG = '#9370DB';
 
@@ -12,6 +13,7 @@ const GroupCard = ({ group }: { group: Group }) => {
   const navigation = useNavigation() as any;
   const scheme = useColorScheme();
   const colors = useThemeColors();
+  const { setSelectedGroup } = useGroupsStore();
   const { totalOwed = 0, totalOwedToMe = 0, currency } = group.balance ?? {};
   const owedToMeIsGreatest = totalOwedToMe >= totalOwed;
   const amountLabel = owedToMeIsGreatest ? 'Owed to you' : 'You owe';
@@ -24,7 +26,10 @@ const GroupCard = ({ group }: { group: Group }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.75}
-      onPress={() => navigation.navigate('Group', { groupId: group.id })}
+      onPress={() => {
+        setSelectedGroup(group);
+        navigation.navigate('Group', { groupId: group.id });
+      }}
     >
       <View
         style={[

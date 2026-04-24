@@ -19,6 +19,7 @@ interface PoolHeaderProps {
   onDeletePress: () => void;
   poolName: string;
   groupName: string;
+  poolId: string;
 }
 
 export default function PoolHeader({
@@ -26,6 +27,7 @@ export default function PoolHeader({
   onDeletePress,
   poolName,
   groupName,
+  poolId,
 }: PoolHeaderProps) {
   const navigation = useNavigation();
   const colors = useThemeColors();
@@ -102,6 +104,9 @@ export default function PoolHeader({
                   setPopoverOpen(false);
                   if (item.label === 'Delete Pool') {
                     setPendingDelete(true);
+                  }
+                  if (item.label === 'Edit Pool') {
+                    navigation.navigate('EditPool', { poolId: poolId });
                   }
                 }}
               >

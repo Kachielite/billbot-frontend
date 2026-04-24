@@ -69,6 +69,7 @@ export default function PoolScreen({ route }: Props) {
         onDeletePress={() => setShowDeleteModal(true)}
         poolName={pool.name}
         groupName={group?.name as string}
+        poolId={poolId}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
