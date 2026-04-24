@@ -9,7 +9,7 @@ import useGroupPools from '@/features/pools/hooks/use-group-pools';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import { useNavigation } from '@react-navigation/native';
 
-export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean }) => {
+export const TabCard = ({ pool }: { pool: Pool }) => {
   const navigation = useNavigation();
   const colors = useThemeColors();
   const amountColor =
@@ -35,8 +35,9 @@ export const TabCard = ({ pool, isLast = false }: { pool: Pool; isLast?: boolean
         poolCardStyles.poolCard,
         {
           padding: Spacing.md,
-          borderBottomColor: colors.border.subtle,
-          borderBottomWidth: isLast ? 0 : 1,
+          borderColor: colors.border.default,
+          borderWidth: 1,
+          backgroundColor: colors.surface,
         },
       ]}
       onPress={() => {
@@ -121,42 +122,18 @@ const poolCardStyles = StyleSheet.create({
 
 export default function GroupTabs({ groupId }: { groupId: string }) {
   const colors = useThemeColors();
-  const { isLoading, isFetching, pools, pagination, page, setPage } = useGroupPools(groupId);
-
-  const loadMore = () => {
-    if (!pagination) return;
-    if (page >= pagination.pages) return;
-    // request next page
-    setPage(page + 1);
-  };
-
-  const [data, setData] = React.useState<Pool[]>([]);
-
-  // accumulate pages into a single list for infinite scroll
-  React.useEffect(() => {
-    if (!pools) return;
-    if (page === 1) {
-      setData(pools);
-    } else {
-      setData((prev) => [...prev, ...pools]);
-    }
-  }, [pools, page]);
+  const { isLoading, pagination, pools } = useGroupPools(groupId);
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Tabs</Text>
-        {pagination && pagination?.totalItems > 8 ? (
+        {pagination && pagination?.totalItems > 6 ? (
           <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
         ) : null}
       </View>
 
-      <View
-        style={[
-          styles.tabContainer,
-          { backgroundColor: colors.surface, borderColor: colors.border.default },
-        ]}
-      >
+      <View style={[styles.tabContainer]}>
         {isLoading ? (
           // show a few skeletons while loading first page
           <View>
@@ -167,27 +144,11 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
             ))}
           </View>
         ) : (
-          <FlatList
-            data={data}
-            renderItem={({ item, index }) => (
-              <TabCard pool={item} key={item.id} isLast={index === data.length - 1} />
-            )}
-            keyExtractor={(item) => item.id}
-            scrollEnabled
-            onEndReachedThreshold={0.6}
-            onEndReached={loadMore}
-            ListFooterComponent={() =>
-              isFetching && page > 1 ? (
-                <View style={{ paddingVertical: Spacing.sm }}>
-                  <SkeletonBox width={'100%'} height={64} bg={colors.surface} />
-                </View>
-              ) : null
-            }
-            refreshing={isLoading}
-            onRefresh={() => {
-              setPage(1);
-            }}
-          />
+          <View style={styles.tabContainer}>
+            {pools.slice(0, 6).map((pool, index) => (
+              <TabCard pool={pool} key={pool.id} />
+            ))}
+          </View>
         )}
       </View>
       <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
@@ -215,8 +176,28 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    borderRadius: Radius.xl,
-    overflow: 'hidden',
-    borderWidth: 1,
+    gap: Spacing.sm,
   },
 });
+
+// <FlatList
+//   data={data}
+//   renderItem={({ item, index }) => (
+//     <TabCard pool={item} key={item.id} isLast={index === data.length - 1} />
+//   )}
+//   keyExtractor={(item) => item.id}
+//   scrollEnabled
+//   onEndReachedThreshold={0.6}
+//   onEndReached={loadMore}
+//   ListFooterComponent={() =>
+//     isFetching && page > 1 ? (
+//       <View style={{ paddingVertical: Spacing.sm }}>
+//         <SkeletonBox width={'100%'} height={64} bg={colors.surface} />
+//       </View>
+//     ) : null
+//   }
+//   refreshing={isLoading}
+//   onRefresh={() => {
+//     setPage(1);
+//   }}
+// />

@@ -20,7 +20,6 @@ export default function GroupScreen({ route }: Props) {
   const fromQuickActions = Boolean(route.params.fromQuickActions);
   const navigation = useNavigation();
   const { canGoBack, goBack, navigate } = navigation;
-  const colors = useThemeColors();
   const { group, isLoading } = useGroupDetail(groupId);
   const { deleteGroup, isDeleting } = useDeleteGroup();
 
@@ -62,7 +61,6 @@ export default function GroupScreen({ route }: Props) {
       <GroupInfo group={group} />
       <GroupMembers members={group.members} />
       <GroupTabs groupId={groupId} />
-
       <ConfirmDeleteModal
         visible={showDeleteModal}
         icon="trash-outline"
