@@ -27,9 +27,10 @@ const useUpdatePool = (poolId: string) => {
     async (data: UpdatePoolSchemaType) => PoolsService.updatePool(poolId, data),
     {
       onSuccess: async () => {
+        // refresh pool detail
         await queryClient.invalidateQueries([QUERY_KEYS.POOL_DETAIL, poolId]);
-        await queryClient.invalidateQueries([QUERY_KEYS.GROUP_POOLS, poolId]);
-        await queryClient.invalidateQueries([QUERY_KEYS.GROUP_DETAIL, selectedGroup?.id]);
+        await queryClient.invalidateQueries(QUERY_KEYS.GROUP_POOLS);
+        await queryClient.invalidateQueries(QUERY_KEYS.GROUP_DETAIL);
         Toast.success('Pool updated successfully');
         form.reset();
         navigation.goBack();
