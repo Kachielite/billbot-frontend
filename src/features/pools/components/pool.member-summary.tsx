@@ -5,6 +5,7 @@ import { Radius, Spacing } from '@/core/common/constants/theme';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useGetName from '@/core/common/hooks/use-get-name';
+import SkeletonBox from '@/core/common/components/skeleton-box';
 
 type Props = {
   memberSummary: MemberSummary[];
@@ -28,13 +29,74 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
   const getName = useGetName();
 
   if (isLoading) {
+    // Render a skeleton that mirrors the members summary layout: title + rows with left/right halves
     return (
-      <View
-        style={[
-          styles.container,
-          { backgroundColor: colors.surface, borderColor: colors.border.default },
-        ]}
-      />
+      <View style={styles.container}>
+        <View style={{ width: '50%' }}>
+          <SkeletonBox width={'50%'} height={22} bg={colors.surface} />
+        </View>
+
+        <View
+          style={[
+            styles.summaryContainer,
+            { backgroundColor: colors.surface, borderColor: colors.border.default },
+          ]}
+        >
+          {Array.from({ length: 5 }).map((_, i) => {
+            const leftIsName = i % 2 === 0; // alternate to reflect both positive and negative layouts
+            return (
+              <View
+                key={`skel-${i}`}
+                style={[
+                  styles.row,
+                  i < 4 && {
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.border.subtle,
+                    paddingBottom: Spacing.sm,
+                    marginBottom: Spacing.sm,
+                  },
+                ]}
+              >
+                <View style={styles.half}>
+                  {leftIsName ? (
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                      <SkeletonBox width={160} height={18} bg={colors.surface} />
+                    </View>
+                  ) : (
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                      <SkeletonBox
+                        width={110}
+                        height={36}
+                        bg={colors.surface}
+                        style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+                      />
+                    </View>
+                  )}
+                </View>
+
+                <View style={[styles.divider, { backgroundColor: colors.border.default }]} />
+
+                <View style={styles.half}>
+                  {leftIsName ? (
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                      <SkeletonBox
+                        width={110}
+                        height={36}
+                        bg={colors.surface}
+                        style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                      />
+                    </View>
+                  ) : (
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                      <SkeletonBox width={160} height={18} bg={colors.surface} />
+                    </View>
+                  )}
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </View>
     );
   }
 

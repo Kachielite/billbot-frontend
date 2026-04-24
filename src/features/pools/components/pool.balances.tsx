@@ -5,7 +5,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import SkeletonCard from '@/core/common/components/skeleton-card';
-import { BalanceEntry, MemberSummary } from '@/features/balances/balances.interface';
+import { MemberSummary } from '@/features/balances/balances.interface';
 import useProfile from '@/features/user/hooks/use-profile';
 
 type PoolBalancesProps = {
@@ -38,14 +38,17 @@ export default function PoolBalances({
   }
 
   const userBalances = memberSummary.find((m) => m.user.id === profile?.id);
+  const net = userBalances?.netBalance ?? 0;
   const balances = [
     {
-      label: 'YOUR SHARE',
+      label: 'YOUR PAID',
       amount: userBalances?.totalPaid ?? 0,
+      isOwe: false,
     },
     {
-      label: 'YOU OWE',
-      amount: userBalances?.totalOwed ?? 0,
+      label: net > 0 ? 'OWED TO YOU' : net < 0 ? 'YOU OWE' : 'SETTLED',
+      amount: Math.abs(net),
+      isOwe: net < 0,
     },
   ];
 
@@ -80,7 +83,12 @@ export default function PoolBalances({
             style={[styles.balanceCard, { backgroundColor: colors.primaryCard.pillBg }]}
           >
             <Text style={[TextStyles.label, { color: colors.text.inverse }]}>{balance.label}</Text>
-            <Text style={[TextStyles.headingSmall, { color: colors.text.onPrimary }]}>
+            <Text
+              style={[
+                TextStyles.headingSmall,
+                { color: (balance as any).isOwe ? colors.error : colors.text.onPrimary },
+              ]}
+            >
               {currency}{' '}
               {balance.amount.toLocaleString('US-EN', {
                 minimumFractionDigits: 2,
