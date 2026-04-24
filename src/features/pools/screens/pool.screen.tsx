@@ -13,6 +13,7 @@ import usePoolBalances from '@/features/balances/hooks/use-pool-balances';
 import ScreenLoader from '@/core/common/components/screen.loader';
 import PoolBalances from '@/features/pools/components/pool.balances';
 import usePoolExpenses from '@/features/expenses/hooks/use-pool-expenses';
+import PoolMemberSummary from '@/features/pools/components/pool.member-summary';
 
 type Props = StaticScreenProps<{ poolId: string }>;
 
@@ -23,7 +24,6 @@ export default function PoolScreen({ route }: Props) {
   const { pool, isLoading } = usePoolDetail(poolId);
   const {
     isLoading: isLoadingBalance,
-    balances,
     memberSummary,
     totalAmount,
     amountCollected,
@@ -67,13 +67,17 @@ export default function PoolScreen({ route }: Props) {
         groupName={group?.name as string}
       />
       <PoolBalances
-        poolBalances={balances}
         memberSummary={memberSummary}
         totalAmount={totalAmount}
         splitType={pool.splitType}
         totalExpenses={pagination?.total_items ?? 0}
         amountCollected={amountCollected}
         isLoading={isLoadingBalance || isLoadingExpenses}
+      />
+      <PoolMemberSummary
+        memberSummary={memberSummary}
+        totalAmount={totalAmount}
+        isLoading={isLoadingBalance}
       />
       <ConfirmDeleteModal
         visible={showDeleteModal}

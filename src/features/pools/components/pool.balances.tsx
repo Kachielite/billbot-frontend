@@ -10,7 +10,6 @@ import useProfile from '@/features/user/hooks/use-profile';
 
 type PoolBalancesProps = {
   isLoading: boolean;
-  poolBalances: BalanceEntry[];
   memberSummary: MemberSummary[];
   totalAmount: number;
   amountCollected: number;
@@ -20,7 +19,6 @@ type PoolBalancesProps = {
 
 export default function PoolBalances({
   isLoading,
-  poolBalances,
   memberSummary,
   totalAmount,
   amountCollected,
