@@ -7,6 +7,8 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import useGetName from '@/core/common/hooks/use-get-name';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
+import useProfile from '@/features/user/hooks/use-profile';
+import useUserStore from '@/features/user/user.state';
 
 type Props = {
   memberSummary: MemberSummary[];
@@ -17,19 +19,21 @@ const POSITIVE_BG = '#5DBF7E';
 const NEGATIVE_BG = '#D96B6B';
 const PILL_TEXT = '#FFFFFF';
 
-function formatAmount(amount: number): string {
+function formatAmount(amount: number, currency: string = '$'): string {
   const abs = Math.abs(amount).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  return (amount >= 0 ? '+ ' : '- ') + '$' + abs;
+  return (amount >= 0 ? '+ ' : '- ') + currency + abs;
 }
 
 export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
+  const { profile, isLoading: isLoadingCurrency } = useProfile();
   const colors = useThemeColors();
   const getName = useGetName();
+  const currency = profile?.currency || '$';
 
-  if (isLoading) {
+  if (isLoading || isLoadingCurrency) {
     // Render a skeleton that mirrors the members summary layout: title + rows with left/right halves
     return (
       <View style={styles.container}>
@@ -126,7 +130,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
         {memberSummary.map((item) => {
           const isPositive = item.netBalance >= 0;
           const pillBg = isPositive ? POSITIVE_BG : NEGATIVE_BG;
-          const label = formatAmount(item.netBalance);
+          const label = formatAmount(item.netBalance, currency);
           const displayName = item.user.name;
 
           // Square the corner that sits against the divider line
