@@ -9,12 +9,17 @@ import usePoolsStore from '@/features/pools/pools.state';
 
 export default function NewExpenseScreen() {
   const { selectedPool } = usePoolsStore();
-  const { form, onLogExpense } = useLogExpense(selectedPool?.id ?? '');
+  const { form, onLogExpense, isLogging } = useLogExpense(selectedPool?.id ?? '');
   return (
     <ScreenContainer useScrollView={false}>
       <NewExpenseHeader />
       <NewExpenseForm form={form} poolId={selectedPool?.id ?? ''} />
-      <CustomButton label={'Log Expense'} onPress={onLogExpense} />
+      <CustomButton
+        label={'Log Expense'}
+        onPress={onLogExpense}
+        loading={isLogging}
+        disabled={isLogging}
+      />
     </ScreenContainer>
   );
 }

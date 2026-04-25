@@ -53,7 +53,14 @@ const useLogExpense = (poolId: string) => {
   }, [draftExpense, setValue, profile?.currency]);
 
   const onLogExpense = async () => {
-    await form.handleSubmit(async (data) => logExpense(data))();
+    await form.handleSubmit(async (data) => {
+      const payload: LogExpenseSchemaType = {
+        ...data,
+        isRecurring: (data as LogExpenseSchemaType).isRecurring ?? false,
+      } as LogExpenseSchemaType;
+
+      await logExpense(payload);
+    })();
   };
 
   return { form, isLogging, onLogExpense };

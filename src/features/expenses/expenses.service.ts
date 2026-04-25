@@ -52,7 +52,7 @@ export const ExpensesService = {
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (value === undefined || value === null || key === 'receipt') return;
+        if (value === undefined || value === null || value === false || key === 'receipt') return;
         formData.append(key, Array.isArray(value) ? JSON.stringify(value) : String(value));
       });
       if (data.receipt?.uri) {
@@ -133,7 +133,7 @@ export const ExpensesService = {
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (value === undefined || value === null || key === 'receipt') return;
+        if (value === undefined || value === null || value === false || key === 'receipt') return;
         formData.append(key, Array.isArray(value) ? JSON.stringify(value) : String(value));
       });
       if (data.receipt?.uri) {

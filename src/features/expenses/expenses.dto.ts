@@ -15,7 +15,7 @@ export const logExpenseSchema = z
     description: z.string().max(255).optional(),
     categoryId: z.string().uuid().optional(),
     currency: z.string().optional(),
-    isRecurring: z.boolean().optional(),
+    isRecurring: z.boolean(),
     recurrenceFrequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'yearly']).optional(),
     recurrenceEndDate: z.string().datetime().optional(),
     splits: z.array(splitEntrySchema).optional(),
