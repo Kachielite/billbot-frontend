@@ -28,7 +28,12 @@ const ExpenseCard = ({ expense }: { expense: Expense }) => {
   const dateLabel = moment(expense.createdAt).format('MMMM D');
 
   return (
-    <View style={[expenseCardStyles.activityCard, { backgroundColor: colors.surface }]}>
+    <TouchableOpacity
+      style={[
+        expenseCardStyles.activityCard,
+        { backgroundColor: colors.surface, borderColor: colors.border.default },
+      ]}
+    >
       <View
         style={[
           expenseCardStyles.emojiContainer,
@@ -57,19 +62,20 @@ const ExpenseCard = ({ expense }: { expense: Expense }) => {
           {dateLabel}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const expenseCardStyles = StyleSheet.create({
   activityCard: {
-    paddingVertical: Spacing.sm,
+    padding: Spacing.sm,
     borderRadius: Radius.lg,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
     width: '100%',
+    borderWidth: 1,
   },
   emojiContainer: {
     width: 40,
@@ -101,7 +107,7 @@ export default function PoolExpenses({ expenses, isLoading }: Props) {
         }}
       >
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Expenses</Text>
-        {expenses.length > 6 ? (
+        {expenses.length > 4 ? (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('Tabs', { screen: 'Groups' });
@@ -111,12 +117,7 @@ export default function PoolExpenses({ expenses, isLoading }: Props) {
           </TouchableOpacity>
         ) : null}
       </View>
-      <View
-        style={[
-          styles.expensesContainer,
-          { borderColor: colors.border.default, backgroundColor: colors.surface },
-        ]}
-      >
+      <View style={[styles.expensesContainer]}>
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
             <View key={i} style={{ paddingVertical: Spacing.sm }}>
@@ -126,23 +127,7 @@ export default function PoolExpenses({ expenses, isLoading }: Props) {
         ) : expenses.length === 0 ? (
           <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>No expenses yet</Text>
         ) : (
-          expenses.map((exp, idx) => (
-            <View
-              key={exp.id}
-              style={
-                idx < expenses.length - 1
-                  ? {
-                      borderBottomWidth: 1,
-                      borderBottomColor: colors.border.subtle,
-                      paddingBottom: Spacing.sm,
-                      marginBottom: Spacing.sm,
-                    }
-                  : undefined
-              }
-            >
-              <ExpenseCard expense={exp} />
-            </View>
-          ))
+          expenses.slice(0, 4).map((exp) => <ExpenseCard expense={exp} key={exp.id} />)
         )}
       </View>
     </View>
@@ -159,8 +144,5 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: Spacing.sm,
     width: '100%',
-    borderWidth: 1,
-    borderRadius: Radius.lg,
-    padding: Spacing.lg,
   },
 });
