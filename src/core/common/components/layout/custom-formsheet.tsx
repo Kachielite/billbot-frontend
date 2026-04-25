@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   sheet: {
     borderTopLeftRadius: Radius.xl,
     borderTopRightRadius: Radius.xl,
+    // allow dropdowns to overflow the sheet when necessary (dropdowns render absolute lists)
     overflow: 'hidden',
     paddingBottom: Platform.OS === 'ios' ? Spacing.lg : Spacing.xl,
   },

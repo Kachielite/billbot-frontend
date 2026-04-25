@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import React from 'react';
 import CustomFormSheet from '@/core/common/components/layout/custom-formsheet';
-import { TextStyles } from '@/core/common/constants/fonts';
+import { Fonts, FontSize, TextStyles } from '@/core/common/constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import InfoBox from '@/core/common/components/info-box';
-import DropDownPicker from 'react-native-dropdown-picker';
+import RNPickerSelect from 'react-native-picker-select';
 import CustomButton from '@/core/common/components/form/custom-button';
 import { Border, Input, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation, StackActions } from '@react-navigation/native';
@@ -16,6 +16,7 @@ import usePoolsStore from '@/features/pools/pools.state';
 
 export default function NewExpenseHomeScreen() {
   const navigation = useNavigation();
+  const scheme = useColorScheme();
   const colors = useThemeColors();
 
   const [step, setStep] = React.useState<1 | 2>(1);
@@ -23,44 +24,59 @@ export default function NewExpenseHomeScreen() {
   // ── Step 1: Group ────────────────────────────────────────────────────────────
   const { groups, isLoading: isLoadingGroups } = useGroups();
   const { selectedGroup, setSelectedGroup } = useGroupsStore();
-  const [openGroups, setOpenGroups] = React.useState(false);
   const groupItems = React.useMemo(
     () => groups.map((g) => ({ label: g.name, value: g.id })),
     [groups],
   );
+  const [isGroupOpen, setIsGroupOpen] = React.useState(false);
+  const groupPickerRef = React.useRef<any>(null);
 
-  // ── Step 2: Tab (Pool) ───────────────────────────────────────────────────────
+  // ── Step 2: Pool (Tab) ───────────────────────────────────────────────────────
   const { pools, isLoading: isLoadingPools } = useGroupPools(selectedGroup?.id ?? '');
   const { selectedPool, setSelectedPool } = usePoolsStore();
-  const [openPools, setOpenPools] = React.useState(false);
   const poolItems = React.useMemo(
     () => pools.map((p) => ({ label: p.name, value: p.id })),
     [pools],
   );
+  const [isPoolOpen, setIsPoolOpen] = React.useState(false);
+  const poolPickerRef = React.useRef<any>(null);
 
-  // Reset pool selection when group changes
   React.useEffect(() => {
     setSelectedPool(null);
   }, [selectedGroup?.id]);
 
-  const handleGroupChange = (valueOrFn: any) => {
-    const nextValue =
-      typeof valueOrFn === 'function' ? valueOrFn(selectedGroup?.id ?? null) : valueOrFn;
-    const group = groups.find((g) => g.id === nextValue) ?? null;
-    setSelectedGroup(group);
-  };
-
-  const handlePoolChange = (valueOrFn: any) => {
-    const nextValue =
-      typeof valueOrFn === 'function' ? valueOrFn(selectedPool?.id ?? null) : valueOrFn;
-    const pool = pools.find((p) => p.id === nextValue) ?? null;
-    setSelectedPool(pool);
-  };
-
   const canContinueStep1 = !!selectedGroup && !isLoadingGroups;
   const canContinueStep2 = !!selectedPool && !isLoadingPools;
-
   const isStep1 = step === 1;
+
+  const makePickerStyle = (isFocused: boolean, isDisabled: boolean) => {
+    const borderColor = isFocused
+      ? colors.primary
+      : isDisabled
+        ? colors.border.subtle
+        : colors.border.default;
+    const inputBase = {
+      height: Input.height,
+      paddingHorizontal: Input.paddingHorizontal,
+      paddingRight: 40,
+      borderRadius: Radius.md,
+      borderWidth: isFocused ? 2 : Border.thin,
+      borderColor,
+      backgroundColor: colors.surface,
+      color: colors.text.primary,
+      fontFamily: Fonts.regular,
+      fontSize: FontSize.sm,
+    };
+    return {
+      inputIOS: inputBase,
+      inputAndroid: inputBase,
+      placeholder: {
+        color: colors.text.disabled,
+        fontFamily: Fonts.regular,
+        fontSize: FontSize.sm,
+      },
+    };
+  };
 
   return (
     <CustomFormSheet>
@@ -68,16 +84,14 @@ export default function NewExpenseHomeScreen() {
         {/* ── Header ── */}
         <View style={styles.headerContainer}>
           <View style={styles.headerRight}>
-            <View>
-              <Text
-                style={[
-                  TextStyles.headingSmall,
-                  { color: colors.text.primary, textTransform: 'uppercase' },
-                ]}
-              >
-                NEW EXPENSE
-              </Text>
-            </View>
+            <Text
+              style={[
+                TextStyles.headingSmall,
+                { color: colors.text.primary, textTransform: 'uppercase' },
+              ]}
+            >
+              NEW EXPENSE
+            </Text>
           </View>
           <View style={styles.backBtnContainer}>
             <TouchableOpacity
@@ -136,36 +150,84 @@ export default function NewExpenseHomeScreen() {
             />
             <View style={styles.optionContainer}>
               <Text style={[styles.label, { color: colors.text.primary }]}>Group</Text>
-              <DropDownPicker
-                open={openGroups}
-                value={selectedGroup?.id ?? null}
-                items={groupItems}
-                setOpen={setOpenGroups}
-                setItems={() => {}}
-                setValue={handleGroupChange}
-                placeholder="Select a group"
-                disabled={isLoadingGroups}
-                dropDownDirection="AUTO"
-                style={[
-                  styles.dropdown,
-                  { borderColor: colors.border.default, backgroundColor: colors.surface },
-                  isLoadingGroups && { opacity: 0.6 },
-                ]}
-                dropDownContainerStyle={[
-                  styles.dropdownContainer,
-                  { borderColor: colors.border.default, backgroundColor: colors.surface },
-                ]}
-                listItemContainerStyle={{ backgroundColor: colors.surface }}
-                listItemLabelStyle={[styles.itemText, { color: colors.text.primary }]}
-                selectedItemContainerStyle={{ backgroundColor: colors.primaryContainer }}
-                selectedItemLabelStyle={{ color: colors.primary }}
-                textStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
-                placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
-                zIndex={3000}
-                zIndexInverse={1000}
-                listMode="SCROLLVIEW"
-                maxHeight={280}
-              />
+              {Platform.OS === 'ios' ? (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  disabled={isLoadingGroups}
+                  onPress={() => groupPickerRef.current?.togglePicker(true)}
+                  style={[
+                    styles.pickerWrapper,
+                    isGroupOpen && styles.pickerFocus,
+                    isLoadingGroups && { opacity: 0.6 },
+                  ]}
+                >
+                  <View pointerEvents="none">
+                    <RNPickerSelect
+                      ref={groupPickerRef}
+                      items={groupItems}
+                      value={selectedGroup?.id ?? null}
+                      onValueChange={(value) => {
+                        const group = value ? (groups.find((g) => g.id === value) ?? null) : null;
+                        setSelectedGroup(group);
+                      }}
+                      placeholder={{
+                        label: 'Select a group',
+                        value: null,
+                        color: colors.text.disabled,
+                      }}
+                      disabled={isLoadingGroups}
+                      useNativeAndroidPickerStyle={false}
+                      darkTheme={scheme === 'dark'}
+                      onOpen={() => setIsGroupOpen(true)}
+                      onClose={() => setIsGroupOpen(false)}
+                      style={makePickerStyle(isGroupOpen, isLoadingGroups)}
+                    />
+                  </View>
+                  <View style={styles.iconOverlay} pointerEvents="none">
+                    <Ionicons
+                      name={isGroupOpen ? 'chevron-up' : 'chevron-down'}
+                      size={18}
+                      color={isLoadingGroups ? colors.text.disabled : colors.text.secondary}
+                    />
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View
+                  style={[
+                    styles.pickerWrapper,
+                    isGroupOpen && styles.pickerFocus,
+                    isLoadingGroups && { opacity: 0.6 },
+                  ]}
+                >
+                  <RNPickerSelect
+                    ref={groupPickerRef}
+                    items={groupItems}
+                    value={selectedGroup?.id ?? null}
+                    onValueChange={(value) => {
+                      const group = value ? (groups.find((g) => g.id === value) ?? null) : null;
+                      setSelectedGroup(group);
+                    }}
+                    placeholder={{
+                      label: 'Select a group',
+                      value: null,
+                      color: colors.text.disabled,
+                    }}
+                    disabled={isLoadingGroups}
+                    useNativeAndroidPickerStyle={false}
+                    darkTheme={scheme === 'dark'}
+                    onOpen={() => setIsGroupOpen(true)}
+                    onClose={() => setIsGroupOpen(false)}
+                    style={makePickerStyle(isGroupOpen, isLoadingGroups)}
+                  />
+                  <View style={styles.iconOverlay} pointerEvents="none">
+                    <Ionicons
+                      name={isGroupOpen ? 'chevron-up' : 'chevron-down'}
+                      size={18}
+                      color={isLoadingGroups ? colors.text.disabled : colors.text.secondary}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
             <CustomButton
               label="Next → Pick a Tab"
@@ -184,42 +246,88 @@ export default function NewExpenseHomeScreen() {
             />
             <View style={styles.optionContainer}>
               <Text style={[styles.label, { color: colors.text.primary }]}>Tab</Text>
-              <DropDownPicker
-                open={openPools}
-                value={selectedPool?.id ?? null}
-                items={poolItems}
-                setOpen={setOpenPools}
-                setItems={() => {}}
-                setValue={handlePoolChange}
-                placeholder={isLoadingPools ? 'Loading tabs…' : 'Select a tab'}
-                disabled={isLoadingPools}
-                dropDownDirection="AUTO"
-                style={[
-                  styles.dropdown,
-                  { borderColor: colors.border.default, backgroundColor: colors.surface },
-                  isLoadingPools && { opacity: 0.6 },
-                ]}
-                dropDownContainerStyle={[
-                  styles.dropdownContainer,
-                  { borderColor: colors.border.default, backgroundColor: colors.surface },
-                ]}
-                listItemContainerStyle={{ backgroundColor: colors.surface }}
-                listItemLabelStyle={[styles.itemText, { color: colors.text.primary }]}
-                selectedItemContainerStyle={{ backgroundColor: colors.primaryContainer }}
-                selectedItemLabelStyle={{ color: colors.primary }}
-                textStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
-                placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
-                zIndex={3000}
-                zIndexInverse={1000}
-                listMode="SCROLLVIEW"
-                maxHeight={280}
-              />
+              {Platform.OS === 'ios' ? (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  disabled={isLoadingPools}
+                  onPress={() => poolPickerRef.current?.togglePicker(true)}
+                  style={[
+                    styles.pickerWrapper,
+                    isPoolOpen && styles.pickerFocus,
+                    isLoadingPools && { opacity: 0.6 },
+                  ]}
+                >
+                  <View pointerEvents="none">
+                    <RNPickerSelect
+                      ref={poolPickerRef}
+                      items={poolItems}
+                      value={selectedPool?.id ?? null}
+                      onValueChange={(value) => {
+                        const pool = value ? (pools.find((p) => p.id === value) ?? null) : null;
+                        setSelectedPool(pool);
+                      }}
+                      placeholder={{
+                        label: isLoadingPools ? 'Loading tabs…' : 'Select a tab',
+                        value: null,
+                        color: colors.text.disabled,
+                      }}
+                      disabled={isLoadingPools}
+                      useNativeAndroidPickerStyle={false}
+                      darkTheme={scheme === 'dark'}
+                      onOpen={() => setIsPoolOpen(true)}
+                      onClose={() => setIsPoolOpen(false)}
+                      style={makePickerStyle(isPoolOpen, isLoadingPools)}
+                    />
+                  </View>
+                  <View style={styles.iconOverlay} pointerEvents="none">
+                    <Ionicons
+                      name={isPoolOpen ? 'chevron-up' : 'chevron-down'}
+                      size={18}
+                      color={isLoadingPools ? colors.text.disabled : colors.text.secondary}
+                    />
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View
+                  style={[
+                    styles.pickerWrapper,
+                    isPoolOpen && styles.pickerFocus,
+                    isLoadingPools && { opacity: 0.6 },
+                  ]}
+                >
+                  <RNPickerSelect
+                    ref={poolPickerRef}
+                    items={poolItems}
+                    value={selectedPool?.id ?? null}
+                    onValueChange={(value) => {
+                      const pool = value ? (pools.find((p) => p.id === value) ?? null) : null;
+                      setSelectedPool(pool);
+                    }}
+                    placeholder={{
+                      label: isLoadingPools ? 'Loading tabs…' : 'Select a tab',
+                      value: null,
+                      color: colors.text.disabled,
+                    }}
+                    disabled={isLoadingPools}
+                    useNativeAndroidPickerStyle={false}
+                    darkTheme={scheme === 'dark'}
+                    onOpen={() => setIsPoolOpen(true)}
+                    onClose={() => setIsPoolOpen(false)}
+                    style={makePickerStyle(isPoolOpen, isLoadingPools)}
+                  />
+                  <View style={styles.iconOverlay} pointerEvents="none">
+                    <Ionicons
+                      name={isPoolOpen ? 'chevron-up' : 'chevron-down'}
+                      size={18}
+                      color={isLoadingPools ? colors.text.disabled : colors.text.secondary}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
             <CustomButton
               label="Continue to Expense"
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('NewExpense'));
-              }}
+              onPress={() => navigation.dispatch(StackActions.replace('NewExpense'))}
               disabled={!canContinueStep2}
             />
           </>
@@ -290,23 +398,23 @@ const styles = StyleSheet.create({
   label: {
     ...TextStyles.label,
   },
-  dropdown: {
-    ...Input,
-    borderWidth: Border.thin,
+  pickerWrapper: {
     borderRadius: Radius.md,
-    minHeight: 48,
+    position: 'relative',
   },
-  dropdownContainer: {
-    borderWidth: Border.thin,
-    borderRadius: Radius.md,
+  pickerFocus: {
+    shadowColor: '#1B7A48',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  placeholderStyle: {
-    ...TextStyles.bodySmall,
-  },
-  selectedTextStyle: {
-    ...TextStyles.bodySmall,
-  },
-  itemText: {
-    ...TextStyles.bodySmall,
+  iconOverlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: Spacing.md,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
