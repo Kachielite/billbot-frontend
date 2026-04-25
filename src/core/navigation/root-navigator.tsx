@@ -121,12 +121,6 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         screen: ManageMembersScreen,
         options: { headerShown: false },
       },
-      NewExpense: {
-        screen: NewExpenseScreen,
-        options: {
-          headerShown: false,
-        },
-      },
       NewExpenseHome: {
         screen: NewExpenseHomeScreen,
         options: {
@@ -134,6 +128,13 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           presentation: 'transparentModal',
           animation: 'slide_from_bottom',
           animationDuration: 50,
+        },
+      },
+      NewExpense: {
+        screen: NewExpenseScreen,
+        options: {
+          headerShown: false,
+          presentation: 'card',
         },
       },
       NewPool: {

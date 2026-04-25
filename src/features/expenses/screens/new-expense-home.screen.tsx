@@ -7,7 +7,7 @@ import InfoBox from '@/core/common/components/info-box';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CustomButton from '@/core/common/components/form/custom-button';
 import { Border, Input, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useGroups from '@/features/groups/hooks/use-groups';
 import useGroupsStore from '@/features/groups/groups.state';
@@ -218,7 +218,7 @@ export default function NewExpenseHomeScreen() {
             <CustomButton
               label="Continue to Expense"
               onPress={() => {
-                navigation.navigate('NewExpense');
+                navigation.dispatch(StackActions.replace('NewExpense'));
               }}
               disabled={!canContinueStep2}
             />
