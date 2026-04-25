@@ -9,6 +9,7 @@ import CustomTextAreaInput from '@/core/common/components/form/custom-text-area-
 import useCategories from '@/features/categories/hooks/use-categories';
 import CustomDropdown from '@/core/common/components/form/custom-dropdown';
 import useExpensesStore from '@/features/expenses/expenses.state';
+import SplitExpense from '@/features/expenses/components/split.expense';
 
 type NewExpenseFormProps = {
   form: UseFormReturn<LogExpenseSchemaType>;
@@ -47,6 +48,7 @@ export default function NewExpenseForm({ form }: NewExpenseFormProps) {
         options={categoryOptions}
         disabled={isLoading}
       />
+      <SplitExpense />
     </View>
   );
 }
