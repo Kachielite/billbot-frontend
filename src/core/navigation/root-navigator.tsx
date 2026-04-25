@@ -25,6 +25,7 @@ import PoolScreen from '@/features/pools/screens/pool.screen';
 import PoolsScreen from '@/features/pools/screens/pools.screen';
 import EditPoolScreen from '@/features/pools/screens/edit-pool.screen';
 import NewExpenseHomeScreen from '@/features/expenses/screens/new-expense-home.screen';
+import ExpensesScreen from '@/features/expenses/screens/expenses.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -135,6 +136,12 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         options: {
           headerShown: false,
           presentation: 'card',
+        },
+      },
+      Expenses: {
+        screen: ExpensesScreen,
+        options: {
+          headerShown: false,
         },
       },
       NewPool: {

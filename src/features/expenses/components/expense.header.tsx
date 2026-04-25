@@ -5,13 +5,10 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import usePoolsStore from '@/features/pools/pools.state';
 
-type Props = {
-  onSave: () => void;
-  isSaving: boolean;
-};
-
-export default function NewExpenseHeader({ onSave, isSaving }: Props) {
+export default function ExpenseHeader() {
+  const { selectedPool } = usePoolsStore();
   const navigation = useNavigation();
   const colors = useThemeColors();
   return (
@@ -34,15 +31,18 @@ export default function NewExpenseHeader({ onSave, isSaving }: Props) {
               { color: colors.text.primary, textTransform: 'uppercase' },
             ]}
           >
-            NEW
+            {selectedPool?.name}
           </Text>
-          <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>Add Expense</Text>
+          <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>Expenses</Text>
         </View>
       </View>
-      <TouchableOpacity onPress={onSave} disabled={isSaving}>
-        <Text style={[TextStyles.headingSmall, { color: colors.primary }]}>
-          {isSaving ? 'Saving...' : 'Save'}
-        </Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('NewExpense')}
+        style={[styles.newBtn, { backgroundColor: colors.primary }]}
+        accessibilityLabel="Create new expense"
+      >
+        <Ionicons name="add" size={20} color={colors.onPrimary} />
+        <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
       </TouchableOpacity>
     </View>
   );
@@ -75,5 +75,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
+  },
+  newBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.full,
+    ...Shadow.sm,
   },
 });

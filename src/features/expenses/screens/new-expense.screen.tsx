@@ -12,7 +12,7 @@ export default function NewExpenseScreen() {
   const { form, onLogExpense, isLogging } = useLogExpense(selectedPool?.id ?? '');
   return (
     <ScreenContainer useScrollView={false}>
-      <NewExpenseHeader />
+      <NewExpenseHeader onSave={onLogExpense} isSaving={isLogging} />
       <NewExpenseForm form={form} poolId={selectedPool?.id ?? ''} />
       <CustomButton
         label={'Log Expense'}
