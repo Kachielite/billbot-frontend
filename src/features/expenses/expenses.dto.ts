@@ -1,19 +1,40 @@
 import { z } from 'zod';
+import type { Asset } from 'react-native-image-picker';
 
 // ── Request schemas (Zod) ─────────────────────────────────────────────────────
+const splitEntrySchema = z.object({
+  userId: z.string(),
+  amount: z.number().positive(),
+});
+
+export type SplitEntry = z.infer<typeof splitEntrySchema>;
+
 export const logExpenseSchema = z
   .object({
     amount: z.number().positive('Amount must be greater than 0'),
     description: z.string().max(255).optional(),
     categoryId: z.string().uuid().optional(),
-    currency: z.enum(['NGN', 'KES', 'GHS', 'ZAR']).optional(),
-    isRecurring: z.boolean().optional(),
+    currency: z.string().optional(),
+    isRecurring: z.boolean(),
     recurrenceFrequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'yearly']).optional(),
     recurrenceEndDate: z.string().datetime().optional(),
+    splits: z.array(splitEntrySchema).optional(),
+    receipt: z.custom<Asset>().optional(),
   })
   .refine((data) => !data.isRecurring || data.recurrenceFrequency, {
     message: 'Recurrence frequency is required for recurring expenses',
     path: ['recurrenceFrequency'],
+  })
+  .superRefine((data, ctx) => {
+    if (!data.splits?.length || !data.amount) return;
+    const sum = data.splits.reduce((acc, s) => acc + s.amount, 0);
+    if (Math.abs(sum - data.amount) > 0.01) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Split amounts (${sum.toFixed(2)}) must equal the expense total (${data.amount.toFixed(2)})`,
+        path: ['splits'],
+      });
+    }
   });
 export type LogExpenseSchemaType = z.infer<typeof logExpenseSchema>;
 
@@ -33,6 +54,8 @@ export interface SplitDto {
   amount: string;
   settled: boolean;
   settled_at: string | null;
+  name: string | null;
+  avatar_url: string | null;
 }
 
 export interface ExpenseDto {
@@ -77,7 +100,7 @@ export interface ParsedReceiptDto {
   currency: string | null;
   merchant: string | null;
   description: string | null;
-  category: string | null;
+  category_id: string | null;
   date: string | null;
 }
 

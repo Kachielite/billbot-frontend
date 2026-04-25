@@ -3,13 +3,18 @@ import { Toast } from 'toastify-react-native';
 import { QUERY_KEYS } from '@/core/common/constants/query-keys';
 import { AppError } from '@/core/common/error';
 import { ExpensesService } from '../expenses.service';
+import useExpensesStore from '@/features/expenses/expenses.state';
 
-const useExpenseDetail = (expenseId: string) => {
+const useExpenseDetail = (poolId: string, expenseId: string) => {
+  const { setSelectedExpense } = useExpensesStore();
   const { data, isLoading, error } = useQuery(
-    [QUERY_KEYS.EXPENSE_DETAIL, expenseId],
-    () => ExpensesService.getExpense(expenseId),
+    [QUERY_KEYS.EXPENSE_DETAIL, poolId, expenseId],
+    () => ExpensesService.getExpense(poolId, expenseId),
     {
-      enabled: !!expenseId,
+      enabled: !!poolId && !!expenseId,
+      onSuccess: (expense) => {
+        setSelectedExpense(expense);
+      },
       onError: (err: AppError) => {
         Toast.error(err.message || 'Failed to load expense');
       },

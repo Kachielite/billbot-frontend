@@ -8,17 +8,25 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import BottomModal from '@/core/common/components/layout/bottom-modal';
 import HomeTab from '@/features/home/components/home.tab';
+import useGroupsStore from '@/features/groups/groups.state';
+import useExpensesStore from '@/features/expenses/expenses.state';
 
 export default function HomeQuickActions() {
   const navigation = useNavigation();
   const colors = useThemeColors();
+  const { setSelectedGroup } = useGroupsStore();
+  const { clearDraftExpense } = useExpensesStore();
   const [showNewTabModal, setShowNewTabModal] = React.useState(false);
 
   const QUICK_ACTIONS = [
     {
       name: 'Add expense',
       icon: <FontAwesome6 name="add" size={24} color={colors.primary} />,
-      action: () => navigation.navigate('NewExpense'),
+      action: () => {
+        clearDraftExpense();
+        setSelectedGroup(null);
+        navigation.navigate('NewExpenseHome');
+      },
       backgroundColor: colors.primaryContainer,
     },
     {

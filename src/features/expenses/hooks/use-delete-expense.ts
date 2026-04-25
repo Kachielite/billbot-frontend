@@ -9,7 +9,7 @@ const useDeleteExpense = (poolId: string) => {
 
   const { isLoading: isDeleting, mutateAsync: deleteExpense } = useMutation(
     'delete-expense',
-    async (expenseId: string) => ExpensesService.deleteExpense(expenseId),
+    async (expenseId: string) => ExpensesService.deleteExpense(poolId, expenseId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([QUERY_KEYS.POOL_EXPENSES, poolId]);

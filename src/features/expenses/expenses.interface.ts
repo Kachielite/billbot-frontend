@@ -5,6 +5,8 @@ export interface Split {
   amount: number;
   settled: boolean;
   settledAt: Date | null;
+  name: string | null;
+  avatarUrl: string | null;
 }
 
 export interface Expense {
@@ -49,7 +51,7 @@ export interface ParsedReceipt {
   currency: string | null;
   merchant: string | null;
   description: string | null;
-  category: string | null;
+  categoryId: string | null;
   date: string | null;
 }
 

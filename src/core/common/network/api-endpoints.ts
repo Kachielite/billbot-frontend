@@ -22,7 +22,7 @@ export const API_ENDPOINTS = {
   POOL_REMOVE_MEMBER: (poolId: string, userId: string) => `/pools/${poolId}/members/${userId}`,
   POOL_EXPENSES: (poolId: string) => `/pools/${poolId}/expenses`,
   POOL_PARSE_RECEIPT: (poolId: string) => `/pools/${poolId}/expenses/parse-receipt`,
-  EXPENSE_DETAIL: (expenseId: string) => `/expenses/${expenseId}`,
+  EXPENSE_DETAIL: (poolId: string, expenseId: string) => `/pools/${poolId}/expenses/${expenseId}`,
   EXPENSE_RECURRENCE: (poolId: string, expenseId: string) =>
     `/pools/${poolId}/expenses/${expenseId}/recurrence`,
   UPCOMING_EXPENSES: '/users/me/expenses/upcoming',

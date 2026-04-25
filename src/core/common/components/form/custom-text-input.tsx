@@ -13,6 +13,17 @@ interface Props<T extends FieldValues> {
   placeholder?: string;
   required?: boolean;
   hint?: string;
+  disabled?: boolean;
+  /**
+   * Input type controls keyboard and input behavior.
+   * - text: default keyboard
+   * - email: email-address keyboard, no auto-capitalize
+   * - number: numeric keyboard
+   * - phone: phone-pad keyboard
+   * - password: secure text entry
+   * - url: url keyboard
+   */
+  type?: 'text' | 'email' | 'number' | 'phone' | 'password' | 'url';
 }
 
 export default function CustomTextInput<T extends FieldValues>({
@@ -22,6 +33,8 @@ export default function CustomTextInput<T extends FieldValues>({
   formController,
   required,
   hint,
+  type,
+  disabled = false,
 }: Props<T>): JSX.Element {
   const colors = useThemeColors();
 
@@ -32,6 +45,48 @@ export default function CustomTextInput<T extends FieldValues>({
   const errorMessage = errors[id]?.message as string | undefined;
 
   const [isFocused, setIsFocused] = useState(false);
+
+  const getInputProps = (t?: Props<T>['type']) => {
+    switch (t) {
+      case 'email':
+        return {
+          keyboardType: 'email-address' as const,
+          autoCapitalize: 'none' as const,
+          textContentType: 'emailAddress' as const,
+          autoComplete: 'email' as const,
+        };
+      case 'number':
+        return {
+          keyboardType: 'numeric' as const,
+          autoCapitalize: 'none' as const,
+        };
+      case 'phone':
+        return {
+          keyboardType: 'phone-pad' as const,
+          autoCapitalize: 'none' as const,
+        };
+      case 'password':
+        return {
+          secureTextEntry: true,
+          textContentType: 'password' as const,
+          autoComplete: 'password' as const,
+        };
+      case 'url':
+        return {
+          keyboardType: 'url' as const,
+          autoCapitalize: 'none' as const,
+          textContentType: 'URL' as const,
+        };
+      case 'text':
+      default:
+        return {
+          keyboardType: 'default' as const,
+          autoCapitalize: 'sentences' as const,
+        };
+    }
+  };
+
+  const inputProps = getInputProps(type);
 
   const labelColor = errorMessage ? colors.error : colors.text.primary;
   const asteriskColor = errorMessage ? colors.error : colors.primary;
@@ -54,16 +109,22 @@ export default function CustomTextInput<T extends FieldValues>({
               styles.inputWrapper,
               {
                 backgroundColor: colors.surface,
-                borderColor: isFocused ? colors.primary : inputBorderColor,
+                borderColor: disabled
+                  ? colors.border.subtle
+                  : isFocused
+                    ? colors.primary
+                    : inputBorderColor,
                 borderWidth: isFocused ? 2 : Border.thin,
               },
-              isFocused && {
-                shadowColor: colors.primary,
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.25,
-                shadowRadius: 6,
-                elevation: 4,
-              },
+              isFocused &&
+                !disabled && {
+                  shadowColor: colors.primary,
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 6,
+                  elevation: 4,
+                },
+              disabled && { opacity: 0.6 },
             ]}
           >
             <TextInput
@@ -76,7 +137,9 @@ export default function CustomTextInput<T extends FieldValues>({
               }}
               onFocus={() => setIsFocused(true)}
               onChangeText={onChange}
-              value={value ?? ''}
+              value={value == null ? '' : String(value)}
+              editable={!disabled}
+              {...inputProps}
             />
           </View>
         )}

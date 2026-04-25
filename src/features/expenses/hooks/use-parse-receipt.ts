@@ -4,9 +4,11 @@ import { Toast } from 'toastify-react-native';
 import { AppError } from '@/core/common/error';
 import { ExpensesService } from '../expenses.service';
 import useExpensesStore from '../expenses.state';
+import { useNavigation } from '@react-navigation/native';
 
 const useParseReceipt = (poolId: string) => {
-  const { setDraftExpense } = useExpensesStore();
+  const { setDraftExpense, setIsParsingReceipt } = useExpensesStore();
+  const navigation = useNavigation();
 
   const {
     isLoading: isParsing,
@@ -14,15 +16,21 @@ const useParseReceipt = (poolId: string) => {
     data: result,
   } = useMutation(
     'parse-receipt',
-    async (image: Asset) => ExpensesService.parseReceipt(poolId, image),
+    async (image: Asset) => {
+      setIsParsingReceipt(true);
+      return ExpensesService.parseReceipt(poolId, image);
+    },
     {
       onSuccess: (data) => {
         setDraftExpense({
           parsedReceipt: data.parsed ?? undefined,
           receiptUrl: data.receiptUrl,
         });
+        setIsParsingReceipt(false);
+        navigation.navigate('NewExpense');
       },
       onError: (error: AppError) => {
+        setIsParsingReceipt(false);
         Toast.error(error.message ?? 'Failed to parse receipt');
       },
     },
