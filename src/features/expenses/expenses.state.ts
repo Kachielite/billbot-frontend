@@ -11,6 +11,8 @@ type ExpensesStore = {
   draftExpense: DraftExpense;
   setDraftExpense: (patch: Partial<DraftExpense>) => void;
   clearDraftExpense: () => void;
+  isParsingReceipt: boolean;
+  setIsParsingReceipt: (value: boolean) => void;
 };
 
 const useExpensesStore = create<ExpensesStore>((set) => ({
@@ -18,6 +20,8 @@ const useExpensesStore = create<ExpensesStore>((set) => ({
   setDraftExpense: (patch) =>
     set((state) => ({ draftExpense: { ...state.draftExpense, ...patch } })),
   clearDraftExpense: () => set({ draftExpense: {} }),
+  isParsingReceipt: false,
+  setIsParsingReceipt: (value: boolean) => set({ isParsingReceipt: value }),
 }));
 
 export default useExpensesStore;
