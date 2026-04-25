@@ -7,6 +7,7 @@ import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Popover, { PopoverPlacement } from 'react-native-popover-view';
+import useExpensesStore from '@/features/expenses/expenses.state';
 
 const MENU_ITEMS = [
   { label: 'Add Expense', icon: 'add-sharp' as const, destructive: false },
@@ -31,6 +32,7 @@ export default function PoolHeader({
 }: PoolHeaderProps) {
   const navigation = useNavigation();
   const colors = useThemeColors();
+  const { clearDraftExpense } = useExpensesStore();
   const [popoverOpen, setPopoverOpen] = React.useState(false);
   const [pendingDelete, setPendingDelete] = React.useState(false);
   const visibleMenuItems = MENU_ITEMS.filter((item) => {
@@ -109,6 +111,7 @@ export default function PoolHeader({
                     navigation.navigate('EditPool', { poolId: poolId });
                   }
                   if (item.label === 'Add Expense') {
+                    clearDraftExpense();
                     navigation.navigate('NewExpense');
                   }
                 }}

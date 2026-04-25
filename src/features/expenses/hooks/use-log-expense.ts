@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 const useLogExpense = (poolId: string) => {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
-  const { draftExpense } = useExpensesStore();
+  const { draftExpense, clearDraftExpense } = useExpensesStore();
   const { profile } = useProfile();
 
   const form = useForm<LogExpenseSchemaType>({
@@ -32,6 +32,7 @@ const useLogExpense = (poolId: string) => {
         await queryClient.invalidateQueries([QUERY_KEYS.POOL_BALANCES, poolId]);
         Toast.success('Expense logged successfully');
         form.reset();
+        clearDraftExpense();
         navigation.canGoBack() && navigation.goBack();
       },
       onError: (error: AppError) => {
