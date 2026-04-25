@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import React from 'react';
 import { GlassView } from 'expo-glass-effect';
 import { Ionicons } from '@expo/vector-icons';
@@ -34,7 +34,7 @@ export default function ExpenseHero({ expense }: Props) {
       tintColor={colors.primary}
       style={[styles.container, { backgroundColor: colors.primary }]}
     >
-      <View style={[styles.emojiCircle, { backgroundColor: colors.primaryCard.pillBg }]}>
+      <View style={[styles.emojiCircle, { backgroundColor: colors.primaryContainer }]}>
         <Text style={styles.emoji}>{emoji}</Text>
       </View>
 
