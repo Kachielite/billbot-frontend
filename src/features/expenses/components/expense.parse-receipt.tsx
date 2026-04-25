@@ -15,9 +15,16 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { type Asset, launchImageLibrary } from 'react-native-image-picker';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Toast } from 'toastify-react-native';
+import { UseFormReturn } from 'react-hook-form';
+import { LogExpenseSchemaType } from '@/features/expenses/expenses.dto';
 
-export default function ExpenseParseReceipt() {
-  const { parseReceipt, isParsing } = useParseReceipt('23');
+type Props = {
+  form: UseFormReturn<LogExpenseSchemaType>;
+  poolId: string;
+};
+
+export default function ExpenseParseReceipt({ form, poolId }: Props) {
+  const { parseReceipt, isParsing } = useParseReceipt(poolId);
   const colors = useThemeColors();
   const [picked, setPicked] = React.useState<Asset | null>(null);
 
@@ -25,8 +32,10 @@ export default function ExpenseParseReceipt() {
     try {
       const res = await launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 });
       if (res.assets && res.assets.length > 0) {
-        setPicked(res.assets[0]);
-        await parseReceipt(res.assets[0]);
+        const asset = res.assets[0];
+        setPicked(asset);
+        form.setValue('receipt', asset, { shouldDirty: true });
+        await parseReceipt(asset);
       }
     } catch (e) {
       console.error('Error picking image:', e);

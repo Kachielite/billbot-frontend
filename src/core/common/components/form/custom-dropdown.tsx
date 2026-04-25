@@ -1,5 +1,14 @@
 import React, { useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import {
+  Platform,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Foundation, Ionicons } from '@expo/vector-icons';
@@ -69,7 +78,7 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
     fontSize: FontSize.sm,
   };
 
-  const wrapperStyle = [
+  const wrapperStyle: StyleProp<ViewStyle> = [
     styles.pickerWrapper,
     isOpen &&
       !disabled && {
@@ -80,7 +89,7 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
         elevation: 4,
       },
     disabled && { opacity: 0.6 },
-  ] as const;
+  ];
 
   const picker = (
     <RNPickerSelect

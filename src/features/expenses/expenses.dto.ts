@@ -1,6 +1,14 @@
 import { z } from 'zod';
+import type { Asset } from 'react-native-image-picker';
 
 // ── Request schemas (Zod) ─────────────────────────────────────────────────────
+const splitEntrySchema = z.object({
+  userId: z.string(),
+  amount: z.number().positive(),
+});
+
+export type SplitEntry = z.infer<typeof splitEntrySchema>;
+
 export const logExpenseSchema = z
   .object({
     amount: z.number().positive('Amount must be greater than 0'),
@@ -10,6 +18,8 @@ export const logExpenseSchema = z
     isRecurring: z.boolean().optional(),
     recurrenceFrequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'yearly']).optional(),
     recurrenceEndDate: z.string().datetime().optional(),
+    splits: z.array(splitEntrySchema).optional(),
+    receipt: z.custom<Asset>().optional(),
   })
   .refine((data) => !data.isRecurring || data.recurrenceFrequency, {
     message: 'Recurrence frequency is required for recurring expenses',

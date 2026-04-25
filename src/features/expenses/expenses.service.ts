@@ -48,23 +48,18 @@ export const ExpensesService = {
     }
   },
 
-  logExpense: async (
-    poolId: string,
-    data: LogExpenseSchemaType,
-    receipt?: Asset,
-  ): Promise<Expense> => {
+  logExpense: async (poolId: string, data: LogExpenseSchemaType): Promise<Expense> => {
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formData.append(key, String(value));
-        }
+        if (value === undefined || value === null || key === 'receipt') return;
+        formData.append(key, Array.isArray(value) ? JSON.stringify(value) : String(value));
       });
-      if (receipt?.uri) {
+      if (data.receipt?.uri) {
         formData.append('receipt', {
-          uri: receipt.uri,
-          type: receipt.type ?? 'image/jpeg',
-          name: receipt.fileName ?? 'receipt.jpg',
+          uri: data.receipt.uri,
+          type: data.receipt.type ?? 'image/jpeg',
+          name: data.receipt.fileName ?? 'receipt.jpg',
         } as unknown as Blob);
       }
       const response = await customAxios.post<ExpenseDto>(
@@ -134,23 +129,18 @@ export const ExpensesService = {
     }
   },
 
-  logGroupExpense: async (
-    groupId: string,
-    data: LogExpenseSchemaType,
-    receipt?: Asset,
-  ): Promise<Expense> => {
+  logGroupExpense: async (groupId: string, data: LogExpenseSchemaType): Promise<Expense> => {
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formData.append(key, String(value));
-        }
+        if (value === undefined || value === null || key === 'receipt') return;
+        formData.append(key, Array.isArray(value) ? JSON.stringify(value) : String(value));
       });
-      if (receipt?.uri) {
+      if (data.receipt?.uri) {
         formData.append('receipt', {
-          uri: receipt.uri,
-          type: receipt.type ?? 'image/jpeg',
-          name: receipt.fileName ?? 'receipt.jpg',
+          uri: data.receipt.uri,
+          type: data.receipt.type ?? 'image/jpeg',
+          name: data.receipt.fileName ?? 'receipt.jpg',
         } as unknown as Blob);
       }
       const response = await customAxios.post<ExpenseDto>(

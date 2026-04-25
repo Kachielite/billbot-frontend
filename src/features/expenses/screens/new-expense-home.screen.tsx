@@ -23,9 +23,19 @@ export default function NewExpenseHomeScreen() {
 
   // ── Step 1: Group ────────────────────────────────────────────────────────────
   const { groups, isLoading: isLoadingGroups } = useGroups();
+  const sortedGroups = React.useMemo(() => {
+    return [...groups].sort((a, b) => {
+      const nameA = a.name?.trim() ?? '';
+      const nameB = b.name?.trim() ?? '';
+      if (nameA === '' && nameB === '') return 0;
+      if (nameA === '') return 1;
+      if (nameB === '') return -1;
+      return nameA.localeCompare(nameB);
+    });
+  }, [groups]);
   const { selectedGroup, setSelectedGroup } = useGroupsStore();
   const groupItems = React.useMemo(
-    () => groups.map((g) => ({ label: g.name, value: g.id })),
+    () => sortedGroups.map((g) => ({ label: g.name, value: g.id })),
     [groups],
   );
   const [isGroupOpen, setIsGroupOpen] = React.useState(false);
@@ -33,9 +43,19 @@ export default function NewExpenseHomeScreen() {
 
   // ── Step 2: Pool (Tab) ───────────────────────────────────────────────────────
   const { pools, isLoading: isLoadingPools } = useGroupPools(selectedGroup?.id ?? '');
+  const sortedPools = React.useMemo(() => {
+    return [...pools].sort((a, b) => {
+      const nameA = a.name?.trim() ?? '';
+      const nameB = b.name?.trim() ?? '';
+      if (nameA === '' && nameB === '') return 0;
+      if (nameA === '') return 1;
+      if (nameB === '') return -1;
+      return nameA.localeCompare(nameB);
+    });
+  }, [pools]);
   const { selectedPool, setSelectedPool } = usePoolsStore();
   const poolItems = React.useMemo(
-    () => pools.map((p) => ({ label: p.name, value: p.id })),
+    () => sortedPools.map((p) => ({ label: p.name, value: p.id })),
     [pools],
   );
   const [isPoolOpen, setIsPoolOpen] = React.useState(false);

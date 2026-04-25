@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from 'react-query';
-import { Asset } from 'react-native-image-picker';
 import { Toast } from 'toastify-react-native';
 import { QUERY_KEYS } from '@/core/common/constants/query-keys';
 import { AppError } from '@/core/common/error';
@@ -19,8 +18,7 @@ const useLogGroupExpense = (groupId: string) => {
 
   const { isLoading: isLogging, mutateAsync: logExpense } = useMutation(
     'log-group-expense',
-    ({ data, receipt }: { data: LogExpenseSchemaType; receipt?: Asset }) =>
-      ExpensesService.logGroupExpense(groupId, data, receipt),
+    (data: LogExpenseSchemaType) => ExpensesService.logGroupExpense(groupId, data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([QUERY_KEYS.GROUP_EXPENSES, groupId]);

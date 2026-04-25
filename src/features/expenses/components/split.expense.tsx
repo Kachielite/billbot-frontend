@@ -98,8 +98,27 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
   const members = selectedGroup?.members || [];
   const [memberAmounts, setMemberAmounts] = React.useState<Record<string, string>>({});
 
+  const syncSplitsToForm = (amounts: Record<string, string>) => {
+    const splits = members
+      .map((m) => ({ userId: m.userId, amount: parseFloat(amounts[m.userId] ?? '') }))
+      .filter((s) => !isNaN(s.amount) && s.amount > 0);
+    form.setValue('splits', splits.length ? splits : undefined, { shouldValidate: true });
+  };
+
+  const handleOptionChange = (value: string) => {
+    setSelectedOption(value);
+    if (value === 'evenly') {
+      setMemberAmounts({});
+      form.setValue('splits', undefined);
+    }
+  };
+
   const handleAmountChange = (userId: string, value: string) => {
-    setMemberAmounts((prev) => ({ ...prev, [userId]: value }));
+    setMemberAmounts((prev) => {
+      const updated = { ...prev, [userId]: value };
+      syncSplitsToForm(updated);
+      return updated;
+    });
   };
 
   return (
@@ -118,7 +137,7 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
                   backgroundColor: colors.surface,
                 },
               ]}
-              onPress={() => setSelectedOption(option.value)}
+              onPress={() => handleOptionChange(option.value)}
             >
               <View style={[styles.emojiContainer, { backgroundColor: colors.primary + 20 }]}>
                 <Text style={[TextStyles.body, { color: colors.text.primary }]}>

@@ -14,13 +14,18 @@ import { TextStyles } from '@/core/common/constants/fonts';
 
 type NewExpenseFormProps = {
   form: UseFormReturn<LogExpenseSchemaType>;
+  poolId: string;
 };
 
-export default function NewExpenseForm({ form }: NewExpenseFormProps) {
+export default function NewExpenseForm({ form, poolId }: NewExpenseFormProps) {
   const { isParsingReceipt } = useExpensesStore();
   const colors = useThemeColors();
   const categoriesQuery = useCategories();
-  const categoryOptions = categoriesQuery.categories.map((c) => ({
+  const sortedCategories = React.useMemo(() => {
+    if (!categoriesQuery.categories) return [];
+    return [...categoriesQuery.categories].sort((a, b) => a.name.localeCompare(b.name));
+  }, [categoriesQuery.categories]);
+  const categoryOptions = sortedCategories.map((c) => ({
     label: `${c.emoji} ${c.name}`,
     value: c.id,
   }));
@@ -38,7 +43,7 @@ export default function NewExpenseForm({ form }: NewExpenseFormProps) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        <ExpenseParseReceipt />
+        <ExpenseParseReceipt form={form} poolId={poolId} />
         <CustomTextInput
           label="AMOUNT"
           id="amount"
@@ -60,6 +65,8 @@ export default function NewExpenseForm({ form }: NewExpenseFormProps) {
           options={categoryOptions}
           disabled={isLoading}
         />
+
+        <SplitExpense form={form} />
 
         {/* ── Recurring row ── */}
         <View style={styles.recurringRow}>
@@ -95,8 +102,6 @@ export default function NewExpenseForm({ form }: NewExpenseFormProps) {
             />
           </View>
         </View>
-
-        <SplitExpense form={form} />
       </View>
     </ScrollView>
   );
