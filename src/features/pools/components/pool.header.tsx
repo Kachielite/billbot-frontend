@@ -108,6 +108,9 @@ export default function PoolHeader({
                   if (item.label === 'Edit Pool') {
                     navigation.navigate('EditPool', { poolId: poolId });
                   }
+                  if (item.label === 'Add Expense') {
+                    navigation.navigate('NewExpense');
+                  }
                 }}
               >
                 <Ionicons

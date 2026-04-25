@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import React from 'react';
 import CustomFormSheet from '@/core/common/components/layout/custom-formsheet';
 import { Fonts, FontSize, TextStyles } from '@/core/common/constants/fonts';
@@ -39,7 +39,6 @@ export default function NewExpenseHomeScreen() {
     [groups],
   );
   const [isGroupOpen, setIsGroupOpen] = React.useState(false);
-  const groupPickerRef = React.useRef<any>(null);
 
   // ── Step 2: Pool (Tab) ───────────────────────────────────────────────────────
   const { pools, isLoading: isLoadingPools } = useGroupPools(selectedGroup?.id ?? '');
@@ -59,7 +58,6 @@ export default function NewExpenseHomeScreen() {
     [pools],
   );
   const [isPoolOpen, setIsPoolOpen] = React.useState(false);
-  const poolPickerRef = React.useRef<any>(null);
 
   React.useEffect(() => {
     setSelectedPool(null);
@@ -170,84 +168,40 @@ export default function NewExpenseHomeScreen() {
             />
             <View style={styles.optionContainer}>
               <Text style={[styles.label, { color: colors.text.primary }]}>Group</Text>
-              {Platform.OS === 'ios' ? (
-                <TouchableOpacity
-                  activeOpacity={1}
+              <View
+                style={[
+                  styles.pickerWrapper,
+                  isGroupOpen && styles.pickerFocus,
+                  isLoadingGroups && { opacity: 0.6 },
+                ]}
+              >
+                <RNPickerSelect
+                  items={groupItems}
+                  value={selectedGroup?.id ?? null}
+                  onValueChange={(value) => {
+                    const group = value ? (groups.find((g) => g.id === value) ?? null) : null;
+                    setSelectedGroup(group);
+                  }}
+                  placeholder={{
+                    label: 'Select a group',
+                    value: null,
+                    color: colors.text.disabled,
+                  }}
                   disabled={isLoadingGroups}
-                  onPress={() => groupPickerRef.current?.togglePicker(true)}
-                  style={[
-                    styles.pickerWrapper,
-                    isGroupOpen && styles.pickerFocus,
-                    isLoadingGroups && { opacity: 0.6 },
-                  ]}
-                >
-                  <View pointerEvents="none">
-                    <RNPickerSelect
-                      ref={groupPickerRef}
-                      items={groupItems}
-                      value={selectedGroup?.id ?? null}
-                      onValueChange={(value) => {
-                        const group = value ? (groups.find((g) => g.id === value) ?? null) : null;
-                        setSelectedGroup(group);
-                      }}
-                      placeholder={{
-                        label: 'Select a group',
-                        value: null,
-                        color: colors.text.disabled,
-                      }}
-                      disabled={isLoadingGroups}
-                      useNativeAndroidPickerStyle={false}
-                      darkTheme={scheme === 'dark'}
-                      onOpen={() => setIsGroupOpen(true)}
-                      onClose={() => setIsGroupOpen(false)}
-                      style={makePickerStyle(isGroupOpen, isLoadingGroups)}
-                    />
-                  </View>
-                  <View style={styles.iconOverlay} pointerEvents="none">
-                    <Ionicons
-                      name={isGroupOpen ? 'chevron-up' : 'chevron-down'}
-                      size={18}
-                      color={isLoadingGroups ? colors.text.disabled : colors.text.secondary}
-                    />
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <View
-                  style={[
-                    styles.pickerWrapper,
-                    isGroupOpen && styles.pickerFocus,
-                    isLoadingGroups && { opacity: 0.6 },
-                  ]}
-                >
-                  <RNPickerSelect
-                    ref={groupPickerRef}
-                    items={groupItems}
-                    value={selectedGroup?.id ?? null}
-                    onValueChange={(value) => {
-                      const group = value ? (groups.find((g) => g.id === value) ?? null) : null;
-                      setSelectedGroup(group);
-                    }}
-                    placeholder={{
-                      label: 'Select a group',
-                      value: null,
-                      color: colors.text.disabled,
-                    }}
-                    disabled={isLoadingGroups}
-                    useNativeAndroidPickerStyle={false}
-                    darkTheme={scheme === 'dark'}
-                    onOpen={() => setIsGroupOpen(true)}
-                    onClose={() => setIsGroupOpen(false)}
-                    style={makePickerStyle(isGroupOpen, isLoadingGroups)}
+                  useNativeAndroidPickerStyle={false}
+                  darkTheme={scheme === 'dark'}
+                  onOpen={() => setIsGroupOpen(true)}
+                  onClose={() => setIsGroupOpen(false)}
+                  style={makePickerStyle(isGroupOpen, isLoadingGroups)}
+                />
+                <View style={styles.iconOverlay} pointerEvents="none">
+                  <Ionicons
+                    name={isGroupOpen ? 'chevron-up' : 'chevron-down'}
+                    size={18}
+                    color={isLoadingGroups ? colors.text.disabled : colors.text.secondary}
                   />
-                  <View style={styles.iconOverlay} pointerEvents="none">
-                    <Ionicons
-                      name={isGroupOpen ? 'chevron-up' : 'chevron-down'}
-                      size={18}
-                      color={isLoadingGroups ? colors.text.disabled : colors.text.secondary}
-                    />
-                  </View>
                 </View>
-              )}
+              </View>
             </View>
             <CustomButton
               label="Next → Pick a Tab"
@@ -266,84 +220,40 @@ export default function NewExpenseHomeScreen() {
             />
             <View style={styles.optionContainer}>
               <Text style={[styles.label, { color: colors.text.primary }]}>Tab</Text>
-              {Platform.OS === 'ios' ? (
-                <TouchableOpacity
-                  activeOpacity={1}
+              <View
+                style={[
+                  styles.pickerWrapper,
+                  isPoolOpen && styles.pickerFocus,
+                  isLoadingPools && { opacity: 0.6 },
+                ]}
+              >
+                <RNPickerSelect
+                  items={poolItems}
+                  value={selectedPool?.id ?? null}
+                  onValueChange={(value) => {
+                    const pool = value ? (pools.find((p) => p.id === value) ?? null) : null;
+                    setSelectedPool(pool);
+                  }}
+                  placeholder={{
+                    label: isLoadingPools ? 'Loading tabs…' : 'Select a tab',
+                    value: null,
+                    color: colors.text.disabled,
+                  }}
                   disabled={isLoadingPools}
-                  onPress={() => poolPickerRef.current?.togglePicker(true)}
-                  style={[
-                    styles.pickerWrapper,
-                    isPoolOpen && styles.pickerFocus,
-                    isLoadingPools && { opacity: 0.6 },
-                  ]}
-                >
-                  <View pointerEvents="none">
-                    <RNPickerSelect
-                      ref={poolPickerRef}
-                      items={poolItems}
-                      value={selectedPool?.id ?? null}
-                      onValueChange={(value) => {
-                        const pool = value ? (pools.find((p) => p.id === value) ?? null) : null;
-                        setSelectedPool(pool);
-                      }}
-                      placeholder={{
-                        label: isLoadingPools ? 'Loading tabs…' : 'Select a tab',
-                        value: null,
-                        color: colors.text.disabled,
-                      }}
-                      disabled={isLoadingPools}
-                      useNativeAndroidPickerStyle={false}
-                      darkTheme={scheme === 'dark'}
-                      onOpen={() => setIsPoolOpen(true)}
-                      onClose={() => setIsPoolOpen(false)}
-                      style={makePickerStyle(isPoolOpen, isLoadingPools)}
-                    />
-                  </View>
-                  <View style={styles.iconOverlay} pointerEvents="none">
-                    <Ionicons
-                      name={isPoolOpen ? 'chevron-up' : 'chevron-down'}
-                      size={18}
-                      color={isLoadingPools ? colors.text.disabled : colors.text.secondary}
-                    />
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <View
-                  style={[
-                    styles.pickerWrapper,
-                    isPoolOpen && styles.pickerFocus,
-                    isLoadingPools && { opacity: 0.6 },
-                  ]}
-                >
-                  <RNPickerSelect
-                    ref={poolPickerRef}
-                    items={poolItems}
-                    value={selectedPool?.id ?? null}
-                    onValueChange={(value) => {
-                      const pool = value ? (pools.find((p) => p.id === value) ?? null) : null;
-                      setSelectedPool(pool);
-                    }}
-                    placeholder={{
-                      label: isLoadingPools ? 'Loading tabs…' : 'Select a tab',
-                      value: null,
-                      color: colors.text.disabled,
-                    }}
-                    disabled={isLoadingPools}
-                    useNativeAndroidPickerStyle={false}
-                    darkTheme={scheme === 'dark'}
-                    onOpen={() => setIsPoolOpen(true)}
-                    onClose={() => setIsPoolOpen(false)}
-                    style={makePickerStyle(isPoolOpen, isLoadingPools)}
+                  useNativeAndroidPickerStyle={false}
+                  darkTheme={scheme === 'dark'}
+                  onOpen={() => setIsPoolOpen(true)}
+                  onClose={() => setIsPoolOpen(false)}
+                  style={makePickerStyle(isPoolOpen, isLoadingPools)}
+                />
+                <View style={styles.iconOverlay} pointerEvents="none">
+                  <Ionicons
+                    name={isPoolOpen ? 'chevron-up' : 'chevron-down'}
+                    size={18}
+                    color={isLoadingPools ? colors.text.disabled : colors.text.secondary}
                   />
-                  <View style={styles.iconOverlay} pointerEvents="none">
-                    <Ionicons
-                      name={isPoolOpen ? 'chevron-up' : 'chevron-down'}
-                      size={18}
-                      color={isLoadingPools ? colors.text.disabled : colors.text.secondary}
-                    />
-                  </View>
                 </View>
-              )}
+              </View>
             </View>
             <CustomButton
               label="Continue to Expense"
