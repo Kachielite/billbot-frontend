@@ -18,7 +18,7 @@ export default function HomeQuickActions() {
     {
       name: 'Add expense',
       icon: <FontAwesome6 name="add" size={24} color={colors.primary} />,
-      action: () => navigation.navigate('NewExpense'),
+      action: () => navigation.navigate('NewExpenseHome'),
       backgroundColor: colors.primaryContainer,
     },
     {

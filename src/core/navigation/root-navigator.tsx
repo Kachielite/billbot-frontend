@@ -24,6 +24,7 @@ import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
 import PoolScreen from '@/features/pools/screens/pool.screen';
 import PoolsScreen from '@/features/pools/screens/pools.screen';
 import EditPoolScreen from '@/features/pools/screens/edit-pool.screen';
+import NewExpenseHomeScreen from '@/features/expenses/screens/new-expense-home.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -124,6 +125,15 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         screen: NewExpenseScreen,
         options: {
           headerShown: false,
+        },
+      },
+      NewExpenseHome: {
+        screen: NewExpenseHomeScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
         },
       },
       NewPool: {

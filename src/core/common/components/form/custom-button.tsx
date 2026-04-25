@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { GlassView } from 'expo-glass-effect';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Radius } from '@/core/common/constants/theme';
+import { Radius, Shadow } from '@/core/common/constants/theme';
 
 type CustomButtonProps = {
   label: string;
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
+    ...Shadow.sm,
   },
   touchable: {
     width: '100%',
