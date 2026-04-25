@@ -8,7 +8,6 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 import { Spacing } from '@/core/common/constants/theme';
-import { TextStyles } from '@/core/common/constants/fonts';
 import { Expense } from '@/features/expenses/expenses.interface';
 import { ExpenseCard } from '@/features/expenses/components/expense.card';
 

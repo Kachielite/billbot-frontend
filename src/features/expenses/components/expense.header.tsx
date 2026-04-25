@@ -21,7 +21,7 @@ export default function ExpenseHeader() {
               if (navigation.canGoBack()) navigation.goBack();
             }}
           >
-            <Ionicons name="close" size={24} color={colors.text.primary} />
+            <Ionicons name="chevron-back" size={24} color={colors.text.primary} />
           </TouchableOpacity>
         </View>
         <View>
