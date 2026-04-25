@@ -5,6 +5,8 @@ export interface Split {
   amount: number;
   settled: boolean;
   settledAt: Date | null;
+  name: string | null;
+  avatarUrl: string | null;
 }
 
 export interface Expense {

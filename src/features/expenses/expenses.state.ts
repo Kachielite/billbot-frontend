@@ -1,6 +1,6 @@
 import { create } from 'zustand/react';
 import { LogExpenseSchemaType } from './expenses.dto';
-import { ParsedReceipt } from './expenses.interface';
+import { Expense, ParsedReceipt } from './expenses.interface';
 
 type DraftExpense = Partial<LogExpenseSchemaType> & {
   receiptUrl?: string;
@@ -13,6 +13,8 @@ type ExpensesStore = {
   clearDraftExpense: () => void;
   isParsingReceipt: boolean;
   setIsParsingReceipt: (value: boolean) => void;
+  selectedExpense: Expense | null;
+  setSelectedExpense: (expense: Expense | null) => void;
 };
 
 const useExpensesStore = create<ExpensesStore>((set) => ({
@@ -22,6 +24,8 @@ const useExpensesStore = create<ExpensesStore>((set) => ({
   clearDraftExpense: () => set({ draftExpense: {} }),
   isParsingReceipt: false,
   setIsParsingReceipt: (value: boolean) => set({ isParsingReceipt: value }),
+  selectedExpense: null,
+  setSelectedExpense: (expense: Expense | null) => set({ selectedExpense: expense }),
 }));
 
 export default useExpensesStore;

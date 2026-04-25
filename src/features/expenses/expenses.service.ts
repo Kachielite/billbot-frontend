@@ -39,9 +39,11 @@ export const ExpensesService = {
     }
   },
 
-  getExpense: async (expenseId: string): Promise<Expense> => {
+  getExpense: async (poolId: string, expenseId: string): Promise<Expense> => {
     try {
-      const response = await customAxios.get<ExpenseDto>(API_ENDPOINTS.EXPENSE_DETAIL(expenseId));
+      const response = await customAxios.get<ExpenseDto>(
+        API_ENDPOINTS.EXPENSE_DETAIL(poolId, expenseId),
+      );
       return mapExpenseFromDto(response.data);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
@@ -92,9 +94,9 @@ export const ExpensesService = {
     }
   },
 
-  deleteExpense: async (expenseId: string): Promise<void> => {
+  deleteExpense: async (poolId: string, expenseId: string): Promise<void> => {
     try {
-      await customAxios.delete(API_ENDPOINTS.EXPENSE_DETAIL(expenseId));
+      await customAxios.delete(API_ENDPOINTS.EXPENSE_DETAIL(poolId, expenseId));
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }

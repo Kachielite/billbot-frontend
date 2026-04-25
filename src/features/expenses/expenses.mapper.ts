@@ -8,6 +8,8 @@ export const mapSplitFromDto = (dto: SplitDto): Split => ({
   amount: parseFloat(dto.amount),
   settled: dto.settled,
   settledAt: dto.settled_at ? new Date(dto.settled_at) : null,
+  name: dto.name,
+  avatarUrl: dto.avatar_url,
 });
 
 export const mapExpenseFromDto = (dto: ExpenseDto): Expense => ({

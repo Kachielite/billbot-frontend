@@ -5,8 +5,10 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import React from 'react';
 import moment from 'moment';
 import { Expense } from '@/features/expenses/expenses.interface';
+import { useNavigation } from '@react-navigation/native';
 
 export const ExpenseCard = ({ expense }: { expense: Expense }) => {
+  const navigation = useNavigation();
   const colors = useThemeColors();
 
   const emoji = expense.categoryEmoji ?? '💸';
@@ -30,6 +32,9 @@ export const ExpenseCard = ({ expense }: { expense: Expense }) => {
         expenseCardStyles.activityCard,
         { backgroundColor: colors.surface, borderColor: colors.border.default },
       ]}
+      onPress={() =>
+        navigation.navigate('Expense', { poolId: expense.poolId, expenseId: expense.id })
+      }
     >
       <View
         style={[

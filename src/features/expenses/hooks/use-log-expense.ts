@@ -32,7 +32,7 @@ const useLogExpense = (poolId: string) => {
         await queryClient.invalidateQueries([QUERY_KEYS.POOL_BALANCES, poolId]);
         Toast.success('Expense logged successfully');
         form.reset();
-        navigation.navigate('Pool', { poolId });
+        navigation.canGoBack() && navigation.goBack();
       },
       onError: (error: AppError) => {
         Toast.error(error.message ?? 'An error occurred');

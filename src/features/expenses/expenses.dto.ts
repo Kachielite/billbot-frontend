@@ -43,6 +43,8 @@ export interface SplitDto {
   amount: string;
   settled: boolean;
   settled_at: string | null;
+  name: string | null;
+  avatar_url: string | null;
 }
 
 export interface ExpenseDto {
