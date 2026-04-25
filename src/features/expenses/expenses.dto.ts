@@ -24,6 +24,17 @@ export const logExpenseSchema = z
   .refine((data) => !data.isRecurring || data.recurrenceFrequency, {
     message: 'Recurrence frequency is required for recurring expenses',
     path: ['recurrenceFrequency'],
+  })
+  .superRefine((data, ctx) => {
+    if (!data.splits?.length || !data.amount) return;
+    const sum = data.splits.reduce((acc, s) => acc + s.amount, 0);
+    if (Math.abs(sum - data.amount) > 0.01) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Split amounts (${sum.toFixed(2)}) must equal the expense total (${data.amount.toFixed(2)})`,
+        path: ['splits'],
+      });
+    }
   });
 export type LogExpenseSchemaType = z.infer<typeof logExpenseSchema>;
 

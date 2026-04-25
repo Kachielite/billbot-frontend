@@ -1,14 +1,25 @@
-import { Image, Pressable, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+} from 'react-native';
 import React from 'react';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Border, Card, Input, Radius, Spacing } from '@/core/common/constants/theme';
 import useGroupsStore from '@/features/groups/groups.state';
+import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import { GroupMember } from '@/features/groups/groups.interface';
 import useProfile from '@/features/user/hooks/use-profile';
 import getInitials from '@/core/common/utils/get-initials';
 import { UseFormReturn } from 'react-hook-form';
 import { LogExpenseSchemaType } from '@/features/expenses/expenses.dto';
+import { Ionicons } from '@expo/vector-icons';
 
 const AVATAR_SIZE = 45;
 
@@ -61,11 +72,9 @@ const MemberCard = ({ member, index, isLast, amount, onAmountChange }: MemberCar
             <Text style={[styles.initials, { color: swatch.on }]}>{getInitials(member.name)}</Text>
           </View>
         )}
-        <View>
-          <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
-            {member.name.split(' ')[0]} {profile?.id === member.userId && '(You)'}
-          </Text>
-        </View>
+        <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
+          {member.name.split(' ')[0]} {profile?.id === member.userId ? '(You)' : ''}
+        </Text>
       </View>
 
       <TextInput
@@ -95,8 +104,17 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
   const colors = useThemeColors();
   const [selectedOption, setSelectedOption] = React.useState<string>('evenly');
   const { selectedGroup } = useGroupsStore();
-  const members = selectedGroup?.members || [];
+  const { group, isLoading: isLoadingMembers } = useGroupDetail(selectedGroup?.id ?? '');
+  const members = group?.members ?? [];
   const [memberAmounts, setMemberAmounts] = React.useState<Record<string, string>>({});
+
+  const totalAmount = form.watch('amount') ?? 0;
+  const splitsError = form.formState.errors.splits?.message as string | undefined;
+
+  const allocated = Object.values(memberAmounts).reduce((sum, v) => sum + (parseFloat(v) || 0), 0);
+  const remaining = Math.round((totalAmount - allocated) * 100) / 100;
+  const isPerfect = allocated > 0 && remaining === 0;
+  const isOver = remaining < 0;
 
   const syncSplitsToForm = (amounts: Record<string, string>) => {
     const splits = members
@@ -121,6 +139,8 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
     });
   };
 
+  const remainingColor = isPerfect ? colors.primary : isOver ? colors.error : colors.text.secondary;
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'column', gap: Spacing.sm }}>
@@ -139,7 +159,7 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
               ]}
               onPress={() => handleOptionChange(option.value)}
             >
-              <View style={[styles.emojiContainer, { backgroundColor: colors.primary + 20 }]}>
+              <View style={[styles.emojiContainer, { backgroundColor: colors.primary + '20' }]}>
                 <Text style={[TextStyles.body, { color: colors.text.primary }]}>
                   {option.emoji}
                 </Text>
@@ -160,23 +180,61 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
       {selectedOption === 'custom' && (
         <View style={{ flexDirection: 'column', gap: Spacing.sm, marginTop: Spacing.md }}>
           <Text style={[TextStyles.label, { color: colors.text.primary }]}>MEMBERS SPLIT</Text>
-          <View
-            style={[
-              Card as ViewStyle,
-              { backgroundColor: colors.surface, borderColor: colors.border.default },
-            ]}
-          >
-            {members.map((member, index) => (
-              <MemberCard
-                key={member.userId}
-                member={member}
-                index={index}
-                isLast={index === members.length - 1}
-                amount={memberAmounts[member.userId] ?? ''}
-                onAmountChange={handleAmountChange}
-              />
-            ))}
-          </View>
+
+          {isLoadingMembers ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={colors.primary} />
+            </View>
+          ) : members.length === 0 ? (
+            <View style={styles.loadingContainer}>
+              <Text style={[TextStyles.bodySmall, { color: colors.text.disabled }]}>
+                No members found
+              </Text>
+            </View>
+          ) : (
+            <View
+              style={[
+                Card as ViewStyle,
+                { backgroundColor: colors.surface, borderColor: colors.border.default },
+              ]}
+            >
+              {members.map((member, index) => (
+                <MemberCard
+                  key={member.userId}
+                  member={member}
+                  index={index}
+                  isLast={index === members.length - 1}
+                  amount={memberAmounts[member.userId] ?? ''}
+                  onAmountChange={handleAmountChange}
+                />
+              ))}
+
+              {/* ── Remaining tracker ── */}
+              <View style={[styles.remainingRow, { borderTopColor: colors.border.default }]}>
+                {isPerfect ? (
+                  <>
+                    <Ionicons name="checkmark-circle" size={16} color={colors.primary} />
+                    <Text style={[TextStyles.label, { color: colors.primary }]}>
+                      Amount perfectly split
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={[TextStyles.label, { color: remainingColor }]}>
+                      {isOver ? 'OVER BY' : 'REMAINING'}{' '}
+                    </Text>
+                    <Text style={[TextStyles.amountSmall, { color: remainingColor }]}>
+                      {Math.abs(remaining).toFixed(2)}
+                    </Text>
+                  </>
+                )}
+              </View>
+            </View>
+          )}
+
+          {splitsError && (
+            <Text style={[TextStyles.error, { color: colors.error }]}>{splitsError}</Text>
+          )}
         </View>
       )}
     </View>
@@ -249,5 +307,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
+  },
+  remainingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: Spacing.sm,
+    marginTop: Spacing.sm,
+    borderTopWidth: Border.thin,
+    paddingHorizontal: Spacing.sm,
+  },
+  loadingContainer: {
+    paddingVertical: Spacing.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
