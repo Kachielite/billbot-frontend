@@ -54,7 +54,7 @@ export const mapParsedReceiptFromDto = (dto: ParseReceiptResponseDto): ParseRece
         currency: dto.parsed.currency,
         merchant: dto.parsed.merchant,
         description: dto.parsed.description,
-        category: dto.parsed.category,
+        categoryId: dto.parsed.category_id,
         date: dto.parsed.date,
       }
     : null,

@@ -39,6 +39,7 @@
     "react-hook-form": "^7.72.1",
     "react-native": "0.83.6",
     "react-native-element-dropdown": "^2.12.4",
+    "react-native-dropdown-picker": "^5.4.6",
     "react-native-image-picker": "^8.2.1",
     "react-native-mmkv": "^4.3.1",
     "react-native-nitro-modules": "^0.35.4",

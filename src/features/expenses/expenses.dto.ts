@@ -6,7 +6,7 @@ export const logExpenseSchema = z
     amount: z.number().positive('Amount must be greater than 0'),
     description: z.string().max(255).optional(),
     categoryId: z.string().uuid().optional(),
-    currency: z.enum(['NGN', 'KES', 'GHS', 'ZAR']).optional(),
+    currency: z.string().optional(),
     isRecurring: z.boolean().optional(),
     recurrenceFrequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'yearly']).optional(),
     recurrenceEndDate: z.string().datetime().optional(),
@@ -77,7 +77,7 @@ export interface ParsedReceiptDto {
   currency: string | null;
   merchant: string | null;
   description: string | null;
-  category: string | null;
+  category_id: string | null;
   date: string | null;
 }
 

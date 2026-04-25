@@ -7,9 +7,14 @@ import { QUERY_KEYS } from '@/core/common/constants/query-keys';
 import { AppError } from '@/core/common/error';
 import { logExpenseSchema, LogExpenseSchemaType } from '../expenses.dto';
 import { ExpensesService } from '../expenses.service';
+import useExpensesStore from '@/features/expenses/expenses.state';
+import { useEffect } from 'react';
+import useProfile from '@/features/user/hooks/use-profile';
 
 const useLogExpense = (poolId: string) => {
   const queryClient = useQueryClient();
+  const { draftExpense } = useExpensesStore();
+  const { profile } = useProfile();
 
   const form = useForm<LogExpenseSchemaType>({
     resolver: zodResolver(logExpenseSchema),
@@ -22,9 +27,9 @@ const useLogExpense = (poolId: string) => {
     async ({ data, receipt }: { data: LogExpenseSchemaType; receipt?: Asset }) =>
       ExpensesService.logExpense(poolId, data, receipt),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([QUERY_KEYS.POOL_EXPENSES, poolId]);
-        queryClient.invalidateQueries([QUERY_KEYS.POOL_BALANCES, poolId]);
+      onSuccess: async () => {
+        await queryClient.invalidateQueries([QUERY_KEYS.POOL_EXPENSES, poolId]);
+        await queryClient.invalidateQueries([QUERY_KEYS.POOL_BALANCES, poolId]);
         Toast.success('Expense logged successfully');
         form.reset();
       },
@@ -33,6 +38,18 @@ const useLogExpense = (poolId: string) => {
       },
     },
   );
+
+  const { setValue } = form;
+  useEffect(() => {
+    if (draftExpense) {
+      const { parsedReceipt } = draftExpense;
+      const receiptDescription = `${parsedReceipt?.merchant ?? ''} ${parsedReceipt?.description ?? ''}`;
+      setValue('amount', parsedReceipt?.amount ?? 0);
+      setValue('currency', parsedReceipt?.currency ?? profile?.currency ?? 'NGN');
+      setValue('description', receiptDescription ?? '');
+      setValue('categoryId', parsedReceipt?.categoryId ?? undefined);
+    }
+  }, [draftExpense, setValue, profile?.currency]);
 
   return { form, isLogging, logExpense };
 };

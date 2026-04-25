@@ -49,7 +49,7 @@ export interface ParsedReceipt {
   currency: string | null;
   merchant: string | null;
   description: string | null;
-  category: string | null;
+  categoryId: string | null;
   date: string | null;
 }
 

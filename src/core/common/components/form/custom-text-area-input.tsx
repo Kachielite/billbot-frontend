@@ -14,6 +14,7 @@ interface Props<T extends FieldValues> {
   required?: boolean;
   numberOfLines?: number;
   maxLength?: number;
+  disabled?: boolean;
 }
 
 export default function CustomTextAreaInput<T extends FieldValues>({
@@ -24,6 +25,7 @@ export default function CustomTextAreaInput<T extends FieldValues>({
   required,
   numberOfLines = 4,
   maxLength = -1,
+  disabled = false,
 }: Props<T>) {
   const colors = useThemeColors();
 
@@ -56,16 +58,22 @@ export default function CustomTextAreaInput<T extends FieldValues>({
               styles.inputWrapper,
               {
                 backgroundColor: colors.surface,
-                borderColor: isFocused ? colors.primary : inputBorderColor,
+                borderColor: disabled
+                  ? colors.border.subtle
+                  : isFocused
+                    ? colors.primary
+                    : inputBorderColor,
                 borderWidth: isFocused ? 2 : Border.thin,
               },
-              isFocused && {
-                shadowColor: colors.primary,
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.25,
-                shadowRadius: 6,
-                elevation: 4,
-              },
+              isFocused &&
+                !disabled && {
+                  shadowColor: colors.primary,
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 6,
+                  elevation: 4,
+                },
+              disabled && { opacity: 0.6 },
             ]}
           >
             <TextInput
@@ -79,6 +87,7 @@ export default function CustomTextAreaInput<T extends FieldValues>({
               onFocus={() => setIsFocused(true)}
               onChangeText={onChange}
               value={value ?? ''}
+              editable={!disabled}
               multiline
               numberOfLines={numberOfLines}
               maxLength={maxLength === -1 ? undefined : maxLength}
