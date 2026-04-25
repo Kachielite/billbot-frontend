@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+  Platform,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Foundation, Ionicons } from '@expo/vector-icons';
@@ -34,6 +43,7 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
   const colors = useThemeColors();
   const scheme = useColorScheme();
   const [isOpen, setIsOpen] = useState(false);
+  const pickerRef = useRef<any>(null);
 
   const {
     formState: { errors },
@@ -68,7 +78,7 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
     fontSize: FontSize.sm,
   };
 
-  const wrapperStyle = [
+  const wrapperStyle: StyleProp<ViewStyle> = [
     styles.pickerWrapper,
     isOpen &&
       !disabled && {
@@ -83,6 +93,7 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
 
   const picker = (
     <RNPickerSelect
+      ref={pickerRef}
       items={items}
       value={currentValue}
       onValueChange={(value) => {
@@ -135,10 +146,22 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
         </View>
       )}
 
-      <View style={wrapperStyle}>
-        {picker}
-        {icon}
-      </View>
+      {Platform.OS === 'ios' ? (
+        <TouchableOpacity
+          activeOpacity={1}
+          disabled={disabled}
+          onPress={() => pickerRef.current?.togglePicker(true)}
+          style={wrapperStyle}
+        >
+          <View pointerEvents="none">{picker}</View>
+          {icon}
+        </TouchableOpacity>
+      ) : (
+        <View style={wrapperStyle}>
+          {picker}
+          {icon}
+        </View>
+      )}
 
       {errorMessage && <Text style={[styles.error, { color: colors.error }]}>{errorMessage}</Text>}
     </View>
