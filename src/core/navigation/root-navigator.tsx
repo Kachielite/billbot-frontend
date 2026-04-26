@@ -30,6 +30,7 @@ import ExpenseScreen from '@/features/expenses/screens/expense.screen';
 import SettlementsScreen from '@/features/settlements/screens/settlements.screen';
 import SettlementScreen from '@/features/settlements/screens/settlement.screen';
 import RecordPaymentScreen from '@/features/settlements/screens/record-payment.screen';
+import SettleUpHomeScreen from '@/features/settlements/screens/settle-up-home.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -182,6 +183,15 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         screen: PoolsScreen,
         options: {
           headerShown: false,
+        },
+      },
+      SettleUpHome: {
+        screen: SettleUpHomeScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
         },
       },
       Settlements: {
