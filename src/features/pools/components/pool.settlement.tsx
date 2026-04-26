@@ -36,8 +36,19 @@ export default function PoolSettlement({
           gap: Spacing.xs,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-          <Tooltip description="Red indicates a member owes money; green indicates a member is owed money." />
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: Spacing.sm,
+            justifyContent: 'space-between',
+            width: '100%',
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Breakdown</Text>
+            <Tooltip description="Showing who owes who based on the expenses added to this pool. The amounts shown here are what each person owes or is owed, and may not reflect the total amount they paid or owe for the entire pool." />
+          </View>
           {onViewSettlements && (
             <TouchableOpacity onPress={onViewSettlements}>
               <Text style={[TextStyles.label, { color: colors.primary }]}>View Settlements</Text>
