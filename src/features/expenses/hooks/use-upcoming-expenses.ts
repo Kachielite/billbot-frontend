@@ -44,7 +44,7 @@ const useUpcomingExpenses = (initialLimit = 10) => {
 
   return {
     upcomingExpenses: data?.items ?? [],
-    allItems,
+    allItems: allItems.length > 0 ? allItems : (data?.items ?? []),
     pagination,
     isLoading,
     isFetching,

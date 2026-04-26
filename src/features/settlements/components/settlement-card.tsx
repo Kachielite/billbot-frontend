@@ -13,6 +13,7 @@ import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { Settlement, SettlementStatus } from '@/features/settlements/settlements.interface';
 import { GroupMember } from '@/features/groups/groups.interface';
 import useGetName from '@/core/common/hooks/use-get-name';
+import { formatAmount } from '@/core/common/utils/currency';
 import useProfile from '@/features/user/hooks/use-profile';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
@@ -65,10 +66,7 @@ export default function SettlementCard({
 
   const canAct = profile?.id === settlement.toUser && settlement.status === 'pending_verification';
 
-  const amount = settlement.amount.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const amount = formatAmount(settlement.amount);
 
   return (
     <View

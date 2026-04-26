@@ -19,6 +19,11 @@ export const joinGroupSchema = z.object({
 });
 export type JoinGroupSchemaType = z.infer<typeof joinGroupSchema>;
 
+export const joinGroupByCodeSchema = z.object({
+  code: z.string().min(1, 'Invite code is required'),
+});
+export type JoinGroupByCodeSchemaType = z.infer<typeof joinGroupByCodeSchema>;
+
 // ── Response DTOs ─────────────────────────────────────────────────────────────
 export interface InviteDto {
   id: string;

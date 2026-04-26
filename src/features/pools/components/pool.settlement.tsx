@@ -8,6 +8,7 @@ import useGetName from '@/core/common/hooks/use-get-name';
 import useProfile from '@/features/user/hooks/use-profile';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
+import { formatAmount } from '@/core/common/utils/currency';
 
 type Props = {
   balances: BalanceEntry[];
@@ -110,10 +111,7 @@ export default function PoolSettlement({
               const to = entry.to.name;
               const toId = entry.to.id;
               const currency = entry.currency;
-              const amount = entry.amount.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              });
+              const amount = formatAmount(entry.amount);
               return (
                 <View
                   style={[

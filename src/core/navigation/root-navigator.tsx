@@ -32,6 +32,10 @@ import SettlementsScreen from '@/features/settlements/screens/settlements.screen
 import SettlementScreen from '@/features/settlements/screens/settlement.screen';
 import RecordPaymentScreen from '@/features/settlements/screens/record-payment.screen';
 import SettleUpHomeScreen from '@/features/settlements/screens/settle-up-home.screen';
+import DisputeSettlementScreen from '@/features/settlements/screens/dispute-settlement.screen';
+import NotificationsScreen from '@/features/notifications/screens/notifications.screen';
+import JoinGroupTokenScreen from '@/features/invites/screens/join-group-token.screen';
+import JoinGroupCodeScreen from '@/features/invites/screens/join-group-code.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -201,6 +205,16 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           animationDuration: 50,
         },
       },
+      DisputeSettlement: {
+        screen: DisputeSettlementScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+          contentStyle: { backgroundColor: 'transparent' },
+        },
+      },
       Settlements: {
         screen: SettlementsScreen,
         options: {
@@ -220,6 +234,32 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           presentation: 'transparentModal',
           animation: 'slide_from_bottom',
           animationDuration: 50,
+        },
+      },
+      Notifications: {
+        screen: NotificationsScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      JoinGroupByToken: {
+        screen: JoinGroupTokenScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+          contentStyle: { backgroundColor: 'transparent' },
+        },
+      },
+      JoinGroupByCode: {
+        screen: JoinGroupCodeScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+          contentStyle: { backgroundColor: 'transparent' },
         },
       },
     },

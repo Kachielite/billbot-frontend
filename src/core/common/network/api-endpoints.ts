@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   GROUP_INVITE_CANCEL: (groupId: string, inviteId: string) =>
     `/groups/${groupId}/invites/${inviteId}`,
   GROUP_JOIN: (token: string) => `/groups/join/${token}`,
+  GROUP_JOIN_BY_CODE: '/groups/join',
   GROUP_POOLS: (groupId: string) => `/groups/${groupId}/pools`,
   GROUP_EXPENSES: (groupId: string) => `/groups/${groupId}/expenses`,
   GROUP_BALANCES: (groupId: string) => `/groups/${groupId}/balances`,

@@ -7,6 +7,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import getInitials from '@/core/common/utils/get-initials';
 import { Pool } from '@/features/pools/pools.interface';
 import usePoolsStore from '@/features/pools/pools.state';
+import { formatAmount } from '@/core/common/utils/currency';
 
 export const TabCard = ({ pool }: { pool: Pool }) => {
   const navigation = useNavigation();
@@ -63,7 +64,7 @@ export const TabCard = ({ pool }: { pool: Pool }) => {
               {pool.balance?.currency}
             </Text>
             <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
-              {pool.balance?.netBalance}
+              {formatAmount(pool.balance?.netBalance ?? 0)}
             </Text>
           </View>
           <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>

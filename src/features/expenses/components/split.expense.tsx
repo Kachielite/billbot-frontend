@@ -13,6 +13,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Border, Card, Input, Radius, Spacing } from '@/core/common/constants/theme';
 import useGroupsStore from '@/features/groups/groups.state';
+import { formatAmount } from '@/core/common/utils/currency';
 import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import { GroupMember } from '@/features/groups/groups.interface';
 import useProfile from '@/features/user/hooks/use-profile';
@@ -224,7 +225,7 @@ export default function SplitExpense({ form }: SplitExpenseProps) {
                       {isOver ? 'OVER BY' : 'REMAINING'}{' '}
                     </Text>
                     <Text style={[TextStyles.amountSmall, { color: remainingColor }]}>
-                      {Math.abs(remaining).toFixed(2)}
+                      {formatAmount(Math.abs(remaining))}
                     </Text>
                   </>
                 )}

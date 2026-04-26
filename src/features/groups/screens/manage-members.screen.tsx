@@ -556,7 +556,7 @@ export default function ManageMembersScreen() {
 
 const styles = StyleSheet.create({
   scrollContent: {
-    gap: Spacing.lg,
+    gap: Spacing.xxl,
     paddingBottom: Spacing.xxl,
   },
   inputRow: {

@@ -5,6 +5,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { UpcomingExpense } from '@/features/expenses/expenses.interface';
 import moment from 'moment';
+import { formatAmount } from '@/core/common/utils/currency';
 
 type Props = {
   upcoming: UpcomingExpense;
@@ -26,10 +27,7 @@ export default function UpcomingCard({ upcoming, isLast = false }: Props) {
 
   const emoji = upcoming.categoryEmoji ?? '📅';
   const dueLabel = getDueLabel(upcoming.nextOccurrenceAt);
-  const amount = upcoming.amount.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const amount = formatAmount(upcoming.amount);
   const isDueToday = moment(upcoming.nextOccurrenceAt)
     .startOf('day')
     .isSame(moment().startOf('day'));

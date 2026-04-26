@@ -9,6 +9,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useUpcomingExpenses from '@/features/expenses/hooks/use-upcoming-expenses';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
+import { formatAmount } from '@/core/common/utils/currency';
 
 // TODO: Remove this upcoming mock data once you create the data
 const UPCOMING_MOCK: UpcomingExpense[] = [
@@ -108,11 +109,7 @@ const UpcomingCard = ({ upcoming }: { upcoming: UpcomingExpense }) => {
     >
       <Text style={[TextStyles.label, { color: colors.text.primary }]}>{upcoming.description}</Text>
       <Text style={[TextStyles.amountMedium, { color: colors.text.primary }]}>
-        {upcoming.currency}{' '}
-        {upcoming.amount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {upcoming.currency} {formatAmount(upcoming.amount)}
       </Text>
       <Text style={[TextStyles.caption, { color: colors.secondary }]}>{amountLabel}</Text>
     </View>

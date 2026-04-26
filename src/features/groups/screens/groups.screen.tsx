@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useGroups from '@/features/groups/hooks/use-groups';
 import GroupCard from '@/features/groups/components/group-card';
@@ -65,14 +65,27 @@ const GroupsScreen = () => {
       {/* ── Header ───────────────────────────────────────────────── */}
       <View style={styles.header}>
         <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>Groups</Text>
-        <TouchableOpacity
-          onPress={() => nav.navigate('NewGroup')}
-          style={[styles.newBtn, { backgroundColor: colors.primary }]}
-          accessibilityLabel="Create new group"
-        >
-          <Ionicons name="add" size={20} color={colors.onPrimary} />
-          <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            onPress={() => nav.navigate('JoinGroupByCode')}
+            style={[
+              styles.joinBtn,
+              { backgroundColor: colors.surface, borderColor: colors.border.default },
+            ]}
+            accessibilityLabel="Join a group"
+          >
+            <Ionicons name="people-outline" size={16} color={colors.text.primary} />
+            <Text style={[TextStyles.label, { color: colors.text.primary }]}>Join</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => nav.navigate('NewGroup')}
+            style={[styles.newBtn, { backgroundColor: colors.primary }]}
+            accessibilityLabel="Create new group"
+          >
+            <Ionicons name="add" size={20} color={colors.onPrimary} />
+            <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* ── List ─────────────────────────────────────────────────── */}
@@ -125,6 +138,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  joinBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.full,
+    borderWidth: Border.thin,
   },
   newBtn: {
     flexDirection: 'row',

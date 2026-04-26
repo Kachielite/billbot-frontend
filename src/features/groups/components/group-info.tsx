@@ -15,6 +15,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import { MemberSummary } from '@/features/balances/balances.interface';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import SkeletonCard from '@/core/common/components/skeleton-card';
+import { formatAmount } from '@/core/common/utils/currency';
 import getInitials from '@/core/common/utils/get-initials';
 import Tooltip from '@/core/common/components/tooltip';
 import { GroupDetail } from '@/features/groups/groups.interface';
@@ -228,11 +229,7 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
                   { color: netBalance >= 0 ? colors.primary : colors.error },
                 ]}
               >
-                {currency}{' '}
-                {netBalance.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {currency} {formatAmount(netBalance)}
               </Text>
             </View>
           </View>

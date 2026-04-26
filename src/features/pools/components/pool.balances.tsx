@@ -7,6 +7,7 @@ import { TextStyles } from '@/core/common/constants/fonts';
 import SkeletonCard from '@/core/common/components/skeleton-card';
 import { MemberSummary } from '@/features/balances/balances.interface';
 import useProfile from '@/features/user/hooks/use-profile';
+import { formatAmount } from '@/core/common/utils/currency';
 
 type PoolBalancesProps = {
   isLoading: boolean;
@@ -65,11 +66,7 @@ export default function PoolBalances({
           TAB TOTAL
         </Text>
         <Text style={[TextStyles.displayLarge, { color: colors.text.onPrimary }]}>
-          {currency}{' '}
-          {totalAmount.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {currency} {formatAmount(totalAmount)}
         </Text>
         <Text style={[TextStyles.caption, { color: colors.primaryCard.labelText }]}>
           {totalExpenses} expenses · {splitType === 'equal' ? 'Equal' : 'Unequal'} split
@@ -93,11 +90,7 @@ export default function PoolBalances({
                 },
               ]}
             >
-              {currency}{' '}
-              {balance.amount.toLocaleString('US-EN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {currency} {formatAmount(balance.amount)}
             </Text>
           </View>
         ))}
@@ -109,11 +102,7 @@ export default function PoolBalances({
           </Text>
           <View style={styles.balanceBarLabel}>
             <Text style={[TextStyles.captionBold, { color: colors.text.onPrimary }]}>
-              {currency}{' '}
-              {amountCollected.toLocaleString('US-EN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {currency} {formatAmount(amountCollected)}
             </Text>
             <Text
               style={[
@@ -126,11 +115,7 @@ export default function PoolBalances({
               /
             </Text>
             <Text style={[TextStyles.captionBold, { color: colors.text.onPrimary }]}>
-              {currency}{' '}
-              {totalAmount.toLocaleString('US-EN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {currency} {formatAmount(totalAmount)}
             </Text>
           </View>
         </View>

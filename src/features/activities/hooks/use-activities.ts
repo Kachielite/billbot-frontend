@@ -69,7 +69,7 @@ const useActivities = (initialLimit = 20) => {
 
   return {
     activities: data?.items ?? [],
-    allItems,
+    allItems: allItems.length > 0 ? allItems : (data?.items ?? []),
     pagination,
     isLoading,
     isFetching,

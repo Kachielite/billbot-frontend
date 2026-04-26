@@ -9,6 +9,7 @@ import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
 import useProfile from '@/features/user/hooks/use-profile';
 import useUserStore from '@/features/user/user.state';
+import { formatAmount } from '@/core/common/utils/currency';
 
 type Props = {
   memberSummary: MemberSummary[];
@@ -19,12 +20,8 @@ const POSITIVE_BG = '#5DBF7E';
 const NEGATIVE_BG = '#D96B6B';
 const PILL_TEXT = '#FFFFFF';
 
-function formatAmount(amount: number, currency: string = '$'): string {
-  const abs = Math.abs(amount).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  return (amount >= 0 ? '+ ' : '- ') + currency + abs;
+function formatMemberAmount(amount: number, currency: string = '$'): string {
+  return (amount >= 0 ? '+ ' : '- ') + currency + formatAmount(Math.abs(amount));
 }
 
 export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
@@ -134,7 +131,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
           const displayName = item.user.name;
 
           // For positive/negative we render a colored pill; for zero show a simple "✅ Settled" label
-          const label = isZero ? '✅ Settled' : formatAmount(net, currency);
+          const label = isZero ? '✅ Settled' : formatMemberAmount(net, currency);
           const pillBg = isPositive ? POSITIVE_BG : NEGATIVE_BG;
 
           // Square the corner that sits against the divider line for pills

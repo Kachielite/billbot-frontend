@@ -6,10 +6,18 @@ import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import useUserStore from '@/features/user/user.state';
 import { getGreetingForName } from '@/core/common/utils/helper';
+import { useNavigation } from '@react-navigation/native';
+import useNotificationsStore from '@/features/notifications/notifications.state';
+import useUnreadCount from '@/features/notifications/hooks/use-unread-count';
 
 const HomeHeader = () => {
   const { user } = useUserStore();
   const colors = useThemeColors();
+  const navigation = useNavigation() as any;
+  const unreadCount = useNotificationsStore((s) => s.unreadCount);
+
+  useUnreadCount();
+
   return (
     <View style={[styles.container]}>
       <View>
@@ -25,9 +33,14 @@ const HomeHeader = () => {
       <View style={styles.cta}>
         <TouchableOpacity
           style={[styles.notificationBtn, { backgroundColor: colors.surface }]}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('Notifications')}
         >
           <Ionicons name="notifications-outline" size={24} color={colors.text.primary} />
+          {unreadCount > 0 && (
+            <View style={[styles.badge, { backgroundColor: colors.error }]}>
+              <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -50,6 +63,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     ...Shadow.sm,
+  },
+  badge: {
+    position: 'absolute',
+    top: -3,
+    right: -3,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   cta: {
     display: 'flex',
