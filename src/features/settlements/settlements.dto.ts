@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // ── Request schemas (Zod) ─────────────────────────────────────────────────────
 export const submitSettlementSchema = z.object({
-  toUserId: z.string().uuid('Invalid user'),
+  toUserId: z.string().min(1, 'Please select a member'),
   amount: z.number().positive('Amount must be greater than 0'),
   note: z.string().max(500).optional(),
 });
