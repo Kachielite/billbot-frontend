@@ -32,7 +32,7 @@ export default function HomeQuickActions() {
     {
       name: 'Settle up',
       icon: <FontAwesome6 name="arrow-right-arrow-left" size={24} color={colors.primary} />,
-      action: () => console.log('Settle up action'),
+      action: () => navigation.navigate('SettleUpHome'),
       backgroundColor: colors.primaryContainer,
     },
     {

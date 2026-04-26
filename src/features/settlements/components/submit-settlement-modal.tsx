@@ -83,7 +83,9 @@ export default function SubmitSettlementModal({ visible, onClose, poolId, member
           <TouchableOpacity onPress={handleClose} hitSlop={12} style={styles.closeBtn}>
             <Ionicons name="close" size={22} color={colors.text.primary} />
           </TouchableOpacity>
-          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Record Payment</Text>
+          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>
+            Record Settlement
+          </Text>
           <View style={{ width: 34 }} />
         </View>
 
