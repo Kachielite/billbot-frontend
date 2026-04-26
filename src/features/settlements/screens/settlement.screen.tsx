@@ -123,7 +123,9 @@ export default function SettlementScreen({ route }: Props) {
         }}
       >
         {/* ── Hero card ── */}
-        <View style={[styles.heroCard, { backgroundColor: badgeBg }]}>
+        <View
+          style={[styles.heroCard, { backgroundColor: badgeBg, borderColor: badgeIcon + '40' }]}
+        >
           <View style={styles.heroBadge}>
             <Ionicons name={cfg.icon} size={16} color={badgeIcon} />
             <Text style={[TextStyles.captionBold, { color: badgeFg }]}>{cfg.label}</Text>
@@ -350,6 +352,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   heroCard: {
+    borderWidth: Border.thin,
     borderRadius: Radius.xl,
     padding: Spacing.xl,
     alignItems: 'center',

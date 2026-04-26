@@ -91,7 +91,9 @@ export default function PoolScreen({ route }: Props) {
         <PoolSettlement
           isLoading={isLoadingBalance}
           balances={balances}
-          onSettlePress={() => navigation.navigate('Settlements', { poolId })}
+          onSettlePress={(toUserId, amount) =>
+            navigation.navigate('RecordPayment', { poolId, toUserId, amount })
+          }
           onViewSettlements={() => navigation.navigate('Settlements', { poolId })}
         />
         <PoolExpenses

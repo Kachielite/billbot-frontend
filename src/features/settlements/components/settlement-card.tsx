@@ -12,7 +12,6 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { Settlement, SettlementStatus } from '@/features/settlements/settlements.interface';
 import { GroupMember } from '@/features/groups/groups.interface';
-import MemberAvatar from '@/core/common/components/member-avatar';
 import useGetName from '@/core/common/hooks/use-get-name';
 import useProfile from '@/features/user/hooks/use-profile';
 import { Ionicons } from '@expo/vector-icons';
@@ -79,26 +78,6 @@ export default function SettlementCard({
         {/* ── Header row: avatars + amount ── */}
         <View style={styles.headerRow}>
           <View style={styles.usersRow}>
-            <View style={styles.avatarStack}>
-              <MemberAvatar
-                name={fromMember?.name ?? 'U'}
-                avatarUrl={fromMember?.avatarUrl ?? null}
-                avatarSize={36}
-              />
-              <View
-                style={[
-                  styles.arrowBadge,
-                  { backgroundColor: colors.background, borderColor: colors.border.default },
-                ]}
-              >
-                <Ionicons name="arrow-forward" size={10} color={colors.text.secondary} />
-              </View>
-              <MemberAvatar
-                name={toMember?.name ?? 'U'}
-                avatarUrl={toMember?.avatarUrl ?? null}
-                avatarSize={36}
-              />
-            </View>
             <View style={styles.nameBlock}>
               <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
                 {fromName}
@@ -196,20 +175,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-  },
-  avatarStack: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: -8,
-  },
-  arrowBadge: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
   },
   nameBlock: {
     flex: 1,

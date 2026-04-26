@@ -12,7 +12,7 @@ import Tooltip from '@/core/common/components/tooltip';
 type Props = {
   balances: BalanceEntry[];
   isLoading: boolean;
-  onSettlePress?: () => void;
+  onSettlePress?: (toUserId: string, amount: number) => void;
   onViewSettlements?: () => void;
 };
 
@@ -146,7 +146,7 @@ export default function PoolSettlement({
                           styles.settleBtn,
                           { backgroundColor: colors.primaryContainer, borderColor: colors.primary },
                         ]}
-                        onPress={onSettlePress}
+                        onPress={() => onSettlePress?.(toId, entry.amount)}
                       >
                         <Text style={[TextStyles.label, { color: colors.primary }]}>Settle</Text>
                       </TouchableOpacity>

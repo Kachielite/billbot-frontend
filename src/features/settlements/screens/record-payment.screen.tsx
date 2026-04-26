@@ -16,10 +16,10 @@ import usePoolDetail from '@/features/pools/hooks/use-pool-detail';
 import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import useProfile from '@/features/user/hooks/use-profile';
 
-type Props = StaticScreenProps<{ poolId: string }>;
+type Props = StaticScreenProps<{ poolId: string; toUserId?: string; amount?: number }>;
 
 export default function RecordPaymentScreen({ route }: Props) {
-  const { poolId } = route.params;
+  const { poolId, toUserId: prefillToUserId, amount: prefillAmount } = route.params;
   const navigation = useNavigation();
   const colors = useThemeColors();
   const { profile } = useProfile();
@@ -35,6 +35,11 @@ export default function RecordPaymentScreen({ route }: Props) {
   const otherMembers: DropdownOption<string>[] = members
     .filter((m) => m.userId !== profile?.id)
     .map((m) => ({ label: m.name, value: m.userId }));
+
+  React.useEffect(() => {
+    if (prefillToUserId) form.setValue('toUserId', prefillToUserId, { shouldValidate: false });
+    if (prefillAmount != null) form.setValue('amount', prefillAmount, { shouldValidate: false });
+  }, [prefillToUserId, prefillAmount]);
 
   async function pickProof() {
     try {
