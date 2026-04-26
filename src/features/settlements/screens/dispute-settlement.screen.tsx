@@ -6,7 +6,6 @@ import CustomTextAreaInput from '@/core/common/components/form/custom-text-area-
 import CustomButton from '@/core/common/components/form/custom-button';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Spacing } from '@/core/common/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import useDisputeSettlement from '@/features/settlements/hooks/use-dispute-settlement';
 

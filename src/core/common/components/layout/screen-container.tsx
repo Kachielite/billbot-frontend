@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { ScrollView, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { SafeAreaView } from 'react-native-safe-area-context';

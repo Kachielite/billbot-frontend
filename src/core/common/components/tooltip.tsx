@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Popover, { PopoverPlacement } from 'react-native-popover-view';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Spacing, Radius } from '@/core/common/constants/theme';
+import { Radius, Spacing } from '@/core/common/constants/theme';
 
 type Props = {
   description: string;

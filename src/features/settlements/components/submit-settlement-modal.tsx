@@ -1,20 +1,19 @@
 import {
-  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Modal,
 } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Border, Card, Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Card, Spacing } from '@/core/common/constants/theme';
 import { GroupMember } from '@/features/groups/groups.interface';
 import CustomDropdown, { DropdownOption } from '@/core/common/components/form/custom-dropdown';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';

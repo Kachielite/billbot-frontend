@@ -3,6 +3,7 @@ import {
   createNativeStackNavigator,
   createNativeStackScreen,
 } from '@react-navigation/native-stack';
+import type { Theme } from '@react-navigation/native';
 import { createStaticNavigation } from '@react-navigation/native';
 import AuthScreen from '@/features/auth/auth.screen';
 import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigation/bottom-tabs';
@@ -12,12 +13,11 @@ import ActivitiesScreen from '@/features/activities/activities.screen';
 import GroupsScreen from '@/features/groups/screens/groups.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
 import useAuthStore from '@/features/auth/auth.state';
-import type { Theme } from '@react-navigation/native';
 import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import EditGroupScreen from '@/features/groups/screens/edit-group.screen';
 import ManageMembersScreen from '@/features/groups/screens/manage-members.screen';
 import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
-import { BrandColors, DarkColors, LightColors, Radius } from '@/core/common/constants/theme';
+import { BrandColors, DarkColors, LightColors } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 import GroupScreen from '@/features/groups/screens/group.screen';
 import NewPoolScreen from '@/features/pools/screens/new-pool.screen';

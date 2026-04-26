@@ -6,7 +6,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import AuthButton from '@/features/auth/components/auth-button';
 import useAppleAuth from '@/features/auth/hooks/use-apple-auth';
 import useGoogleAuth from '@/features/auth/hooks/use-google-auth';
-import { Fonts, FontSize, TextStyles } from '@/core/common/constants/fonts';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 const AuthScreen = () => {
   const colors = useThemeColors();

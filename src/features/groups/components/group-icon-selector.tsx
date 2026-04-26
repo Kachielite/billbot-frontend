@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import EmojiPicker from 'rn-emoji-keyboard';
 import type { EmojiType } from 'rn-emoji-keyboard';
+import EmojiPicker from 'rn-emoji-keyboard';
 import Popover, { PopoverPlacement } from 'react-native-popover-view';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Border, Radius, Spacing } from '@/core/common/constants/theme';

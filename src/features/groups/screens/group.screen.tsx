@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text } from 'react-native';
 import React from 'react';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -10,7 +10,6 @@ import GroupInfo from '@/features/groups/components/group-info';
 import GroupMembers from '@/features/groups/components/group-members';
 import GroupTabs from '@/features/groups/components/group.tab';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
-import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import ScreenLoader from '@/core/common/components/screen.loader';
 
 type Props = StaticScreenProps<{ groupId: string; fromQuickActions?: boolean }>;

@@ -16,7 +16,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRoute } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
 import BottomModal from '@/core/common/components/layout/bottom-modal';
 import { TextStyles } from '@/core/common/constants/fonts';

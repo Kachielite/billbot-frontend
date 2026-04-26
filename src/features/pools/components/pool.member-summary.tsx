@@ -8,7 +8,6 @@ import useGetName from '@/core/common/hooks/use-get-name';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
 import useProfile from '@/features/user/hooks/use-profile';
-import useUserStore from '@/features/user/user.state';
 import { formatAmount } from '@/core/common/utils/currency';
 
 type Props = {

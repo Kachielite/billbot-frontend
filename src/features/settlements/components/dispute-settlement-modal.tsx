@@ -1,11 +1,11 @@
 import {
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Modal,
 } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';

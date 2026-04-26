@@ -19,7 +19,6 @@ import GroupCard from '@/features/groups/components/group-card';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 import type { Group } from '@/features/groups/groups.interface';
-import useGroupsStore from '@/features/groups/groups.state';
 
 const SKELETON_COUNT = 5;
 

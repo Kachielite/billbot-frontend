@@ -7,7 +7,7 @@ import InfoBox from '@/core/common/components/info-box';
 import RNPickerSelect from 'react-native-picker-select';
 import CustomButton from '@/core/common/components/form/custom-button';
 import { Border, Input, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
-import { useNavigation, StackActions } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useGroups from '@/features/groups/hooks/use-groups';
 import useGroupsStore from '@/features/groups/groups.state';

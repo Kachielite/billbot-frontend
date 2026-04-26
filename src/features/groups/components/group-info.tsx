@@ -1,20 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  type ViewStyle,
-  useColorScheme,
-} from 'react-native';
+import { Image, StyleSheet, Text, useColorScheme, View, type ViewStyle } from 'react-native';
 import React from 'react';
 import { Card, Radius, Spacing } from '@/core/common/constants/theme';
 import useGroupBalances from '@/features/balances/hooks/use-group-balances';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { MemberSummary } from '@/features/balances/balances.interface';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import SkeletonCard from '@/core/common/components/skeleton-card';
 import { formatAmount } from '@/core/common/utils/currency';
 import getInitials from '@/core/common/utils/get-initials';
 import Tooltip from '@/core/common/components/tooltip';

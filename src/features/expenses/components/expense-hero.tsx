@@ -1,4 +1,4 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { GlassView } from 'expo-glass-effect';
 import { Ionicons } from '@expo/vector-icons';
