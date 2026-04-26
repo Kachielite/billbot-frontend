@@ -50,6 +50,7 @@ export default function EmptyState({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: Spacing.lg,
     borderRadius: Radius.lg,
     alignItems: 'center',

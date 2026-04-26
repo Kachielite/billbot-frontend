@@ -1,5 +1,6 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import { UpcomingExpense } from '@/features/expenses/expenses.interface';
 import { Radius, Spacing } from '@/core/common/constants/theme';
@@ -127,14 +128,17 @@ const groupCardStyles = StyleSheet.create({
 
 export default function HomeUpcoming() {
   const colors = useThemeColors();
-  const { upcomingExpenses, isLoading } = useUpcomingExpenses();
+  const navigation = useNavigation();
+  const { upcomingExpenses, isLoading } = useUpcomingExpenses(5);
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Upcoming</Text>
         {upcomingExpenses.length > 0 ? (
-          <Text style={[{ color: colors.onPrimaryContainer }]}>See All</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('UpcomingExpenses' as never)}>
+            <Text style={[TextStyles.label, { color: colors.primary }]}>See All</Text>
+          </TouchableOpacity>
         ) : null}
       </View>
       {isLoading ? (
