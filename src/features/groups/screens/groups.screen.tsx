@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -26,7 +27,7 @@ const GroupsScreen = () => {
   const colors = useThemeColors();
   const nav = useNavigation() as any;
 
-  const { groups, pagination, isLoading, page, setPage } = useGroups();
+  const { groups, pagination, isLoading, page, setPage, refetch } = useGroups();
 
   // Accumulate pages for infinite scroll
   const [allGroups, setAllGroups] = useState<Group[]>([]);
@@ -48,6 +49,16 @@ const GroupsScreen = () => {
   };
 
   const isInitialLoad = isLoading && page === 1;
+
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    setAllGroups([]);
+    seenIdsRef.current.clear();
+    setPage(1);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch, setPage]);
 
   return (
     <ScreenContainer useScrollView={false}>
@@ -80,6 +91,14 @@ const GroupsScreen = () => {
           showsVerticalScrollIndicator={false}
           onEndReached={loadMore}
           onEndReachedThreshold={0.4}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
           ListFooterComponent={
             isFetchingMore ? (
               <ActivityIndicator size="small" color={colors.primary} style={styles.footerSpinner} />

@@ -24,6 +24,14 @@ export const UserService = {
     }
   },
 
+  deleteAccount: async (): Promise<void> => {
+    try {
+      await customAxios.delete(API_ENDPOINTS.USERS_ME);
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
+
   searchByPhone: async (phone: string): Promise<UserSummary> => {
     try {
       const response = await customAxios.get<UserSummaryDto>(API_ENDPOINTS.USERS_SEARCH, {

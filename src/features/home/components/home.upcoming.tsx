@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import { UpcomingExpense } from '@/features/expenses/expenses.interface';
-import { Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useUpcomingExpenses from '@/features/expenses/hooks/use-upcoming-expenses';
@@ -25,6 +25,7 @@ const UPCOMING_MOCK: UpcomingExpense[] = [
     recurrenceFrequency: 'monthly',
     recurrenceEndDate: null,
     recurrenceParentId: null,
+    categoryEmoji: null,
     nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // one week from now
     createdAt: new Date(),
   },
@@ -41,6 +42,7 @@ const UPCOMING_MOCK: UpcomingExpense[] = [
     recurrenceFrequency: 'monthly',
     recurrenceEndDate: null,
     recurrenceParentId: null,
+    categoryEmoji: null,
     nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3), // three days from now
     createdAt: new Date(),
   },
@@ -57,6 +59,7 @@ const UPCOMING_MOCK: UpcomingExpense[] = [
     recurrenceFrequency: 'monthly',
     recurrenceEndDate: null,
     recurrenceParentId: null,
+    categoryEmoji: null,
     nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14), // two weeks from now
     createdAt: new Date(),
   },
@@ -73,6 +76,7 @@ const UPCOMING_MOCK: UpcomingExpense[] = [
     recurrenceFrequency: 'monthly',
     recurrenceEndDate: null,
     recurrenceParentId: null,
+    categoryEmoji: null,
     nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // one day from now
     createdAt: new Date(),
   },
@@ -99,7 +103,7 @@ const UpcomingCard = ({ upcoming }: { upcoming: UpcomingExpense }) => {
     <View
       style={[
         groupCardStyles.groupCard,
-        { backgroundColor: colors.surface, borderColor: colors.border.subtle },
+        { backgroundColor: colors.surface, borderColor: colors.border.default },
       ]}
     >
       <Text style={[TextStyles.label, { color: colors.text.primary }]}>{upcoming.description}</Text>
@@ -122,6 +126,7 @@ const groupCardStyles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.md,
     borderRadius: Radius.lg,
+    borderWidth: Border.thin,
     minWidth: 170,
   },
 });

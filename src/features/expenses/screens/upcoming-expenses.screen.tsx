@@ -3,6 +3,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,7 +14,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import moment from 'moment';
@@ -58,7 +59,14 @@ export default function UpcomingExpensesScreen() {
   const colors = useThemeColors();
   const { canGoBack, goBack } = useNavigation();
 
-  const { allItems, isLoading, isFetching, hasMore, loadMore } = useUpcomingExpenses(20);
+  const { allItems, isLoading, isFetching, hasMore, loadMore, refetch } = useUpcomingExpenses(20);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   const sections = React.useMemo(() => groupByDue(allItems), [allItems]);
 
@@ -113,13 +121,26 @@ export default function UpcomingExpensesScreen() {
             paddingBottom: Platform.OS === 'ios' ? Spacing.xxl : 100,
             gap: Spacing.xl,
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
         >
           {sections.map(({ title, data }) => (
             <View key={title} style={styles.section}>
               <Text style={[TextStyles.label, { color: colors.text.disabled }]}>
                 {title.toUpperCase()}
               </Text>
-              <View style={[styles.groupCard, { backgroundColor: colors.surface }]}>
+              <View
+                style={[
+                  styles.groupCard,
+                  { backgroundColor: colors.surface, borderColor: colors.border.default },
+                ]}
+              >
                 {data.map((item, index) => (
                   <UpcomingCard key={item.id} upcoming={item} isLast={index === data.length - 1} />
                 ))}
@@ -157,6 +178,7 @@ const styles = StyleSheet.create({
   },
   groupCard: {
     borderRadius: Radius.lg,
+    borderWidth: Border.thin,
   },
   footerLoader: {
     paddingVertical: Spacing.lg,

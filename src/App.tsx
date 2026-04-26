@@ -1,5 +1,5 @@
-import { Platform, useColorScheme } from 'react-native';
-
+import { Appearance, Platform, useColorScheme } from 'react-native';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import useLoadFonts from '@/core/common/hooks/use-load-fonts';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,6 +11,7 @@ import {
   MaterialLightTheme,
 } from '@react-navigation/native';
 import ToastProvider from 'toastify-react-native';
+import useThemeStore from '@/core/common/state/theme.state';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,6 +26,12 @@ const queryClient = new QueryClient({
 
 export default function App() {
   useLoadFonts();
+  const { themeMode } = useThemeStore();
+
+  React.useEffect(() => {
+    if (themeMode) Appearance.setColorScheme(themeMode);
+  }, []);
+
   const theme = useColorScheme();
   const isDarkMode = theme === 'dark';
   const currentTheme = Platform.select({

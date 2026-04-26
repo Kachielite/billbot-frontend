@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import { Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useActivities from '@/features/activities/hooks/use-activities';
@@ -27,7 +27,12 @@ export default function HomeActivities() {
           </TouchableOpacity>
         ) : null}
       </View>
-      <View style={[styles.cardContainer, { backgroundColor: colors.surface }]}>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: colors.surface, borderColor: colors.border.default },
+        ]}
+      >
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
             <View key={i} style={{ padding: Spacing.md }}>
@@ -67,5 +72,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: Spacing.sm,
     borderRadius: Radius.lg,
+    borderWidth: Border.thin,
   },
 });

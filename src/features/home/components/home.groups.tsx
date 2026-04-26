@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import React from 'react';
-import { Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useGroups from '@/features/groups/hooks/use-groups';
@@ -42,7 +42,7 @@ const GroupCard = ({ group }: { group: Group }) => {
       <View
         style={[
           groupCardStyles.groupCard,
-          { backgroundColor: colors.surface, borderColor: colors.border.subtle },
+          { backgroundColor: colors.surface, borderColor: colors.border.default },
         ]}
       >
         <View style={groupCardStyles.groupInfoContainer}>
@@ -83,6 +83,7 @@ const groupCardStyles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.md,
     borderRadius: Radius.lg,
+    borderWidth: Border.thin,
     minWidth: 170,
   },
   groupInfoContainer: {
