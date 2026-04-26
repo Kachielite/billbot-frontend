@@ -212,7 +212,6 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           presentation: 'transparentModal',
           animation: 'slide_from_bottom',
           animationDuration: 50,
-          contentStyle: { backgroundColor: 'transparent' },
         },
       },
       Settlements: {

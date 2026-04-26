@@ -14,7 +14,12 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
-      "bundleIdentifier": "com.kachielite.billbotfrontend"
+      "bundleIdentifier": "com.kachielite.billbotfrontend",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "BillBot needs access to your photo library to attach receipts and payment proof.",
+        "NSCameraUsageDescription": "BillBot needs camera access to capture receipts and payment proof.",
+        "NSPhotoLibraryAddUsageDescription": "BillBot needs access to save images to your photo library."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +29,13 @@
         "monochromeImage": "./src/core/assets/icons/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.kachielite.billbotfrontend"
+      "package": "com.kachielite.billbotfrontend",
+      "permissions": [
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "favicon": "./src/core/assets/icons/favicon.png"

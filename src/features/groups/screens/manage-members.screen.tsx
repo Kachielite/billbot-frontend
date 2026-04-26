@@ -2,8 +2,6 @@ import React, { useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -338,219 +336,210 @@ export default function ManageMembersScreen() {
   const pendingServerInvites = invites.filter((i) => i.status === 'pending');
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScreenContainer useScrollView={false}>
-        <ManageMembersHeader />
+    <ScreenContainer useScrollView={false}>
+      <ManageMembersHeader />
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.scrollContent}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* ── Invite input ── */}
+        <View
+          style={[
+            styles.inputRow,
+            { backgroundColor: colors.surface, borderColor: colors.border.default },
+          ]}
         >
-          {/* ── Invite input ── */}
+          <TextInput
+            ref={addInputRef}
+            style={[styles.emailInput, { color: colors.text.primary }]}
+            placeholder="Enter email to invite"
+            placeholderTextColor={colors.text.disabled}
+            value={addValue}
+            onChangeText={setAddValue}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="done"
+            onSubmitEditing={addToPending}
+          />
+          <TouchableOpacity
+            onPress={addToPending}
+            style={[styles.addBtn, { backgroundColor: colors.primary }]}
+          >
+            <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Add</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ── Draft "To be invited" section ── */}
+        {pendingInvites.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionTitleRow}>
+              <Text
+                style={[TextStyles.label, { color: colors.text.secondary, letterSpacing: 0.8 }]}
+              >
+                TO BE INVITED · {pendingInvites.length}
+              </Text>
+              <TouchableOpacity onPress={sendInvites} disabled={isInviting}>
+                <Text
+                  style={[
+                    TextStyles.label,
+                    { color: isInviting ? colors.text.disabled : colors.primary },
+                  ]}
+                >
+                  {isInviting ? 'Sending…' : 'Send invites'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles.card,
+                { backgroundColor: colors.surface, borderColor: colors.border.default },
+              ]}
+            >
+              {pendingInvites.map((entry, index) => (
+                <PendingRow
+                  key={entry.id}
+                  entry={entry}
+                  isLast={index === pendingInvites.length - 1}
+                  onRemove={() => removePending(entry.id)}
+                  onSave={(email) => updatePending(entry.id, email)}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* ── Current Members section ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <Text style={[TextStyles.label, { color: colors.text.secondary, letterSpacing: 0.8 }]}>
+              CURRENT MEMBERS · {members.length}
+            </Text>
+          </View>
           <View
             style={[
-              styles.inputRow,
+              styles.card,
               { backgroundColor: colors.surface, borderColor: colors.border.default },
             ]}
           >
-            <TextInput
-              ref={addInputRef}
-              style={[styles.emailInput, { color: colors.text.primary }]}
-              placeholder="Enter email to invite"
-              placeholderTextColor={colors.text.disabled}
-              value={addValue}
-              onChangeText={setAddValue}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              returnKeyType="done"
-              onSubmitEditing={addToPending}
-            />
-            <TouchableOpacity
-              onPress={addToPending}
-              style={[styles.addBtn, { backgroundColor: colors.primary }]}
-            >
-              <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Add</Text>
-            </TouchableOpacity>
+            {members.length === 0 ? (
+              <SectionEmpty message="No members yet." />
+            ) : (
+              members.map((member, index) => (
+                <MemberRow
+                  key={member.userId}
+                  member={member}
+                  colorIndex={index}
+                  isLast={index === members.length - 1}
+                  onRemove={() => setMemberToRemove(member)}
+                  isRemoving={isRemoving}
+                  onEditRole={() => setRoleEditMember(member)}
+                  isSelf={!!profile && member.userId === profile.id}
+                />
+              ))
+            )}
           </View>
+        </View>
 
-          {/* ── Draft "To be invited" section ── */}
-          {pendingInvites.length > 0 && (
-            <View style={styles.section}>
-              <View style={styles.sectionTitleRow}>
-                <Text
-                  style={[TextStyles.label, { color: colors.text.secondary, letterSpacing: 0.8 }]}
+        {/* ── Pending Invites section ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <Text style={[TextStyles.label, { color: colors.text.secondary, letterSpacing: 0.8 }]}>
+              PENDING INVITES · {pendingServerInvites.length}
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.card,
+              { backgroundColor: colors.surface, borderColor: colors.border.default },
+            ]}
+          >
+            {pendingServerInvites.length === 0 ? (
+              <SectionEmpty message="No pending invites." />
+            ) : (
+              pendingServerInvites.map((invite, index) => (
+                <ServerInviteRow
+                  key={invite.id}
+                  invite={invite}
+                  isLast={index === pendingServerInvites.length - 1}
+                  onCancel={() => cancelInvite(invite.id)}
+                  isCancelling={isCancelling}
+                />
+              ))
+            )}
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* ── Remove member confirmation ── */}
+      <ConfirmDeleteModal
+        visible={!!memberToRemove}
+        onCancel={() => setMemberToRemove(null)}
+        onConfirm={handleConfirmRemove}
+        isLoading={isRemoving}
+        title="Remove member?"
+        message={
+          memberToRemove ? `Are you sure you want to remove ${memberToRemove.name}?` : undefined
+        }
+      />
+
+      {/* ── Role edit bottom modal ── */}
+      <BottomModal visible={!!roleEditMember} onCancel={() => setRoleEditMember(null)}>
+        <View style={styles.roleSheet}>
+          <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>EDIT ROLE</Text>
+          {roleEditMember && (
+            <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
+              {roleEditMember.name}
+            </Text>
+          )}
+          <View style={[styles.roleOptions, { borderColor: colors.border.default }]}>
+            {(['member', 'admin'] as const).map((role, index, arr) => {
+              const active = roleEditMember?.role === role;
+              return (
+                <TouchableOpacity
+                  key={role}
+                  onPress={() => handleRoleSelect(role)}
+                  disabled={isUpdatingRole}
+                  style={[
+                    styles.roleOption,
+                    active && { backgroundColor: colors.primaryContainer },
+                    index < arr.length - 1 && {
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.border.default,
+                    },
+                  ]}
                 >
-                  TO BE INVITED · {pendingInvites.length}
-                </Text>
-                <TouchableOpacity onPress={sendInvites} disabled={isInviting}>
+                  <Ionicons
+                    name={role === 'admin' ? 'shield-checkmark-outline' : 'person-outline'}
+                    size={18}
+                    color={active ? colors.primary : colors.text.secondary}
+                  />
                   <Text
                     style={[
-                      TextStyles.label,
-                      { color: isInviting ? colors.text.disabled : colors.primary },
-                    ]}
-                  >
-                    {isInviting ? 'Sending…' : 'Send invites'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={[
-                  styles.card,
-                  { backgroundColor: colors.surface, borderColor: colors.border.default },
-                ]}
-              >
-                {pendingInvites.map((entry, index) => (
-                  <PendingRow
-                    key={entry.id}
-                    entry={entry}
-                    isLast={index === pendingInvites.length - 1}
-                    onRemove={() => removePending(entry.id)}
-                    onSave={(email) => updatePending(entry.id, email)}
-                  />
-                ))}
-              </View>
-            </View>
-          )}
-
-          {/* ── Current Members section ── */}
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <Text
-                style={[TextStyles.label, { color: colors.text.secondary, letterSpacing: 0.8 }]}
-              >
-                CURRENT MEMBERS · {members.length}
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.card,
-                { backgroundColor: colors.surface, borderColor: colors.border.default },
-              ]}
-            >
-              {members.length === 0 ? (
-                <SectionEmpty message="No members yet." />
-              ) : (
-                members.map((member, index) => (
-                  <MemberRow
-                    key={member.userId}
-                    member={member}
-                    colorIndex={index}
-                    isLast={index === members.length - 1}
-                    onRemove={() => setMemberToRemove(member)}
-                    isRemoving={isRemoving}
-                    onEditRole={() => setRoleEditMember(member)}
-                    isSelf={!!profile && member.userId === profile.id}
-                  />
-                ))
-              )}
-            </View>
-          </View>
-
-          {/* ── Pending Invites section ── */}
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <Text
-                style={[TextStyles.label, { color: colors.text.secondary, letterSpacing: 0.8 }]}
-              >
-                PENDING INVITES · {pendingServerInvites.length}
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.card,
-                { backgroundColor: colors.surface, borderColor: colors.border.default },
-              ]}
-            >
-              {pendingServerInvites.length === 0 ? (
-                <SectionEmpty message="No pending invites." />
-              ) : (
-                pendingServerInvites.map((invite, index) => (
-                  <ServerInviteRow
-                    key={invite.id}
-                    invite={invite}
-                    isLast={index === pendingServerInvites.length - 1}
-                    onCancel={() => cancelInvite(invite.id)}
-                    isCancelling={isCancelling}
-                  />
-                ))
-              )}
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* ── Remove member confirmation ── */}
-        <ConfirmDeleteModal
-          visible={!!memberToRemove}
-          onCancel={() => setMemberToRemove(null)}
-          onConfirm={handleConfirmRemove}
-          isLoading={isRemoving}
-          title="Remove member?"
-          message={
-            memberToRemove ? `Are you sure you want to remove ${memberToRemove.name}?` : undefined
-          }
-        />
-
-        {/* ── Role edit bottom modal ── */}
-        <BottomModal visible={!!roleEditMember} onCancel={() => setRoleEditMember(null)}>
-          <View style={styles.roleSheet}>
-            <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>EDIT ROLE</Text>
-            {roleEditMember && (
-              <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
-                {roleEditMember.name}
-              </Text>
-            )}
-            <View style={[styles.roleOptions, { borderColor: colors.border.default }]}>
-              {(['member', 'admin'] as const).map((role, index, arr) => {
-                const active = roleEditMember?.role === role;
-                return (
-                  <TouchableOpacity
-                    key={role}
-                    onPress={() => handleRoleSelect(role)}
-                    disabled={isUpdatingRole}
-                    style={[
-                      styles.roleOption,
-                      active && { backgroundColor: colors.primaryContainer },
-                      index < arr.length - 1 && {
-                        borderBottomWidth: 1,
-                        borderBottomColor: colors.border.default,
+                      TextStyles.bodyMedium,
+                      {
+                        color: active ? colors.primary : colors.text.primary,
+                        textTransform: 'capitalize',
+                        flex: 1,
                       },
                     ]}
                   >
-                    <Ionicons
-                      name={role === 'admin' ? 'shield-checkmark-outline' : 'person-outline'}
-                      size={18}
-                      color={active ? colors.primary : colors.text.secondary}
-                    />
-                    <Text
-                      style={[
-                        TextStyles.bodyMedium,
-                        {
-                          color: active ? colors.primary : colors.text.primary,
-                          textTransform: 'capitalize',
-                          flex: 1,
-                        },
-                      ]}
-                    >
-                      {role}
-                    </Text>
-                    {isUpdatingRole && active ? (
-                      <ActivityIndicator size="small" color={colors.primary} />
-                    ) : active ? (
-                      <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
-                    ) : null}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+                    {role}
+                  </Text>
+                  {isUpdatingRole && active ? (
+                    <ActivityIndicator size="small" color={colors.primary} />
+                  ) : active ? (
+                    <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+                  ) : null}
+                </TouchableOpacity>
+              );
+            })}
           </View>
-        </BottomModal>
-      </ScreenContainer>
-    </KeyboardAvoidingView>
+        </View>
+      </BottomModal>
+    </ScreenContainer>
   );
 }
 

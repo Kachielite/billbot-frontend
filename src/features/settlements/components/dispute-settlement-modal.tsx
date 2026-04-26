@@ -51,7 +51,9 @@ export default function DisputeSettlementModal({ visible, onClose, settlement, p
           <TouchableOpacity onPress={handleClose} hitSlop={12} style={styles.closeBtn}>
             <Ionicons name="close" size={22} color={colors.text.primary} />
           </TouchableOpacity>
-          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Dispute Payment</Text>
+          <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
+            DISPUTE SETTLEMENT
+          </Text>
           <View style={{ width: 34 }} />
         </View>
 
