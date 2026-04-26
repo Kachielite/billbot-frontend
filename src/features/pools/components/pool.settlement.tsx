@@ -12,9 +12,16 @@ import Tooltip from '@/core/common/components/tooltip';
 type Props = {
   balances: BalanceEntry[];
   isLoading: boolean;
+  onSettlePress?: () => void;
+  onViewSettlements?: () => void;
 };
 
-export default function PoolSettlement({ balances, isLoading }: Props) {
+export default function PoolSettlement({
+  balances,
+  isLoading,
+  onSettlePress,
+  onViewSettlements,
+}: Props) {
   const colors = useThemeColors();
   const getName = useGetName();
   const { profile } = useProfile();
@@ -29,10 +36,14 @@ export default function PoolSettlement({ balances, isLoading }: Props) {
           gap: Spacing.xs,
         }}
       >
-        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>
-          Settlement Breakdown
-        </Text>
-        <Tooltip description="Red indicates a member owes money; green indicates a member is owed money." />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+          <Tooltip description="Red indicates a member owes money; green indicates a member is owed money." />
+          {onViewSettlements && (
+            <TouchableOpacity onPress={onViewSettlements}>
+              <Text style={[TextStyles.label, { color: colors.primary }]}>View Settlements</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <View
         style={[
@@ -118,16 +129,13 @@ export default function PoolSettlement({ balances, isLoading }: Props) {
                     <Text style={[TextStyles.amountSmall, { color: colors.error }]}>
                       {currency} {amount}
                     </Text>
-                    {/* If the current user is the debtor (from), show a dummy "Settle" button */}
                     {profile?.id === entry.from.id && (
                       <TouchableOpacity
                         style={[
                           styles.settleBtn,
                           { backgroundColor: colors.primaryContainer, borderColor: colors.primary },
                         ]}
-                        onPress={() => {
-                          // dummy handler for now
-                        }}
+                        onPress={onSettlePress}
                       >
                         <Text style={[TextStyles.label, { color: colors.primary }]}>Settle</Text>
                       </TouchableOpacity>

@@ -27,6 +27,9 @@ import EditPoolScreen from '@/features/pools/screens/edit-pool.screen';
 import NewExpenseHomeScreen from '@/features/expenses/screens/new-expense-home.screen';
 import ExpensesScreen from '@/features/expenses/screens/expenses.screen';
 import ExpenseScreen from '@/features/expenses/screens/expense.screen';
+import SettlementsScreen from '@/features/settlements/screens/settlements.screen';
+import SettlementScreen from '@/features/settlements/screens/settlement.screen';
+import RecordPaymentScreen from '@/features/settlements/screens/record-payment.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -179,6 +182,27 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
         screen: PoolsScreen,
         options: {
           headerShown: false,
+        },
+      },
+      Settlements: {
+        screen: SettlementsScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      Settlement: {
+        screen: SettlementScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      RecordPayment: {
+        screen: RecordPaymentScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
         },
       },
     },
