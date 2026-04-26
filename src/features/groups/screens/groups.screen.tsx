@@ -76,7 +76,7 @@ const GroupsScreen = () => {
           data={allGroups}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <GroupCard group={item} />}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { flexGrow: 1 }]}
           showsVerticalScrollIndicator={false}
           onEndReached={loadMore}
           onEndReachedThreshold={0.4}
