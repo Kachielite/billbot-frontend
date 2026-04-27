@@ -9,6 +9,7 @@ import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
 import useProfile from '@/features/user/hooks/use-profile';
 import { formatAmount } from '@/core/common/utils/currency';
+import EmptyState from '@/core/common/components/empty-state';
 
 type Props = {
   memberSummary: MemberSummary[];
@@ -97,6 +98,21 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
             );
           })}
         </View>
+      </View>
+    );
+  }
+
+  if (memberSummary.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Summary</Text>
+          <Tooltip description="See how much each member owes or is owed in this pool, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
+        </View>
+        <EmptyState
+          title="No summary yet"
+          subtitle="Add expenses to see how amounts are split across members."
+        />
       </View>
     );
   }

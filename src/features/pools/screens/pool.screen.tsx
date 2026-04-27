@@ -1,4 +1,4 @@
-import { Platform, ScrollView, Text } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 import React from 'react';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +17,7 @@ import PoolMemberSummary from '@/features/pools/components/pool.member-summary';
 import PoolSettlement from '@/features/pools/components/pool.settlement';
 import { Spacing } from '@/core/common/constants/theme';
 import PoolExpenses from '@/features/pools/components/pool.expenses';
+import EmptyState from '@/core/common/components/empty-state';
 
 type Props = StaticScreenProps<{ poolId: string }>;
 
@@ -58,7 +59,10 @@ export default function PoolScreen({ route }: Props) {
   if (!pool) {
     return (
       <ScreenContainer>
-        <Text>Pool not found</Text>
+        <EmptyState
+          title="Pool not found"
+          subtitle="This pool may have been deleted or is unavailable."
+        />
       </ScreenContainer>
     );
   }

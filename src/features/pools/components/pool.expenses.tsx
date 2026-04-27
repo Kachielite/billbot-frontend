@@ -8,6 +8,7 @@ import { Expense } from '@/features/expenses/expenses.interface';
 import { useNavigation } from '@react-navigation/native';
 import usePoolsStore from '@/features/pools/pools.state';
 import { ExpenseCard } from '@/features/expenses/components/expense.card';
+import EmptyState from '@/core/common/components/empty-state';
 
 type Props = {
   expenses: Expense[];
@@ -48,7 +49,7 @@ export default function PoolExpenses({ expenses, isLoading }: Props) {
             </View>
           ))
         ) : expenses.length === 0 ? (
-          <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>No expenses yet</Text>
+          <EmptyState title="No expenses yet" subtitle="Add the first expense to get started." />
         ) : (
           expenses.slice(0, 4).map((exp) => <ExpenseCard expense={exp} key={exp.id} />)
         )}
