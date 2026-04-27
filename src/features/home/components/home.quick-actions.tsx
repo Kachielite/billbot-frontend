@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-// ...existing code...
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';

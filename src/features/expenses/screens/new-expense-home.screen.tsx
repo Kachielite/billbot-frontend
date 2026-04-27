@@ -169,6 +169,7 @@ export default function NewExpenseHomeScreen() {
                 listItemLabelStyle={[styles.itemText, { color: colors.text.primary }]}
                 selectedItemContainerStyle={{ backgroundColor: colors.primaryContainer }}
                 selectedItemLabelStyle={{ color: colors.primary }}
+                tickIconStyle={{ tintColor: colors.text.primary } as any}
                 textStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
                 placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
                 zIndex={3000}
@@ -223,6 +224,7 @@ export default function NewExpenseHomeScreen() {
                 listItemLabelStyle={[styles.itemText, { color: colors.text.primary }]}
                 selectedItemContainerStyle={{ backgroundColor: colors.primaryContainer }}
                 selectedItemLabelStyle={{ color: colors.primary }}
+                tickIconStyle={{ tintColor: colors.text.primary } as any}
                 textStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
                 placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
                 zIndex={3000}
