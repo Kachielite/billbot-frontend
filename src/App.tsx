@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  useLoadFonts();
+  const { loaded, error } = useLoadFonts();
   const { themeMode } = useThemeStore();
 
   React.useEffect(() => {
@@ -38,6 +38,8 @@ export default function App() {
     ios: isDarkMode ? DarkTheme : DefaultTheme,
     android: isDarkMode ? MaterialDarkTheme : MaterialLightTheme,
   });
+
+  if (!loaded && !error) return null;
 
   return (
     <QueryClientProvider client={queryClient}>
