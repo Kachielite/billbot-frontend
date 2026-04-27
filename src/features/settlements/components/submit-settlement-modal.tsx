@@ -2,7 +2,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Modal,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -88,10 +87,7 @@ export default function SubmitSettlementModal({ visible, onClose, poolId, member
           <View style={{ width: 34 }} />
         </View>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
-        >
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           <ScrollView
             contentContainerStyle={styles.form}
             keyboardShouldPersistTaps="handled"

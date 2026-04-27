@@ -1,6 +1,5 @@
 import {
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   type StyleProp,
   StyleSheet,
@@ -27,10 +26,7 @@ const ScreenContainer = ({
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoid}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <KeyboardAvoidingView style={styles.keyboardAvoid} behavior="padding">
         {useScrollView ? (
           <ScrollView
             showsVerticalScrollIndicator={false}

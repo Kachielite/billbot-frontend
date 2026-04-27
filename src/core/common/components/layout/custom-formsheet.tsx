@@ -31,7 +31,7 @@ export default function CustomFormSheet({ children }: { children: ReactNode }) {
 
       <KeyboardAvoidingView
         style={styles.keyboardAvoid}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior="padding"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
       >
         <View style={[styles.sheet, { backgroundColor: colors.background }]}>

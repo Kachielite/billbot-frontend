@@ -1,7 +1,6 @@
 import {
   KeyboardAvoidingView,
   Modal,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -57,10 +56,7 @@ export default function DisputeSettlementModal({ visible, onClose, settlement, p
           <View style={{ width: 34 }} />
         </View>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
-        >
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           <View style={styles.form}>
             <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
               Let the payer know why you cannot confirm this payment.
