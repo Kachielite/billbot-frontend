@@ -4,17 +4,32 @@
     "slug": "billbot-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/core/assets/icons/icon.png",
+    "icon": "./assets/BillBot-icon-light-1024.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./src/core/assets/icons/splash-icon.png",
+      "image": "./assets/BillBot-splash-ios-light.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F4F9F5"
     },
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.kachielite.billbotfrontend",
+      "icon": {
+        "light": "./assets/BillBot-icon-light-1024.png",
+        "dark": "./assets/BillBot-icon-dark-1024.png",
+        "tinted": "./assets/BillBot-icon-tinted-1024.png"
+      },
+      "splash": {
+        "image": "./assets/BillBot-splash-ios-light.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#F4F9F5",
+        "dark": {
+          "image": "./assets/BillBot-splash-ios-dark.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#0F1410"
+        }
+      },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "BillBot needs access to your photo library to attach receipts and payment proof.",
         "NSCameraUsageDescription": "BillBot needs camera access to capture receipts and payment proof.",
@@ -23,10 +38,19 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./src/core/assets/icons/android-icon-foreground.png",
-        "backgroundImage": "./src/core/assets/icons/android-icon-background.png",
-        "monochromeImage": "./src/core/assets/icons/android-icon-monochrome.png"
+        "foregroundImage": "./assets/BillBot-icon-light-1024.png",
+        "backgroundColor": "#F4F9F5",
+        "monochromeImage": "./assets/BillBot-android-monochrome.png"
+      },
+      "splash": {
+        "image": "./assets/BillBot-android-foreground.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#F4F9F5",
+        "dark": {
+          "image": "./assets/BillBot-android-foreground.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#0F1410"
+        }
       },
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "pan",
@@ -42,6 +66,7 @@
       "favicon": "./src/core/assets/icons/favicon.png"
     },
     "plugins": [
+      "expo-splash-screen",
       "expo-apple-authentication",
       [
         "@react-native-google-signin/google-signin",
