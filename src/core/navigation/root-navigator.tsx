@@ -91,6 +91,7 @@ const Tabs = createBottomTabNavigator({
   screenOptions: {
     headerShown: false,
     tabBarShowLabel: true,
+    tabBarLabelVisibilityMode: 'labeled',
     tabBarActiveTintColor: BrandColors.primary,
     animation: Platform.OS === 'android' ? 'fade' : 'shift',
   },
