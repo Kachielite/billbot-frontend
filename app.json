@@ -29,6 +29,7 @@
         "monochromeImage": "./src/core/assets/icons/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize",
       "package": "com.kachielite.billbotfrontend",
       "permissions": [
         "android.permission.READ_MEDIA_IMAGES",

@@ -4,6 +4,9 @@ import { Toast } from 'toastify-react-native';
 import { QUERY_KEYS } from '@/core/common/constants/query-keys';
 import { AppError } from '@/core/common/error';
 import { PoolsService } from '../pools.service';
+import { Pool } from '../pools.interface';
+
+const EMPTY_POOLS: Pool[] = [];
 
 const useGroupPools = (groupId: string) => {
   const [page, setPage] = useState(1);
@@ -21,7 +24,7 @@ const useGroupPools = (groupId: string) => {
   );
 
   return {
-    pools: data?.pools ?? [],
+    pools: data?.pools ?? EMPTY_POOLS,
     pagination: data
       ? { page: data.page, limit: data.limit, totalItems: data.totalItems, pages: data.pages }
       : undefined,
