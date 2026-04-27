@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, useColorScheme, View, type ViewStyle } from 'react-native';
 import React from 'react';
 import { Card, Radius, Spacing } from '@/core/common/constants/theme';
+import SkeletonBox from '@/core/common/components/skeleton-box';
 import useGroupBalances from '@/features/balances/hooks/use-group-balances';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
@@ -10,6 +11,7 @@ import getInitials from '@/core/common/utils/get-initials';
 import Tooltip from '@/core/common/components/tooltip';
 import { GroupDetail } from '@/features/groups/groups.interface';
 import useUserStore from '@/features/user/user.state';
+import useProfile from '@/features/user/hooks/use-profile';
 
 const AVATAR_SIZE = 45;
 const AVATAR_OVERLAP = 12;
@@ -101,53 +103,28 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
   const scheme = useColorScheme();
   const colors = useThemeColors();
   const { user } = useUserStore();
-  const { isLoading, memberSummary, balances } = useGroupBalances(group.id);
-  // find total owed and total owes across the group using unsettled balances
-  const currency = balances?.[0]?.currency || '$'; // Default to $ if currency is not available
+  const { profile } = useProfile();
+  const { balances, isLoading: isLoadingBalance } = useGroupBalances(group.id);
 
-  // Rules:
-  // - totalOwedByMe: splits where user is the debtor (from.id === user.id), paidBy !== user.id, unsettled
-  // - totalOwedToMe: splits where user is the creditor (to.id === user.id), paidBy !== user.id, unsettled
+  const currency = profile?.currency || '$';
   const userId = user?.id;
   let totalOwedByMe = 0;
   let totalOwedToMe = 0;
 
   if (userId && Array.isArray(balances)) {
     balances.forEach((b) => {
-      // ensure amount is positive and entries are between distinct users
       const amt = Math.abs(b.amount ?? 0);
       const fromId = b.from?.id;
       const toId = b.to?.id;
-
       if (fromId === userId && toId && toId !== userId) {
-        // user owes someone
         totalOwedByMe += amt;
       } else if (toId === userId && fromId && fromId !== userId) {
-        // someone owes user
         totalOwedToMe += amt;
       }
     });
   }
 
   const netBalance = totalOwedToMe - totalOwedByMe;
-
-  // measure amounts so both stat boxes can grow to the same width
-  const [owedToMeWidth, setOwedToMeWidth] = React.useState(0);
-  const [owedByMeWidth, setOwedByMeWidth] = React.useState(0);
-  // also measure title widths so titles are never truncated
-  const [owedToMeTitleWidth, setOwedToMeTitleWidth] = React.useState(0);
-  const [owedByMeTitleWidth, setOwedByMeTitleWidth] = React.useState(0);
-  const statContentPadding = Spacing.sm * 2;
-  const statBoxWidth = Math.max(
-    owedToMeWidth,
-    owedByMeWidth,
-    owedToMeTitleWidth,
-    owedByMeTitleWidth,
-  )
-    ? Math.max(owedToMeWidth, owedByMeWidth, owedToMeTitleWidth, owedByMeTitleWidth) +
-      statContentPadding
-    : undefined;
-
   const bgColor = group.color ?? DEFAULT_EMOJI_BG;
   const iconBackgroundOpacity = scheme === 'dark' ? '80' : '40';
 
@@ -198,31 +175,46 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
             { backgroundColor: colors.surface, borderColor: colors.border.subtle },
           ]}
         >
-          <View style={styles.balanceRow}>
-            <View style={styles.netColumn}>
-              <Text
-                style={[
-                  TextStyles.label,
-                  { color: colors.text.disabled, marginBottom: Spacing.xs },
-                ]}
-              >
-                {netBalance > 0
-                  ? 'Amount owed to you'
-                  : netBalance < 0
-                    ? 'Amount you owe'
-                    : 'All settled up'}{' '}
-                across {group.activePoolCount} active {group.activePoolCount === 1 ? 'tab' : 'tabs'}
-              </Text>
-              <Text
-                style={[
-                  TextStyles.amountLarge,
-                  { color: netBalance >= 0 ? colors.primary : colors.error },
-                ]}
-              >
-                {currency} {formatAmount(netBalance)}
-              </Text>
+          {isLoadingBalance ? (
+            <View style={[styles.balanceRow, { gap: Spacing.sm }]}>
+              <View style={styles.netColumn}>
+                <SkeletonBox
+                  width="70%"
+                  height={14}
+                  radius={4}
+                  style={{ marginBottom: Spacing.xs }}
+                />
+                <SkeletonBox width="50%" height={32} radius={6} />
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.balanceRow}>
+              <View style={styles.netColumn}>
+                <Text
+                  style={[
+                    TextStyles.label,
+                    { color: colors.text.disabled, marginBottom: Spacing.xs },
+                  ]}
+                >
+                  {netBalance > 0
+                    ? 'Amount owed to you'
+                    : netBalance < 0
+                      ? 'Amount you owe'
+                      : 'All settled up'}{' '}
+                  across {group.activePoolCount} active{' '}
+                  {group.activePoolCount === 1 ? 'tab' : 'tabs'}
+                </Text>
+                <Text
+                  style={[
+                    TextStyles.amountLarge,
+                    { color: netBalance >= 0 ? colors.primary : colors.error },
+                  ]}
+                >
+                  {currency} {formatAmount(netBalance)}
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </View>

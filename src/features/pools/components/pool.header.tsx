@@ -118,12 +118,12 @@ export default function PoolHeader({
               >
                 <Ionicons
                   name={item.icon}
-                  size={17}
+                  size={20}
                   color={item.destructive ? colors.error : colors.text.secondary}
                 />
                 <Text
                   style={[
-                    TextStyles.bodySmall,
+                    TextStyles.bodyMedium,
                     { color: item.destructive ? colors.error : colors.text.primary },
                   ]}
                 >
@@ -190,6 +190,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.md,
   },
 });
