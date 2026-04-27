@@ -13,8 +13,6 @@ const HomeScreen = () => {
   return (
     <ScreenContainer useScrollView={false}>
       <HomeHeader />
-      <HomeBalances />
-      <HomeQuickActions />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -22,6 +20,8 @@ const HomeScreen = () => {
           gap: 16,
         }}
       >
+        <HomeBalances />
+        <HomeQuickActions />
         <HomeGroups />
         <HomeUpcoming />
         <HomeActivities />

@@ -1,9 +1,7 @@
 import {
   ActivityIndicator,
   Image,
-  KeyboardAvoidingView,
   Linking,
-  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -195,58 +193,57 @@ const ProfileScreen = () => {
         <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>Profile</Text>
       </View>
 
-      {/* ── Hero (fixed, outside scroll) ── */}
-      <View
-        style={[
-          styles.hero,
-          { backgroundColor: colors.surface, borderColor: colors.border.default },
-        ]}
-      >
-        {isLoading ? (
-          <>
-            <SkeletonBox
-              width={80}
-              height={80}
-              bg={colors.background}
-              style={{ borderRadius: 40 }}
-            />
-            <View style={{ alignItems: 'center', gap: Spacing.xs }}>
-              <SkeletonBox width={140} height={20} bg={colors.background} />
-              <SkeletonBox width={180} height={14} bg={colors.background} />
-            </View>
-          </>
-        ) : (
-          <>
-            {profile?.avatarUrl ? (
-              <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} />
-            ) : (
-              <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.initials, { color: colors.onPrimary }]}>{initials}</Text>
-              </View>
-            )}
-            <View style={{ alignItems: 'center', gap: 2 }}>
-              <Text style={[TextStyles.headingMedium, { color: colors.text.primary }]}>
-                {profile?.name ?? '—'}
-              </Text>
-              <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
-                {profile?.email ?? profile?.phone ?? '—'}
-              </Text>
-            </View>
-            <View style={[styles.memberBadge, { backgroundColor: colors.primaryContainer }]}>
-              <Text style={[TextStyles.caption, { color: colors.onPrimaryContainer }]}>
-                Member since {memberSince}
-              </Text>
-            </View>
-          </>
-        )}
-      </View>
-
       {/* ── Scrollable sections ── */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
+        {/* ── Hero (fixed, outside scroll) ── */}
+        <View
+          style={[
+            styles.hero,
+            { backgroundColor: colors.surface, borderColor: colors.border.default },
+          ]}
+        >
+          {isLoading ? (
+            <>
+              <SkeletonBox
+                width={80}
+                height={80}
+                bg={colors.background}
+                style={{ borderRadius: 40 }}
+              />
+              <View style={{ alignItems: 'center', gap: Spacing.xs }}>
+                <SkeletonBox width={140} height={20} bg={colors.background} />
+                <SkeletonBox width={180} height={14} bg={colors.background} />
+              </View>
+            </>
+          ) : (
+            <>
+              {profile?.avatarUrl ? (
+                <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} />
+              ) : (
+                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+                  <Text style={[styles.initials, { color: colors.onPrimary }]}>{initials}</Text>
+                </View>
+              )}
+              <View style={{ alignItems: 'center', gap: 2 }}>
+                <Text style={[TextStyles.headingMedium, { color: colors.text.primary }]}>
+                  {profile?.name ?? '—'}
+                </Text>
+                <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
+                  {profile?.email ?? profile?.phone ?? '—'}
+                </Text>
+              </View>
+              <View style={[styles.memberBadge, { backgroundColor: colors.primaryContainer }]}>
+                <Text style={[TextStyles.caption, { color: colors.onPrimaryContainer }]}>
+                  Member since {memberSince}
+                </Text>
+              </View>
+            </>
+          )}
+        </View>
         {/* ── Account ── */}
         <Section
           title="ACCOUNT"
@@ -363,40 +360,35 @@ const ProfileScreen = () => {
 
       {/* ── Edit Profile modal ── */}
       <BottomModal visible={editVisible} onCancel={() => setEditVisible(false)}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={{ width: '100%' }}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
-                EDIT PROFILE
-              </Text>
-              <TouchableOpacity
-                onPress={() => setEditVisible(false)}
-                style={[styles.closeBtn, { backgroundColor: colors.surface }]}
-              >
-                <Ionicons name="close" size={18} color={colors.text.primary} />
-              </TouchableOpacity>
-            </View>
-            <CustomTextInput
-              id="name"
-              formController={form}
-              label="Name"
-              placeholder="Your full name"
-              type="text"
-            />
-            <CustomTextInput
-              id="phone"
-              formController={form}
-              label="Phone"
-              placeholder="+2348012345678"
-              type="phone"
-              hint="International format, e.g. +2348012345678"
-            />
-            <CustomButton label="Save changes" onPress={onSave} loading={isUpdating} />
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
+              EDIT PROFILE
+            </Text>
+            <TouchableOpacity
+              onPress={() => setEditVisible(false)}
+              style={[styles.closeBtn, { backgroundColor: colors.surface }]}
+            >
+              <Ionicons name="close" size={18} color={colors.text.primary} />
+            </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+          <CustomTextInput
+            id="name"
+            formController={form}
+            label="Name"
+            placeholder="Your full name"
+            type="text"
+          />
+          <CustomTextInput
+            id="phone"
+            formController={form}
+            label="Phone"
+            placeholder="+2348012345678"
+            type="phone"
+            hint="International format, e.g. +2348012345678"
+          />
+          <CustomButton label="Save changes" onPress={onSave} loading={isUpdating} />
+        </View>
       </BottomModal>
 
       {/* ── Delete account modal ── */}

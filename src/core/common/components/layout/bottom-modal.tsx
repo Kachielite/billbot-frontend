@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, StyleSheet, View } from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
@@ -14,7 +14,9 @@ export default function BottomModal({ visible, onCancel, children }: BottomModal
   return (
     <Modal transparent animationType="slide" visible={visible} onRequestClose={onCancel}>
       <View style={styles.backdrop}>
-        <View style={[styles.sheet, { backgroundColor: colors.background }]}>{children}</View>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={[styles.sheet, { backgroundColor: colors.background }]}>{children}</View>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );
