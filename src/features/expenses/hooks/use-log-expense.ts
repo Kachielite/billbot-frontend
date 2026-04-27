@@ -1,4 +1,4 @@
-import { useForm, UseFormReturn } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from 'react-query';
 import { Toast } from 'toastify-react-native';
@@ -11,19 +11,17 @@ import { useEffect } from 'react';
 import useProfile from '@/features/user/hooks/use-profile';
 import { useNavigation } from '@react-navigation/native';
 
-export type LogExpenseFormReturn = UseFormReturn<LogExpenseSchemaType>;
-
 const useLogExpense = (poolId: string) => {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
   const { draftExpense, clearDraftExpense } = useExpensesStore();
   const { profile } = useProfile();
 
-  const form: LogExpenseFormReturn = useForm<LogExpenseSchemaType>({
+  const form = useForm<LogExpenseSchemaType>({
     resolver: zodResolver(logExpenseSchema),
     mode: 'onBlur',
     defaultValues: { currency: 'NGN', isRecurring: false },
-  }) as LogExpenseFormReturn;
+  });
 
   const { isLoading: isLogging, mutateAsync: logExpense } = useMutation(
     'log-expense',

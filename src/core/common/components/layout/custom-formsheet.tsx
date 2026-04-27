@@ -30,6 +30,7 @@ export default function CustomFormSheet({ children }: { children: ReactNode }) {
       />
 
       <KeyboardAvoidingView
+        style={styles.keyboardAvoid}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
       >
@@ -37,6 +38,7 @@ export default function CustomFormSheet({ children }: { children: ReactNode }) {
           <ScrollView
             contentContainerStyle={[styles.content, { backgroundColor: colors.background }]}
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
             showsVerticalScrollIndicator={false}
           >
             {children}
@@ -52,10 +54,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
+  keyboardAvoid: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
   sheet: {
     borderTopLeftRadius: Radius.xl,
     borderTopRightRadius: Radius.xl,
-    // allow dropdowns to overflow the sheet when necessary (dropdowns render absolute lists)
     overflow: 'hidden',
     paddingBottom: Platform.OS === 'ios' ? Spacing.lg : Spacing.xl,
   },
