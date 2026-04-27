@@ -46,7 +46,7 @@ const useLogExpense = (poolId: string) => {
     if (draftExpense) {
       const { parsedReceipt } = draftExpense;
       const receiptDescription = `${parsedReceipt?.merchant ?? ''} ${parsedReceipt?.description ?? ''}`;
-      setValue('amount', parsedReceipt?.amount ?? 0);
+      if (parsedReceipt?.amount != null) setValue('amount', parsedReceipt.amount);
       setValue('currency', parsedReceipt?.currency ?? profile?.currency ?? 'NGN');
       setValue('description', receiptDescription ?? '');
       setValue('categoryId', parsedReceipt?.categoryId ?? undefined);

@@ -45,7 +45,7 @@ export default function NewGroupScreen() {
   });
 
   return (
-    <ScreenContainer>
+    <ScreenContainer useScrollView>
       <NewGroupHeader />
       {/* ── Preview ────────────────────────────────────────────────── */}
       <View style={styles.previewContainer}>
