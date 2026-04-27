@@ -19,4 +19,5 @@ export const QUERY_KEYS = {
   USER_ACTIVITIES: 'user-activities',
   GROUP_EXPENSES: 'group-expenses',
   GROUP_BALANCES: 'group-balances',
+  CURRENCIES: 'currencies',
 } as const;

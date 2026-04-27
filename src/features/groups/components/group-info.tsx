@@ -106,7 +106,7 @@ export default function GroupInfo({ group }: { group: GroupDetail }) {
   const { profile } = useProfile();
   const { balances, isLoading: isLoadingBalance } = useGroupBalances(group.id);
 
-  const currency = profile?.currency || '$';
+  const currency = profile?.currency?.symbol || '$';
   const userId = user?.id;
   let totalOwedByMe = 0;
   let totalOwedToMe = 0;

@@ -1,5 +1,10 @@
-import { UserProfileDto, UserResponse, UserSummaryDto } from '@/features/user/user.dto';
-import { IUser, UserProfile, UserSummary } from '@/features/user/user.interface';
+import {
+  CurrencyDto,
+  UserProfileDto,
+  UserResponse,
+  UserSummaryDto,
+} from '@/features/user/user.dto';
+import { Currency, IUser, UserProfile, UserSummary } from '@/features/user/user.interface';
 
 export const mapUserResponseToUser = (response: UserResponse): IUser => {
   return {
@@ -11,13 +16,19 @@ export const mapUserResponseToUser = (response: UserResponse): IUser => {
   };
 };
 
+export const mapCurrencyFromDto = (dto: CurrencyDto): Currency => ({
+  id: dto.id,
+  code: dto.code,
+  symbol: dto.symbol,
+});
+
 export const mapUserProfileFromDto = (dto: UserProfileDto): UserProfile => ({
   id: dto.id,
   name: dto.name,
   phone: dto.phone,
   email: dto.email,
   avatarUrl: dto.avatar_url,
-  currency: dto.currency,
+  currency: mapCurrencyFromDto(dto.currency),
   createdAt: new Date(dto.created_at),
 });
 

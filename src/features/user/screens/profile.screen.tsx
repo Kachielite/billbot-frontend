@@ -14,9 +14,11 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import BottomModal from '@/core/common/components/layout/bottom-modal';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
+import CustomDropdown from '@/core/common/components/form/custom-dropdown';
 import CustomButton from '@/core/common/components/form/custom-button';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
@@ -24,6 +26,8 @@ import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useProfile from '@/features/user/hooks/use-profile';
 import useUpdateProfile from '@/features/user/hooks/use-update-profile';
+import useUploadAvatar from '@/features/user/hooks/use-upload-avatar';
+import useCurrencies from '@/features/user/hooks/use-currencies';
 import useThemeStore from '@/core/common/state/theme.state';
 import useAuthStore from '@/features/auth/auth.state';
 import { UserService } from '@/features/user/user.service';
@@ -150,6 +154,8 @@ const ProfileScreen = () => {
   const systemScheme = useColorScheme();
   const { profile, isLoading } = useProfile();
   const { form, isUpdating, updateProfile } = useUpdateProfile();
+  const { isUploading, uploadAvatar } = useUploadAvatar();
+  const { currencies } = useCurrencies();
   const { themeMode, setThemeMode } = useThemeStore();
   const { clearAuth } = useAuthStore();
 
@@ -172,7 +178,11 @@ const ProfileScreen = () => {
 
   const openEdit = () => {
     if (!profile) return;
-    form.reset({ name: profile.name ?? undefined, phone: profile.phone ?? undefined });
+    form.reset({
+      name: profile.name ?? undefined,
+      phone: profile.phone ?? undefined,
+      currency_id: profile.currency?.id,
+    });
     setEditVisible(true);
   };
 
@@ -181,10 +191,24 @@ const ProfileScreen = () => {
     setEditVisible(false);
   });
 
+  const pickAvatar = async () => {
+    const result = await launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 });
+    const uri = result.assets?.[0]?.uri;
+    if (uri) await uploadAvatar(uri);
+  };
+
   const toggleDarkMode = (val: boolean) => setThemeMode(val ? 'dark' : 'light');
 
   const initials = profile ? getInitials(profile.name) : '';
   const memberSince = profile ? moment(profile.createdAt).format('MMMM YYYY') : '';
+  const currencyLabel = profile?.currency
+    ? `${profile.currency.code} (${profile.currency.symbol})`
+    : '—';
+
+  const currencyOptions = currencies.map((c) => ({
+    label: `${c.code} (${c.symbol})`,
+    value: c.id,
+  }));
 
   return (
     <ScreenContainer useScrollView={false}>
@@ -199,7 +223,7 @@ const ProfileScreen = () => {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        {/* ── Hero (fixed, outside scroll) ── */}
+        {/* ── Hero ── */}
         <View
           style={[
             styles.hero,
@@ -221,13 +245,22 @@ const ProfileScreen = () => {
             </>
           ) : (
             <>
-              {profile?.avatarUrl ? (
-                <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} />
-              ) : (
-                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.initials, { color: colors.onPrimary }]}>{initials}</Text>
+              <TouchableOpacity onPress={pickAvatar} disabled={isUploading} activeOpacity={0.8}>
+                {profile?.avatarUrl ? (
+                  <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} />
+                ) : (
+                  <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+                    <Text style={[styles.initials, { color: colors.onPrimary }]}>{initials}</Text>
+                  </View>
+                )}
+                <View style={[styles.avatarBadge, { backgroundColor: colors.surface }]}>
+                  {isUploading ? (
+                    <ActivityIndicator size={10} color={colors.primary} />
+                  ) : (
+                    <Ionicons name="camera-outline" size={12} color={colors.primary} />
+                  )}
                 </View>
-              )}
+              </TouchableOpacity>
               <View style={{ alignItems: 'center', gap: 2 }}>
                 <Text style={[TextStyles.headingMedium, { color: colors.text.primary }]}>
                   {profile?.name ?? '—'}
@@ -244,6 +277,7 @@ const ProfileScreen = () => {
             </>
           )}
         </View>
+
         {/* ── Account ── */}
         <Section
           title="ACCOUNT"
@@ -291,7 +325,7 @@ const ProfileScreen = () => {
 
         {/* ── Preferences ── */}
         <Section title="PREFERENCES">
-          <InfoRow icon="cash-outline" label="Currency" value={profile?.currency ?? '—'} />
+          <InfoRow icon="cash-outline" label="Currency" value={currencyLabel} />
           <InfoRow
             icon={isDark ? 'moon' : 'sunny-outline'}
             label="Dark Mode"
@@ -387,6 +421,13 @@ const ProfileScreen = () => {
             type="phone"
             hint="International format, e.g. +2348012345678"
           />
+          <CustomDropdown
+            id="currency_id"
+            formController={form}
+            label="Currency"
+            placeholder="Select currency"
+            options={currencyOptions}
+          />
           <CustomButton label="Save changes" onPress={onSave} loading={isUpdating} />
         </View>
       </BottomModal>
@@ -477,6 +518,21 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  avatarBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
   initials: {
     fontSize: 28,

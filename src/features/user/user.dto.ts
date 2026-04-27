@@ -18,19 +18,24 @@ export const updateProfileSchema = z.object({
     .regex(/^\+[1-9]\d{1,14}$/, 'Enter a valid international phone number e.g. +2348012345678')
     .nullable()
     .optional(),
-  avatar_url: z.string().url().nullable().optional(),
-  currency: z.string().optional(),
+  currency_id: z.number().optional(),
 });
 export type UpdateProfileSchemaType = z.infer<typeof updateProfileSchema>;
 
 // ── Response DTOs ─────────────────────────────────────────────────────────────
+export interface CurrencyDto {
+  id: number;
+  code: string;
+  symbol: string;
+}
+
 export interface UserProfileDto {
   id: string;
   name: string;
   phone: string | null;
   email: string | null;
   avatar_url: string | null;
-  currency: string;
+  currency: CurrencyDto;
   created_at: string;
 }
 

@@ -28,7 +28,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
   const { profile, isLoading: isLoadingCurrency } = useProfile();
   const colors = useThemeColors();
   const getName = useGetName();
-  const currency = profile?.currency || '$';
+  const currency = profile?.currency?.symbol || '$';
 
   if (isLoading || isLoadingCurrency) {
     // Render a skeleton that mirrors the members summary layout: title + rows with left/right halves

@@ -53,7 +53,7 @@ export default function PoolBalances({
     },
   ];
 
-  const currency = profile?.currency || '$';
+  const currency = profile?.currency?.symbol || '$';
   const percentageCollected = totalAmount > 0 ? (amountCollected / totalAmount) * 100 : 0;
 
   return (

@@ -6,13 +6,19 @@ export interface IUser {
   createdAt: string;
 }
 
+export interface Currency {
+  id: number;
+  code: string;
+  symbol: string;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
   phone: string | null;
   email: string | null;
   avatarUrl: string | null;
-  currency: string;
+  currency: Currency;
   createdAt: Date;
 }
 

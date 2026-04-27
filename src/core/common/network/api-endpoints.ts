@@ -4,6 +4,8 @@ export const API_ENDPOINTS = {
   AUTH_LOGOUT: '/auth/logout',
   AUTH_ME: '/auth/me',
   USERS_ME: '/users/me',
+  USERS_AVATAR: '/users/me/avatar',
+  USERS_CURRENCIES: '/users/currencies',
   USERS_SEARCH: '/users/search',
   GROUPS: '/groups',
   GROUP_DETAIL: (groupId: string) => `/groups/${groupId}`,

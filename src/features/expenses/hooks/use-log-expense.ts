@@ -47,11 +47,11 @@ const useLogExpense = (poolId: string) => {
       const { parsedReceipt } = draftExpense;
       const receiptDescription = `${parsedReceipt?.merchant ?? ''} ${parsedReceipt?.description ?? ''}`;
       if (parsedReceipt?.amount != null) setValue('amount', parsedReceipt.amount);
-      setValue('currency', parsedReceipt?.currency ?? profile?.currency ?? 'NGN');
+      setValue('currency', parsedReceipt?.currency ?? profile?.currency?.code ?? 'NGN');
       setValue('description', receiptDescription ?? '');
       setValue('categoryId', parsedReceipt?.categoryId ?? undefined);
     }
-  }, [draftExpense, setValue, profile?.currency]);
+  }, [draftExpense, setValue, profile?.currency?.code]);
 
   const onLogExpense = async () => {
     await form.handleSubmit(async (data) => {
