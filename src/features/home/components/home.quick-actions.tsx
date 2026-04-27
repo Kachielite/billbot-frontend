@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import {Radius, Shadow, Spacing} from '@/core/common/constants/theme';
 import BottomModal from '@/core/common/components/layout/bottom-modal';
 import HomeTab from '@/features/home/components/home.tab';
 import useGroupsStore from '@/features/groups/groups.state';
@@ -18,6 +18,18 @@ export default function HomeQuickActions() {
   const [showNewTabModal, setShowNewTabModal] = React.useState(false);
 
   const QUICK_ACTIONS = [
+      {
+      name: 'New group',
+      icon: <FontAwesome6 name="user-group" size={24} color={colors.primary} />,
+      action: () => navigation.navigate('NewGroup'),
+      backgroundColor: colors.primaryContainer,
+    },
+    {
+      name: 'New tab',
+      icon: <MaterialCommunityIcons name="folder-table" size={24} color={colors.primary} />,
+      action: () => setShowNewTabModal(true),
+      backgroundColor: colors.primaryContainer,
+    },
     {
       name: 'Add expense',
       icon: <FontAwesome6 name="add" size={24} color={colors.primary} />,
@@ -32,18 +44,6 @@ export default function HomeQuickActions() {
       name: 'Settle up',
       icon: <FontAwesome6 name="arrow-right-arrow-left" size={24} color={colors.primary} />,
       action: () => navigation.navigate('SettleUpHome'),
-      backgroundColor: colors.primaryContainer,
-    },
-    {
-      name: 'New group',
-      icon: <FontAwesome6 name="user-group" size={24} color={colors.primary} />,
-      action: () => navigation.navigate('NewGroup'),
-      backgroundColor: colors.primaryContainer,
-    },
-    {
-      name: 'New tab',
-      icon: <MaterialCommunityIcons name="folder-table" size={24} color={colors.primary} />,
-      action: () => setShowNewTabModal(true),
       backgroundColor: colors.primaryContainer,
     },
   ];

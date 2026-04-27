@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import { TextStyles } from '@/core/common/constants/fonts';
-import { Ionicons } from '@expo/vector-icons';
+import {TextStyles} from '@/core/common/constants/fonts';
+import {Ionicons} from '@expo/vector-icons';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
-import { useNavigation } from '@react-navigation/native';
+import {Radius, Shadow, Spacing} from '@/core/common/constants/theme';
+import {useNavigation} from '@react-navigation/native';
 
 interface Props {
   onDone: () => void;
@@ -38,7 +38,7 @@ export default function InviteMembersHeader({ onDone }: Props) {
         </View>
       </View>
       <TouchableOpacity onPress={onDone}>
-        <Text style={[TextStyles.headingSmall, { color: colors.text.disabled }]}>Done</Text>
+        <Text style={[TextStyles.headingSmall, { color: colors.primary }]}>Done</Text>
       </TouchableOpacity>
     </View>
   );

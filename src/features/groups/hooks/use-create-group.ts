@@ -12,7 +12,7 @@ const useCreateGroup = () => {
 
   const form = useForm<CreateGroupSchemaType>({
     resolver: zodResolver(createGroupSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: { name: '', description: '', emoji: '', color: '' },
   });
 

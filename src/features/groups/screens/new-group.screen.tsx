@@ -46,7 +46,7 @@ export default function NewGroupScreen() {
 
   return (
     <ScreenContainer useScrollView={false}>
-      <NewGroupHeader />
+      <NewGroupHeader isFormValid={form.formState.isValid} onNext={handleContinue} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -128,8 +128,12 @@ export default function NewGroupScreen() {
       {/* ── Continue button ────────────────────────────────────────── */}
       <TouchableOpacity
         onPress={handleContinue}
-        disabled={isCreating}
-        style={[styles.continueBtn, { backgroundColor: colors.primary }]}
+        disabled={!form.formState.isValid || isCreating}
+        style={[
+          styles.continueBtn,
+          { backgroundColor: colors.primary },
+          (!form.formState.isValid || isCreating) && { opacity: 0.45 },
+        ]}
       >
         <AntDesign name="user-add" size={24} color={colors.text.inverse} />
         <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
