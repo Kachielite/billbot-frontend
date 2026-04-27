@@ -126,21 +126,16 @@ export default function NewGroupScreen() {
         </View>
       </ScrollView>
       {/* ── Continue button ────────────────────────────────────────── */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={handleContinue}
-          disabled={isCreating}
-          style={[styles.continueBtn, { backgroundColor: colors.primary }]}
-        >
-          <AntDesign name="user-add" size={24} color={colors.text.inverse} />
-          <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
-            Continue · invite members
-          </Text>
-        </TouchableOpacity>
-        <Text style={[TextStyles.caption, { color: colors.text.secondary, textAlign: 'center' }]}>
-          Members come next. Groups hold your tabs — monthly
+      <TouchableOpacity
+        onPress={handleContinue}
+        disabled={isCreating}
+        style={[styles.continueBtn, { backgroundColor: colors.primary }]}
+      >
+        <AntDesign name="user-add" size={24} color={colors.text.inverse} />
+        <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
+          Continue · invite members
         </Text>
-      </View>
+      </TouchableOpacity>
     </ScreenContainer>
   );
 }
