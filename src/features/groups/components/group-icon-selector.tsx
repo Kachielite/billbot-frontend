@@ -12,10 +12,10 @@ import { TextStyles } from '@/core/common/constants/fonts';
 const COLS = 6;
 const ROWS = 2;
 const TOTAL_SLOTS = COLS * ROWS;
-const MAX_ICONS = TOTAL_SLOTS - 1;
+const MAX_ICONS = TOTAL_SLOTS - 1; // 11
+const PLUS_SLOT_IDX = TOTAL_SLOTS - 1; // always the last slot
 const ITEM_GAP = Spacing.sm;
 
-// Pre-create a fixed array of refs for all icon slots (indices 0–10)
 const createSlotRefs = () => Array.from({ length: MAX_ICONS }, () => React.createRef<View>());
 
 interface Props {
@@ -36,18 +36,19 @@ export default function GroupIconSelector({
   const colors = useThemeColors();
 
   const [popoverIndex, setPopoverIndex] = useState<number | null>(null);
-  // stable refs for all icon slots — never recreated
   const slotRefs = useRef(createSlotRefs());
+  const plusRef = useRef<View>(null);
 
-  // 'add' | null
   const [showPicker, setShowPicker] = useState(false);
+  const [showMaxTooltip, setShowMaxTooltip] = useState(false);
+
+  const isFull = icons.length >= MAX_ICONS;
 
   const closePopover = () => setPopoverIndex(null);
 
   useEffect(() => {
     if (popoverIndex === null) return;
     const activeRef = slotRefs.current[popoverIndex]?.current;
-    // Clear stale popover targets if list updates or view is not mounted.
     if (!activeRef || !icons[popoverIndex]) {
       setPopoverIndex(null);
     }
@@ -73,38 +74,66 @@ export default function GroupIconSelector({
     setShowPicker(false);
   };
 
+  const handlePlusPress = () => {
+    if (isFull) {
+      setShowMaxTooltip(true);
+    } else {
+      setShowPicker(true);
+    }
+  };
+
   const renderSlots = () => {
     const rows: React.ReactNode[] = [];
-    // plus button sits right after the last icon (unless all slots are full)
-    const plusSlotIdx = icons.length < MAX_ICONS ? icons.length : -1;
 
     for (let row = 0; row < ROWS; row++) {
       const cells: React.ReactNode[] = [];
       for (let col = 0; col < COLS; col++) {
         const idx = row * COLS + col;
-        const isPlusSlot = idx === plusSlotIdx;
-        const icon = icons[idx];
-        const isSelected = !!icon && selectedIcon === icon;
 
-        if (isPlusSlot) {
+        // ── Plus button — always at the last slot ──────────────────────────
+        if (idx === PLUS_SLOT_IDX) {
           cells.push(
-            <TouchableOpacity
-              key="plus"
-              onPress={() => setShowPicker(true)}
-              style={[
-                styles.slot,
-                {
-                  backgroundColor: colors.surface,
-                  borderColor: colors.border.subtle,
-                  borderWidth: Border.thin,
-                },
-              ]}
-            >
-              <Ionicons name="add" size={22} color={colors.text.secondary} />
-            </TouchableOpacity>,
+            <View key="plus-wrapper" ref={plusRef} collapsable={false} style={styles.slotWrapper}>
+              <TouchableOpacity
+                onPress={handlePlusPress}
+                style={[
+                  styles.slot,
+                  {
+                    backgroundColor: colors.surface,
+                    borderColor: colors.border.subtle,
+                    borderWidth: Border.thin,
+                    opacity: isFull ? 0.35 : 1,
+                  },
+                ]}
+              >
+                <Ionicons name="add" size={22} color={colors.text.secondary} />
+              </TouchableOpacity>
+
+              {showMaxTooltip && plusRef.current && (
+                <Popover
+                  isVisible
+                  from={plusRef as React.RefObject<View>}
+                  onRequestClose={() => setShowMaxTooltip(false)}
+                  placement={PopoverPlacement.TOP}
+                  backgroundStyle={{ backgroundColor: 'transparent' }}
+                  popoverStyle={[styles.tooltip, { backgroundColor: colors.surface }]}
+                >
+                  <Text
+                    style={[TextStyles.caption, styles.tooltipText, { color: colors.text.primary }]}
+                  >
+                    Press {'&'} hold any emoji to delete it, then add a new one.{'\n'}Max{' '}
+                    {MAX_ICONS} emojis allowed.
+                  </Text>
+                </Popover>
+              )}
+            </View>,
           );
           continue;
         }
+
+        // ── Icon slot ──────────────────────────────────────────────────────
+        const icon = icons[idx];
+        const isSelected = !!icon && selectedIcon === icon;
 
         if (icon) {
           cells.push(
@@ -158,7 +187,7 @@ export default function GroupIconSelector({
           continue;
         }
 
-        // invisible spacer
+        // ── Empty spacer ──────────────────────────────────────────────────
         cells.push(<View key={`empty-${idx}`} style={styles.slotWrapper} />);
       }
       rows.push(
@@ -212,4 +241,19 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
   },
   popoverDivider: { height: 1, marginHorizontal: Spacing.sm },
+  tooltip: {
+    borderRadius: Radius.md,
+    maxWidth: 220,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  tooltipText: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
 });

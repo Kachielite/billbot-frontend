@@ -11,19 +11,7 @@ export type SplitEntry = z.infer<typeof splitEntrySchema>;
 
 export const logExpenseSchema = z
   .object({
-    amount: z.preprocess(
-      (v) => {
-        if (v == null || v === '') return undefined;
-        if (typeof v === 'string') {
-          const n = parseFloat(v);
-          return isNaN(n) ? v : n;
-        }
-        return v;
-      },
-      z
-        .number({ invalid_type_error: 'Please enter a valid number' })
-        .positive('Amount must be greater than 0'),
-    ),
+    amount: z.coerce.number<number>().positive('Amount must be greater than 0'),
     description: z.string().max(255).optional(),
     categoryId: z.string().uuid().optional(),
     currency: z.string().optional(),

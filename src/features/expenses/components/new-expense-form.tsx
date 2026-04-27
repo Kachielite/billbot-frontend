@@ -1,8 +1,7 @@
 import { Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import React from 'react';
 import ExpenseParseReceipt from '@/features/expenses/components/expense.parse-receipt';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import { LogExpenseSchemaType } from '@/features/expenses/expenses.dto';
+import { Controller } from 'react-hook-form';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
 import { Spacing } from '@/core/common/constants/theme';
 import useCategories from '@/features/categories/hooks/use-categories';
@@ -11,9 +10,10 @@ import useExpensesStore from '@/features/expenses/expenses.state';
 import SplitExpense from '@/features/expenses/components/split.expense';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
+import type { LogExpenseFormReturn } from '@/features/expenses/hooks/use-log-expense';
 
 type NewExpenseFormProps = {
-  form: UseFormReturn<LogExpenseSchemaType>;
+  form: LogExpenseFormReturn;
   poolId: string;
 };
 
