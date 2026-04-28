@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "billbot-frontend",
+    "name": "BillBot",
     "slug": "billbot-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,6 +15,7 @@
       "usesAppleSignIn": true,
       "supportsTablet": false,
       "bundleIdentifier": "com.kachielite.billbotfrontend",
+      "buildNumber": "1",
       "icon": {
         "light": "./assets/BillBot-icon-light-1024.png",
         "dark": "./assets/BillBot-icon-dark-1024.png",
@@ -31,6 +32,7 @@
         }
       },
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "BillBot needs access to your photo library to attach receipts and payment proof.",
         "NSCameraUsageDescription": "BillBot needs camera access to capture receipts and payment proof.",
         "NSPhotoLibraryAddUsageDescription": "BillBot needs access to save images to your photo library."
@@ -79,6 +81,12 @@
         }
       ],
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "59233ac6-46d6-4cad-8fc0-edc4616cbaaa"
+      }
+    },
+    "owner": "kachielite"
   }
 }
