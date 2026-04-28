@@ -5,10 +5,7 @@
   },
   "build": {
     "preview": {
-      "distribution": "internal",
-      "ios": {
-        "simulator": false
-      },
+      "distribution": "store",
       "autoIncrement": true
     },
     "production": {

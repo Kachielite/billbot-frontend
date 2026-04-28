@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-const rawBaseUrl = process.env.EXPO_PUBLIC_BACKEND_URL as string;
+const rawBaseUrl = process.env.EXPO_PUBLIC_BACKEND_URL ?? '';
 
 // On Android emulators, `localhost` resolves to the emulator itself.
 // The host machine is reachable via the special alias 10.0.2.2.
