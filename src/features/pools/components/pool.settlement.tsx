@@ -49,7 +49,7 @@ export default function PoolSettlement({
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Breakdown</Text>
-            <Tooltip description="Showing who owes who based on the expenses added to this pool. The amounts shown here are what each person owes or is owed, and may not reflect the total amount they paid or owe for the entire pool." />
+            <Tooltip description="Showing who owes who based on the expenses added to this tab. The amounts shown here are what each person owes or is owed, and may not reflect the total amount they paid or owe for the entire tab." />
           </View>
           {onViewSettlements && (
             <TouchableOpacity onPress={onViewSettlements}>
@@ -59,7 +59,7 @@ export default function PoolSettlement({
         </View>
       </View>
       {!isLoading && balances.length === 0 ? (
-        <EmptyState title="All settled up" subtitle="No outstanding balances in this pool." />
+        <EmptyState title="All settled up" subtitle="No outstanding balances in this tab." />
       ) : (
         <View
           style={[

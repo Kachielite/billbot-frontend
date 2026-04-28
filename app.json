@@ -13,7 +13,7 @@
     },
     "ios": {
       "usesAppleSignIn": true,
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.kachielite.billbotfrontend",
       "icon": {
         "light": "./assets/BillBot-icon-light-1024.png",
@@ -38,9 +38,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/BillBot-icon-light-1024.png",
-        "backgroundColor": "#F4F9F5",
-        "monochromeImage": "./assets/BillBot-android-monochrome.png"
+        "foregroundImage": "./assets/BillBot-android-foreground.png",
+        "backgroundImage": "./assets/BillBot-android-background-light.png",
+        "monochromeImage": "./assets/BillBot-android-monochrome.png",
+        "dark": {
+          "foregroundImage": "./assets/BillBot-android-foreground.png",
+          "backgroundImage": "./assets/BillBot-android-background-dark.png"
+        }
       },
       "splash": {
         "image": "./assets/BillBot-android-foreground.png",

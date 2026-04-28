@@ -107,7 +107,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
       <View style={styles.container}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
           <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Summary</Text>
-          <Tooltip description="See how much each member owes or is owed in this pool, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
+          <Tooltip description="See how much each member owes or is owed in this tab, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
         </View>
         <EmptyState
           title="No summary yet"
@@ -128,7 +128,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
         }}
       >
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Summary</Text>
-        <Tooltip description="See how much each member owes or is owed in this pool, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
+        <Tooltip description="See how much each member owes or is owed in this tab, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
       </View>
       <View
         style={[

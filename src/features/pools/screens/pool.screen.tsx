@@ -60,8 +60,8 @@ export default function PoolScreen({ route }: Props) {
     return (
       <ScreenContainer>
         <EmptyState
-          title="Pool not found"
-          subtitle="This pool may have been deleted or is unavailable."
+          title="Tab not found"
+          subtitle="This tab may have been deleted or is unavailable."
         />
       </ScreenContainer>
     );
@@ -109,8 +109,8 @@ export default function PoolScreen({ route }: Props) {
       <ConfirmDeleteModal
         visible={showDeleteModal}
         icon="trash-outline"
-        title="Delete pool?"
-        message="If this pool has no expenses it will be permanently deleted. If it has expenses, it will be archived instead."
+        title="Delete tab?"
+        message="If this tab has no expenses it will be permanently deleted. If it has expenses, it will be archived instead."
         isLoading={isDeleting}
         onCancel={() => setShowDeleteModal(false)}
         onConfirm={handleConfirmDelete}

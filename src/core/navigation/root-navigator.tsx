@@ -36,6 +36,8 @@ import DisputeSettlementScreen from '@/features/settlements/screens/dispute-sett
 import NotificationsScreen from '@/features/notifications/screens/notifications.screen';
 import JoinGroupTokenScreen from '@/features/invites/screens/join-group-token.screen';
 import JoinGroupCodeScreen from '@/features/invites/screens/join-group-code.screen';
+import TermsOfServiceScreen from '@/features/user/screens/terms-of-service.screen';
+import PrivacyPolicyScreen from '@/features/user/screens/privacy-policy.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -261,6 +263,14 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           animationDuration: 50,
           contentStyle: { backgroundColor: 'transparent' },
         },
+      },
+      TermsOfService: {
+        screen: TermsOfServiceScreen,
+        options: { headerShown: false },
+      },
+      PrivacyPolicy: {
+        screen: PrivacyPolicyScreen,
+        options: { headerShown: false },
       },
     },
   });

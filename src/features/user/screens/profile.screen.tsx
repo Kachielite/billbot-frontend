@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -37,9 +38,7 @@ import getInitials from '@/core/common/utils/get-initials';
 import moment from 'moment';
 
 const APP_VERSION = '1.0.0';
-const TERMS_URL = 'https://billbot.app/terms';
-const PRIVACY_URL = 'https://billbot.app/privacy';
-const SUPPORT_EMAIL = 'support@billbot.app';
+const SUPPORT_EMAIL = 'derrick.onyekachi@gmail.com';
 
 // ── Row ───────────────────────────────────────────────────────────────────────
 
@@ -152,12 +151,13 @@ function Section({
 
 const ProfileScreen = () => {
   const colors = useThemeColors();
+  const navigation = useNavigation();
   const systemScheme = useColorScheme();
   const { profile, isLoading } = useProfile();
   const { form, isUpdating, updateProfile } = useUpdateProfile();
   const { isUploading, uploadAvatar } = useUploadAvatar();
   const { currencies } = useCurrencies();
-  const { themeMode, setThemeMode } = useThemeStore();
+  const { setThemeMode } = useThemeStore();
   const { clearAuth } = useAuthStore();
 
   const isDark = systemScheme === 'dark';
@@ -347,7 +347,6 @@ const ProfileScreen = () => {
           <InfoRow
             icon="mail-outline"
             label="Contact Us"
-            value={SUPPORT_EMAIL}
             onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}`)}
             isLast
           />
@@ -358,12 +357,12 @@ const ProfileScreen = () => {
           <InfoRow
             icon="document-text-outline"
             label="Terms of Service"
-            onPress={() => Linking.openURL(TERMS_URL)}
+            onPress={() => navigation.navigate('TermsOfService' as never)}
           />
           <InfoRow
             icon="shield-checkmark-outline"
             label="Privacy Policy"
-            onPress={() => Linking.openURL(PRIVACY_URL)}
+            onPress={() => navigation.navigate('PrivacyPolicy' as never)}
             isLast
           />
         </Section>

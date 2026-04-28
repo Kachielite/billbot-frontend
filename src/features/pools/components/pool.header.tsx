@@ -104,10 +104,10 @@ export default function PoolHeader({
                 ]}
                 onPress={() => {
                   setPopoverOpen(false);
-                  if (item.label === 'Delete Pool') {
+                  if (item.label === 'Delete Tab') {
                     setPendingDelete(true);
                   }
-                  if (item.label === 'Edit Pool') {
+                  if (item.label === 'Edit Tab') {
                     navigation.navigate('EditPool', { poolId: poolId });
                   }
                   if (item.label === 'Add Expense') {
