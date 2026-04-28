@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Image,
   Linking,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -384,11 +385,15 @@ const ProfileScreen = () => {
           onPress={clearAuth}
           style={[
             styles.signOutBtn,
-            { backgroundColor: colors.surface, borderColor: colors.error + '66' },
+            {
+              backgroundColor: 'red',
+              borderColor: colors.error + '66',
+              marginBottom: Platform.OS === 'ios' ? Spacing.md : Spacing.xxl,
+            },
           ]}
         >
-          <Ionicons name="log-out-outline" size={18} color={colors.error} />
-          <Text style={[TextStyles.button, { color: colors.error }]}>Sign Out</Text>
+          <Ionicons name="log-out-outline" size={18} color="white" />
+          <Text style={[TextStyles.button, { color: 'white' }]}>Sign Out</Text>
         </TouchableOpacity>
       </ScrollView>
 
