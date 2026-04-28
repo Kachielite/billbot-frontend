@@ -11,8 +11,8 @@ import useExpensesStore from '@/features/expenses/expenses.state';
 
 const MENU_ITEMS = [
   { label: 'Add Expense', icon: 'add-sharp' as const, destructive: false },
-  { label: 'Edit Pool', icon: 'create-outline' as const, destructive: false },
-  { label: 'Delete Pool', icon: 'trash-outline' as const, destructive: true },
+  { label: 'Edit Tab', icon: 'create-outline' as const, destructive: false },
+  { label: 'Delete Tab', icon: 'trash-outline' as const, destructive: true },
 ];
 
 interface PoolHeaderProps {

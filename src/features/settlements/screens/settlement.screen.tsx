@@ -137,6 +137,47 @@ export default function SettlementScreen({ route }: Props) {
           </Text>
         </View>
 
+        {/* ── Actions ── */}
+        {canAct && (
+          <View style={styles.actionsRow}>
+            <TouchableOpacity
+              style={[
+                styles.actionBtn,
+                { backgroundColor: colors.status.settledContainer, flex: 1 },
+              ]}
+              onPress={handleConfirm}
+              disabled={isConfirming}
+            >
+              {isConfirming ? (
+                <ActivityIndicator size="small" color={colors.status.settled} />
+              ) : (
+                <>
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    size={18}
+                    color={colors.status.settled}
+                  />
+                  <Text style={[TextStyles.label, { color: colors.status.onSettledContainer }]}>
+                    Confirm Payment
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.actionBtn,
+                { backgroundColor: colors.status.disputedContainer, flex: 1 },
+              ]}
+              onPress={() => nav.navigate('DisputeSettlement', { settlementId, poolId })}
+            >
+              <Ionicons name="alert-circle-outline" size={18} color={colors.status.disputed} />
+              <Text style={[TextStyles.label, { color: colors.status.onDisputedContainer }]}>
+                Dispute
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* ── Group & Pool context ── */}
         <View
           style={[
@@ -170,7 +211,7 @@ export default function SettlementScreen({ route }: Props) {
             </View>
           </View>
           <View style={styles.infoRow}>
-            <Text style={[TextStyles.label, { color: colors.text.disabled }]}>POOL</Text>
+            <Text style={[TextStyles.label, { color: colors.text.disabled }]}>TAB</Text>
             <View style={styles.contextValue}>
               <Ionicons name="layers-outline" size={14} color={colors.text.secondary} />
               <Text style={[TextStyles.bodySmall, { color: colors.text.primary }]}>
@@ -231,7 +272,7 @@ export default function SettlementScreen({ route }: Props) {
             ]}
           >
             {[
-              { label: 'CURRENCY', value: settlement.currency },
+              { label: 'CURRENCY', value: profile?.currency?.code },
               {
                 label: 'CONFIRMED AT',
                 value: settlement.confirmedAt
@@ -317,47 +358,6 @@ export default function SettlementScreen({ route }: Props) {
             </TouchableOpacity>
           </View>
         ) : null}
-
-        {/* ── Actions ── */}
-        {canAct && (
-          <View style={styles.actionsRow}>
-            <TouchableOpacity
-              style={[
-                styles.actionBtn,
-                { backgroundColor: colors.status.settledContainer, flex: 1 },
-              ]}
-              onPress={handleConfirm}
-              disabled={isConfirming}
-            >
-              {isConfirming ? (
-                <ActivityIndicator size="small" color={colors.status.settled} />
-              ) : (
-                <>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={18}
-                    color={colors.status.settled}
-                  />
-                  <Text style={[TextStyles.label, { color: colors.status.onSettledContainer }]}>
-                    Confirm Payment
-                  </Text>
-                </>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.actionBtn,
-                { backgroundColor: colors.status.disputedContainer, flex: 1 },
-              ]}
-              onPress={() => nav.navigate('DisputeSettlement', { settlementId, poolId })}
-            >
-              <Ionicons name="alert-circle-outline" size={18} color={colors.status.disputed} />
-              <Text style={[TextStyles.label, { color: colors.status.onDisputedContainer }]}>
-                Dispute
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </ScrollView>
 
       {settlement.proofUrl && (

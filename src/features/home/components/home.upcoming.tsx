@@ -10,98 +10,35 @@ import useUpcomingExpenses from '@/features/expenses/hooks/use-upcoming-expenses
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 import { formatAmount } from '@/core/common/utils/currency';
+import useExpensesStore from '@/features/expenses/expenses.state';
+import usePoolsStore from '@/features/pools/pools.state';
+import { Pool } from '@/features/pools/pools.interface';
 
-// TODO: Remove this upcoming mock data once you create the data
-const UPCOMING_MOCK: UpcomingExpense[] = [
-  {
-    id: 'u1',
-    poolId: 'p1',
-    paidBy: 'user1',
-    amount: 2500.0,
-    currency: 'NGN',
-    description: 'Electricity bill',
-    categoryId: 'c-bills',
-    receiptUrl: null,
-    isRecurring: true,
-    recurrenceFrequency: 'monthly',
-    recurrenceEndDate: null,
-    recurrenceParentId: null,
-    categoryEmoji: null,
-    nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // one week from now
-    createdAt: new Date(),
-  },
-  {
-    id: 'u2',
-    poolId: 'p2',
-    paidBy: 'user2',
-    amount: 120.5,
-    currency: 'NGN',
-    description: 'Netflix subscription',
-    categoryId: 'c-entertainment',
-    receiptUrl: null,
-    isRecurring: true,
-    recurrenceFrequency: 'monthly',
-    recurrenceEndDate: null,
-    recurrenceParentId: null,
-    categoryEmoji: null,
-    nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3), // three days from now
-    createdAt: new Date(),
-  },
-  {
-    id: 'u3',
-    poolId: 'p3',
-    paidBy: 'user3',
-    amount: 4500,
-    currency: 'NGN',
-    description: 'Monthly rent',
-    categoryId: 'c-housing',
-    receiptUrl: null,
-    isRecurring: true,
-    recurrenceFrequency: 'monthly',
-    recurrenceEndDate: null,
-    recurrenceParentId: null,
-    categoryEmoji: null,
-    nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14), // two weeks from now
-    createdAt: new Date(),
-  },
-  {
-    id: 'u4',
-    poolId: 'p4',
-    paidBy: 'user1',
-    amount: 800,
-    currency: 'NGN',
-    description: 'Gym membership',
-    categoryId: 'c-fitness',
-    receiptUrl: null,
-    isRecurring: true,
-    recurrenceFrequency: 'monthly',
-    recurrenceEndDate: null,
-    recurrenceParentId: null,
-    categoryEmoji: null,
-    nextOccurrenceAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // one day from now
-    createdAt: new Date(),
-  },
-];
-
-const UpcomingCard = ({ upcoming }: { upcoming: UpcomingExpense }) => {
+const UpcomingCard = ({
+  upcoming,
+  onPress,
+}: {
+  upcoming: UpcomingExpense;
+  onPress: () => void;
+}) => {
   const colors = useThemeColors();
 
   const getDueLabel = (date: Date) => {
     const now = moment().startOf('day');
     const target = moment(date).startOf('day');
     const diff = target.diff(now, 'days');
-
     if (diff === 0) return 'Due today';
     if (diff === 1) return 'Due tomorrow';
     if (diff > 1 && diff <= 6) return `Due in ${diff} days`;
-    // otherwise show month and day
     return `Due ${target.format('MMM D')}`;
   };
 
-  const amountLabel = getDueLabel(upcoming.nextOccurrenceAt);
+  const dueLabel = getDueLabel(upcoming.nextOccurrenceAt);
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
       style={[
         groupCardStyles.groupCard,
         { backgroundColor: colors.surface, borderColor: colors.border.default },
@@ -111,8 +48,8 @@ const UpcomingCard = ({ upcoming }: { upcoming: UpcomingExpense }) => {
       <Text style={[TextStyles.amountMedium, { color: colors.text.primary }]}>
         {upcoming.currency} {formatAmount(upcoming.amount)}
       </Text>
-      <Text style={[TextStyles.caption, { color: colors.secondary }]}>{amountLabel}</Text>
-    </View>
+      <Text style={[TextStyles.caption, { color: colors.secondary }]}>{dueLabel}</Text>
+    </TouchableOpacity>
   );
 };
 
@@ -132,6 +69,21 @@ export default function HomeUpcoming() {
   const colors = useThemeColors();
   const navigation = useNavigation();
   const { upcomingExpenses, isLoading } = useUpcomingExpenses(5);
+  const { setDraftExpense } = useExpensesStore();
+  const { setSelectedPool } = usePoolsStore();
+
+  const handleUpcomingPress = (upcoming: UpcomingExpense) => {
+    setSelectedPool({ id: upcoming.poolId } as Pool);
+    setDraftExpense({
+      amount: upcoming.amount,
+      description: upcoming.description ?? undefined,
+      categoryId: upcoming.categoryId ?? undefined,
+      currency: upcoming.currency,
+      isRecurring: true,
+      recurrenceFrequency: upcoming.recurrenceFrequency,
+    });
+    navigation.navigate('NewExpense' as never);
+  };
 
   return (
     <View style={styles.container}>
@@ -157,7 +109,9 @@ export default function HomeUpcoming() {
       ) : (
         <FlatList
           data={upcomingExpenses}
-          renderItem={({ item }) => <UpcomingCard upcoming={item} />}
+          renderItem={({ item }) => (
+            <UpcomingCard upcoming={item} onPress={() => handleUpcomingPress(item)} />
+          )}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{

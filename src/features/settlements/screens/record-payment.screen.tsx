@@ -15,6 +15,7 @@ import useSubmitSettlement from '@/features/settlements/hooks/use-submit-settlem
 import usePoolDetail from '@/features/pools/hooks/use-pool-detail';
 import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import useProfile from '@/features/user/hooks/use-profile';
+import InfoBox from '@/core/common/components/info-box';
 
 type Props = StaticScreenProps<{ poolId: string; toUserId?: string; amount?: number }>;
 
@@ -73,7 +74,7 @@ export default function RecordPaymentScreen({ route }: Props) {
               { color: colors.text.primary, textTransform: 'uppercase' },
             ]}
           >
-            RECORD PAYMENT
+            NEW SETTLEMENT
           </Text>
           <TouchableOpacity
             style={[styles.closeBtn, { backgroundColor: colors.surface }]}
@@ -82,6 +83,11 @@ export default function RecordPaymentScreen({ route }: Props) {
             <Ionicons name="close" size={20} color={colors.text.primary} />
           </TouchableOpacity>
         </View>
+
+        <InfoBox
+          title="Record a Settle"
+          description="Once a settlement is recorded, the receiver will be notified to either approve or dispute the settlement. If approved, the settlement will be marked as completed. If disputed, both parties will be notified and can communicate to resolve the issue."
+        />
 
         {/* ── Form fields ── */}
         <CustomDropdown
@@ -146,7 +152,7 @@ export default function RecordPaymentScreen({ route }: Props) {
         </View>
 
         <CustomButton
-          label="Submit Payment"
+          label="Submit Settlement"
           onPress={handleSubmit}
           loading={isSubmitting}
           disabled={isSubmitting}

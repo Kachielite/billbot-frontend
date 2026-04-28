@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import CustomFormSheet from '@/core/common/components/layout/custom-formsheet';
@@ -8,6 +8,8 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import useJoinByCode from '../hooks/use-join-by-code';
+import { Radius, Shadow } from '@/core/common/constants/theme';
+import InfoBox from '@/core/common/components/info-box';
 
 export default function JoinGroupCodeScreen() {
   const colors = useThemeColors();
@@ -23,15 +25,19 @@ export default function JoinGroupCodeScreen() {
     <CustomFormSheet>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Join a Group</Text>
-        <View style={[styles.iconWrap, { backgroundColor: colors.primaryContainer }]}>
-          <Ionicons name="people-outline" size={20} color={colors.primary} />
-        </View>
+        <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>JOIN A GROUP</Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={[styles.backBtn, { backgroundColor: colors.surface }]}
+        >
+          <Ionicons name="close" size={20} color={colors.primary} />
+        </TouchableOpacity>
       </View>
 
-      <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
-        Enter the invite code you received via email to join an existing group.
-      </Text>
+      <InfoBox
+        title="How do I find my invite code?"
+        description="Get the invite code from the email sent to you from BillBot, or ask them to share it with you directly from the app."
+      />
 
       <CustomTextInput
         id="code"
@@ -64,5 +70,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Shadow.sm,
   },
 });

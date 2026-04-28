@@ -14,7 +14,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import { TextStyles } from '@/core/common/constants/fonts';
-import { Border, Radius, Spacing } from '@/core/common/constants/theme';
+import { Radius, Spacing } from '@/core/common/constants/theme';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import moment from 'moment';
@@ -23,6 +23,9 @@ import UpcomingCard from '@/features/expenses/components/upcoming-card';
 import EmptyState from '@/core/common/components/empty-state';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import { UpcomingExpense } from '@/features/expenses/expenses.interface';
+import useExpensesStore from '@/features/expenses/expenses.state';
+import usePoolsStore from '@/features/pools/pools.state';
+import { Pool } from '@/features/pools/pools.interface';
 
 // ── Date grouping (forward-looking) ──────────────────────────────────────────
 
@@ -57,9 +60,12 @@ const groupByDue = (items: UpcomingExpense[]): Section[] => {
 
 export default function UpcomingExpensesScreen() {
   const colors = useThemeColors();
-  const { canGoBack, goBack } = useNavigation();
+  const navigation = useNavigation();
+  const { canGoBack, goBack } = navigation;
 
   const { allItems, isLoading, isFetching, hasMore, loadMore, refetch } = useUpcomingExpenses(20);
+  const { setDraftExpense } = useExpensesStore();
+  const { setSelectedPool } = usePoolsStore();
 
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
@@ -69,6 +75,19 @@ export default function UpcomingExpensesScreen() {
   }, [refetch]);
 
   const sections = React.useMemo(() => groupByDue(allItems), [allItems]);
+
+  const handleUpcomingPress = (upcoming: UpcomingExpense) => {
+    setSelectedPool({ id: upcoming.poolId } as Pool);
+    setDraftExpense({
+      amount: upcoming.amount,
+      description: upcoming.description ?? undefined,
+      categoryId: upcoming.categoryId ?? undefined,
+      currency: upcoming.currency,
+      isRecurring: true,
+      recurrenceFrequency: upcoming.recurrenceFrequency,
+    });
+    navigation.navigate('NewExpense' as never);
+  };
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
@@ -135,16 +154,13 @@ export default function UpcomingExpensesScreen() {
               <Text style={[TextStyles.label, { color: colors.text.disabled }]}>
                 {title.toUpperCase()}
               </Text>
-              <View
-                style={[
-                  styles.groupCard,
-                  { backgroundColor: colors.surface, borderColor: colors.border.default },
-                ]}
-              >
-                {data.map((item, index) => (
-                  <UpcomingCard key={item.id} upcoming={item} isLast={index === data.length - 1} />
-                ))}
-              </View>
+              {data.map((item) => (
+                <UpcomingCard
+                  key={item.id}
+                  upcoming={item}
+                  onPress={() => handleUpcomingPress(item)}
+                />
+              ))}
             </View>
           ))}
 
@@ -175,10 +191,6 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: Spacing.sm,
-  },
-  groupCard: {
-    borderRadius: Radius.lg,
-    borderWidth: Border.thin,
   },
   footerLoader: {
     paddingVertical: Spacing.lg,
