@@ -25,9 +25,9 @@ import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 import MemberAvatar from '@/core/common/components/member-avatar';
 import useGetName from '@/core/common/hooks/use-get-name';
 import useProfile from '@/features/user/hooks/use-profile';
-import DisputeSettlementModal from '@/features/settlements/components/dispute-settlement-modal';
 import ReceiptViewer from '@/features/expenses/components/receipt-viewer';
 import { SettlementStatus } from '@/features/settlements/settlements.interface';
+import { formatAmount } from '@/core/common/utils/currency';
 
 type Props = StaticScreenProps<{ settlementId: string; poolId: string }>;
 
@@ -58,7 +58,7 @@ export default function SettlementScreen({ route }: Props) {
 
   const { confirmSettlement, isConfirming } = useConfirmSettlement(poolId);
 
-  const [showDisputeModal, setShowDisputeModal] = React.useState(false);
+  const nav = useNavigation() as any;
   const [showProof, setShowProof] = React.useState(false);
 
   if (isLoading) return <ScreenLoader />;
@@ -89,10 +89,7 @@ export default function SettlementScreen({ route }: Props) {
 
   const canAct = profile?.id === settlement.toUser && settlement.status === 'pending_verification';
 
-  const amount = settlement.amount.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const amount = formatAmount(settlement.amount);
 
   const handleConfirm = async () => {
     await confirmSettlement(settlement.id);
@@ -138,6 +135,90 @@ export default function SettlementScreen({ route }: Props) {
               ? moment(settlement.createdAt).format('MMMM D, YYYY [at] h:mm A')
               : '—'}
           </Text>
+        </View>
+
+        {/* ── Actions ── */}
+        {canAct && (
+          <View style={styles.actionsRow}>
+            <TouchableOpacity
+              style={[
+                styles.actionBtn,
+                { backgroundColor: colors.status.settledContainer, flex: 1 },
+              ]}
+              onPress={handleConfirm}
+              disabled={isConfirming}
+            >
+              {isConfirming ? (
+                <ActivityIndicator size="small" color={colors.status.settled} />
+              ) : (
+                <>
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    size={18}
+                    color={colors.status.settled}
+                  />
+                  <Text style={[TextStyles.label, { color: colors.status.onSettledContainer }]}>
+                    Confirm Payment
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.actionBtn,
+                { backgroundColor: colors.status.disputedContainer, flex: 1 },
+              ]}
+              onPress={() => nav.navigate('DisputeSettlement', { settlementId, poolId })}
+            >
+              <Ionicons name="alert-circle-outline" size={18} color={colors.status.disputed} />
+              <Text style={[TextStyles.label, { color: colors.status.onDisputedContainer }]}>
+                Dispute
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* ── Group & Pool context ── */}
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: colors.surface, borderColor: colors.border.default },
+          ]}
+        >
+          <View
+            style={[
+              styles.infoRow,
+              {
+                borderBottomWidth: 1,
+                borderBottomColor: colors.border.subtle,
+                paddingBottom: Spacing.sm,
+                marginBottom: Spacing.sm,
+              },
+            ]}
+          >
+            <Text style={[TextStyles.label, { color: colors.text.disabled }]}>GROUP</Text>
+            <View style={styles.contextValue}>
+              {group?.emoji ? (
+                <View
+                  style={[styles.emojiDot, { backgroundColor: (group.color ?? '#9370DB') + '40' }]}
+                >
+                  <Text style={styles.emojiText}>{group.emoji}</Text>
+                </View>
+              ) : null}
+              <Text style={[TextStyles.bodySmall, { color: colors.text.primary }]}>
+                {group?.name ?? '—'}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={[TextStyles.label, { color: colors.text.disabled }]}>TAB</Text>
+            <View style={styles.contextValue}>
+              <Ionicons name="layers-outline" size={14} color={colors.text.secondary} />
+              <Text style={[TextStyles.bodySmall, { color: colors.text.primary }]}>
+                {pool?.name ?? '—'}
+              </Text>
+            </View>
+          </View>
         </View>
 
         {/* ── Participants ── */}
@@ -191,7 +272,7 @@ export default function SettlementScreen({ route }: Props) {
             ]}
           >
             {[
-              { label: 'CURRENCY', value: settlement.currency },
+              { label: 'CURRENCY', value: profile?.currency?.code },
               {
                 label: 'CONFIRMED AT',
                 value: settlement.confirmedAt
@@ -277,55 +358,7 @@ export default function SettlementScreen({ route }: Props) {
             </TouchableOpacity>
           </View>
         ) : null}
-
-        {/* ── Actions ── */}
-        {canAct && (
-          <View style={styles.actionsRow}>
-            <TouchableOpacity
-              style={[
-                styles.actionBtn,
-                { backgroundColor: colors.status.settledContainer, flex: 1 },
-              ]}
-              onPress={handleConfirm}
-              disabled={isConfirming}
-            >
-              {isConfirming ? (
-                <ActivityIndicator size="small" color={colors.status.settled} />
-              ) : (
-                <>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={18}
-                    color={colors.status.settled}
-                  />
-                  <Text style={[TextStyles.label, { color: colors.status.onSettledContainer }]}>
-                    Confirm Payment
-                  </Text>
-                </>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.actionBtn,
-                { backgroundColor: colors.status.disputedContainer, flex: 1 },
-              ]}
-              onPress={() => setShowDisputeModal(true)}
-            >
-              <Ionicons name="alert-circle-outline" size={18} color={colors.status.disputed} />
-              <Text style={[TextStyles.label, { color: colors.status.onDisputedContainer }]}>
-                Dispute
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </ScrollView>
-
-      <DisputeSettlementModal
-        visible={showDisputeModal}
-        onClose={() => setShowDisputeModal(false)}
-        settlement={settlement}
-        poolId={poolId}
-      />
 
       {settlement.proofUrl && (
         <ReceiptViewer
@@ -403,6 +436,21 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  contextValue: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  emojiDot: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emojiText: {
+    fontSize: 12,
   },
   actionsRow: {
     flexDirection: 'row',

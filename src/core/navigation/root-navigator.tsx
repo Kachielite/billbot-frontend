@@ -3,6 +3,7 @@ import {
   createNativeStackNavigator,
   createNativeStackScreen,
 } from '@react-navigation/native-stack';
+import type { Theme } from '@react-navigation/native';
 import { createStaticNavigation } from '@react-navigation/native';
 import AuthScreen from '@/features/auth/auth.screen';
 import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigation/bottom-tabs';
@@ -12,12 +13,11 @@ import ActivitiesScreen from '@/features/activities/activities.screen';
 import GroupsScreen from '@/features/groups/screens/groups.screen';
 import ProfileScreen from '@/features/user/screens/profile.screen';
 import useAuthStore from '@/features/auth/auth.state';
-import type { Theme } from '@react-navigation/native';
 import NewGroupScreen from '@/features/groups/screens/new-group.screen';
 import EditGroupScreen from '@/features/groups/screens/edit-group.screen';
 import ManageMembersScreen from '@/features/groups/screens/manage-members.screen';
 import InviteMembersScreen from '@/features/invites/screens/invite-members.screen';
-import { BrandColors, DarkColors, LightColors, Radius } from '@/core/common/constants/theme';
+import { BrandColors, DarkColors, LightColors } from '@/core/common/constants/theme';
 import NewExpenseScreen from '@/features/expenses/screens/new-expense.screen';
 import GroupScreen from '@/features/groups/screens/group.screen';
 import NewPoolScreen from '@/features/pools/screens/new-pool.screen';
@@ -32,6 +32,12 @@ import SettlementsScreen from '@/features/settlements/screens/settlements.screen
 import SettlementScreen from '@/features/settlements/screens/settlement.screen';
 import RecordPaymentScreen from '@/features/settlements/screens/record-payment.screen';
 import SettleUpHomeScreen from '@/features/settlements/screens/settle-up-home.screen';
+import DisputeSettlementScreen from '@/features/settlements/screens/dispute-settlement.screen';
+import NotificationsScreen from '@/features/notifications/screens/notifications.screen';
+import JoinGroupTokenScreen from '@/features/invites/screens/join-group-token.screen';
+import JoinGroupCodeScreen from '@/features/invites/screens/join-group-code.screen';
+import TermsOfServiceScreen from '@/features/user/screens/terms-of-service.screen';
+import PrivacyPolicyScreen from '@/features/user/screens/privacy-policy.screen';
 
 interface NavigationProps {
   theme?: Theme;
@@ -87,6 +93,7 @@ const Tabs = createBottomTabNavigator({
   screenOptions: {
     headerShown: false,
     tabBarShowLabel: true,
+    tabBarLabelVisibilityMode: 'labeled',
     tabBarActiveTintColor: BrandColors.primary,
     animation: Platform.OS === 'android' ? 'fade' : 'shift',
   },
@@ -201,6 +208,15 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           animationDuration: 50,
         },
       },
+      DisputeSettlement: {
+        screen: DisputeSettlementScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+        },
+      },
       Settlements: {
         screen: SettlementsScreen,
         options: {
@@ -221,6 +237,40 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           animation: 'slide_from_bottom',
           animationDuration: 50,
         },
+      },
+      Notifications: {
+        screen: NotificationsScreen,
+        options: {
+          headerShown: false,
+        },
+      },
+      JoinGroupByToken: {
+        screen: JoinGroupTokenScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+          contentStyle: { backgroundColor: 'transparent' },
+        },
+      },
+      JoinGroupByCode: {
+        screen: JoinGroupCodeScreen,
+        options: {
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
+          animationDuration: 50,
+          contentStyle: { backgroundColor: 'transparent' },
+        },
+      },
+      TermsOfService: {
+        screen: TermsOfServiceScreen,
+        options: { headerShown: false },
+      },
+      PrivacyPolicy: {
+        screen: PrivacyPolicyScreen,
+        options: { headerShown: false },
       },
     },
   });

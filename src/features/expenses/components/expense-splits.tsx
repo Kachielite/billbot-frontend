@@ -4,6 +4,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Split } from '@/features/expenses/expenses.interface';
+import { formatAmount } from '@/core/common/utils/currency';
 import MemberAvatar from '@/core/common/components/member-avatar';
 import useGetName from '@/core/common/hooks/use-get-name';
 
@@ -29,10 +30,7 @@ export default function ExpenseSplits({ splits, currency }: Props) {
           const displayName = split.name
             ? getName({ id: split.owedBy ?? '', name: split.name })
             : 'Unknown';
-          const amount = split.amount.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
+          const amount = formatAmount(split.amount);
 
           return (
             <View

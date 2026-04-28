@@ -11,7 +11,7 @@ export type SplitEntry = z.infer<typeof splitEntrySchema>;
 
 export const logExpenseSchema = z
   .object({
-    amount: z.number().positive('Amount must be greater than 0'),
+    amount: z.coerce.number<number>().positive('Amount must be greater than 0'),
     description: z.string().max(255).optional(),
     categoryId: z.string().uuid().optional(),
     currency: z.string().optional(),

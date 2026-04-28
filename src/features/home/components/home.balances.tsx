@@ -6,6 +6,7 @@ import { Radius, Spacing } from '@/core/common/constants/theme';
 import useUserBalances from '@/features/balances/hooks/use-user-balances';
 import { TextStyles } from '@/core/common/constants/fonts';
 import SkeletonCard from '@/core/common/components/skeleton-card';
+import { formatAmount } from '@/core/common/utils/currency';
 
 export default function HomeBalances() {
   const colors = useThemeColors();
@@ -44,11 +45,7 @@ export default function HomeBalances() {
           YOUR NET BALANCE
         </Text>
         <Text style={[TextStyles.displaySmall, { color: colors.text.onPrimary }]}>
-          {userBalances.currency}{' '}
-          {netBalance.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {userBalances.currency} {formatAmount(netBalance)}
         </Text>
         <Text style={[TextStyles.label, { color: colors.primaryCard.subtitleText }]}>
           ACROSS ALL GROUPS
@@ -62,11 +59,7 @@ export default function HomeBalances() {
           >
             <Text style={[TextStyles.label, { color: colors.text.inverse }]}>{balance.label}</Text>
             <Text style={[TextStyles.headingSmall, { color: colors.text.onPrimary }]}>
-              {userBalances.currency}{' '}
-              {balance.amount.toLocaleString('US-EN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {userBalances.currency} {formatAmount(balance.amount)}
             </Text>
           </View>
         ))}

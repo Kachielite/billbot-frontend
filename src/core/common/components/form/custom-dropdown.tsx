@@ -1,20 +1,11 @@
-import React, { useRef, useState } from 'react';
-import {
-  Platform,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-  ViewStyle,
-} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Foundation, Ionicons } from '@expo/vector-icons';
-import RNPickerSelect from 'react-native-picker-select';
+import { Foundation } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { Border, Input, Radius, Spacing } from '@/core/common/constants/theme';
-import { Fonts, FontSize, TextStyles } from '@/core/common/constants/fonts';
+import { TextStyles } from '@/core/common/constants/fonts';
 
 export interface DropdownOption<T = string | number> {
   label: string;
@@ -29,6 +20,10 @@ interface Props<T extends FieldValues, V = string | number> {
   required?: boolean;
   options: DropdownOption<V>[];
   disabled?: boolean;
+  zIndex?: number;
+  zIndexInverse?: number;
+  open?: boolean;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function CustomDropdown<T extends FieldValues, V = string | number>({
@@ -39,22 +34,28 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
   placeholder,
   options,
   disabled = false,
+  zIndex = 5000,
+  zIndexInverse = 1000,
+  open: controlledOpen,
+  setOpen: controlledSetOpen,
 }: Props<T, V>) {
   const colors = useThemeColors();
-  const scheme = useColorScheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const pickerRef = useRef<any>(null);
+  const [localOpen, setLocalOpen] = useState(false);
+  const isOpen = controlledOpen !== undefined ? controlledOpen : localOpen;
+  const setIsOpen = controlledSetOpen ?? setLocalOpen;
+  const [items, setItems] = useState(() =>
+    options.map((o) => ({ label: o.label, value: o.value as any })),
+  );
+
+  React.useEffect(() => {
+    setItems(options.map((o) => ({ label: o.label, value: o.value as any })));
+  }, [options]);
 
   const {
     formState: { errors },
   } = formController;
   const errorMessage = errors[id]?.message as string | undefined;
   const currentValue = (formController.watch(id) as unknown as V) ?? null;
-
-  const items = React.useMemo(
-    () => options.map((o) => ({ label: o.label, value: o.value as any })),
-    [options],
-  );
 
   const labelColor = errorMessage ? colors.error : colors.text.primary;
   const borderColor = errorMessage
@@ -65,78 +66,8 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
         ? colors.border.subtle
         : colors.border.default;
 
-  const inputStyle = {
-    height: Input.height,
-    paddingHorizontal: Input.paddingHorizontal,
-    paddingRight: 40,
-    borderRadius: Radius.md,
-    borderWidth: isOpen ? 2 : Border.thin,
-    borderColor,
-    backgroundColor: colors.surface,
-    color: colors.text.primary,
-    fontFamily: Fonts.regular,
-    fontSize: FontSize.sm,
-  };
-
-  const wrapperStyle: StyleProp<ViewStyle> = [
-    styles.pickerWrapper,
-    isOpen &&
-      !disabled && {
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.25,
-        shadowRadius: 6,
-        elevation: 4,
-      },
-    disabled && { opacity: 0.6 },
-  ];
-
-  const picker = (
-    <RNPickerSelect
-      ref={pickerRef}
-      items={items}
-      value={currentValue}
-      onValueChange={(value) => {
-        formController.setValue(id as any, (value ?? undefined) as any, {
-          shouldValidate: true,
-          shouldDirty: true,
-          shouldTouch: true,
-        });
-      }}
-      placeholder={{
-        label: placeholder ?? 'Select an option',
-        value: null,
-        color: colors.text.disabled,
-      }}
-      disabled={disabled}
-      useNativeAndroidPickerStyle={false}
-      darkTheme={scheme === 'dark'}
-      onOpen={() => setIsOpen(true)}
-      onClose={() => setIsOpen(false)}
-      style={{
-        inputIOS: inputStyle,
-        inputAndroid: inputStyle,
-        placeholder: {
-          color: colors.text.disabled,
-          fontFamily: Fonts.regular,
-          fontSize: FontSize.sm,
-        },
-      }}
-    />
-  );
-
-  const icon = (
-    <View style={styles.iconOverlay} pointerEvents="none">
-      <Ionicons
-        name={isOpen ? 'chevron-up' : 'chevron-down'}
-        size={18}
-        color={disabled ? colors.text.disabled : colors.text.secondary}
-      />
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { zIndex }]}>
       {label && (
         <View style={styles.labelContainer}>
           <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
@@ -146,22 +77,57 @@ export default function CustomDropdown<T extends FieldValues, V = string | numbe
         </View>
       )}
 
-      {Platform.OS === 'ios' ? (
-        <TouchableOpacity
-          activeOpacity={1}
-          disabled={disabled}
-          onPress={() => pickerRef.current?.togglePicker(true)}
-          style={wrapperStyle}
-        >
-          <View pointerEvents="none">{picker}</View>
-          {icon}
-        </TouchableOpacity>
-      ) : (
-        <View style={wrapperStyle}>
-          {picker}
-          {icon}
-        </View>
-      )}
+      <DropDownPicker
+        open={isOpen}
+        value={currentValue as any}
+        items={items}
+        setOpen={setIsOpen}
+        setItems={setItems}
+        setValue={(valueOrFn: any) => {
+          const next =
+            typeof valueOrFn === 'function' ? valueOrFn(currentValue ?? null) : valueOrFn;
+          formController.setValue(id as any, (next ?? undefined) as any, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+          });
+        }}
+        placeholder={placeholder ?? 'Select an option'}
+        disabled={disabled}
+        dropDownDirection="AUTO"
+        style={[
+          styles.dropdown,
+          {
+            borderColor,
+            borderWidth: isOpen ? 2 : Border.thin,
+            backgroundColor: colors.surface,
+          },
+          isOpen &&
+            !disabled && {
+              shadowColor: colors.primary,
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.25,
+              shadowRadius: 6,
+              elevation: 4,
+            },
+          disabled && { opacity: 0.6 },
+        ]}
+        dropDownContainerStyle={[
+          styles.dropdownContainer,
+          { borderColor: colors.border.default, backgroundColor: colors.surface },
+        ]}
+        listItemContainerStyle={{ backgroundColor: colors.surface }}
+        listItemLabelStyle={[styles.itemText, { color: colors.text.primary }]}
+        selectedItemContainerStyle={{ backgroundColor: colors.primaryContainer }}
+        selectedItemLabelStyle={{ color: colors.primary }}
+        tickIconStyle={{ tintColor: colors.text.primary } as any}
+        textStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
+        placeholderStyle={[styles.placeholderStyle, { color: colors.text.disabled }]}
+        zIndex={zIndex}
+        zIndexInverse={zIndexInverse}
+        listMode="SCROLLVIEW"
+        maxHeight={280}
+      />
 
       {errorMessage && <Text style={[styles.error, { color: colors.error }]}>{errorMessage}</Text>}
     </View>
@@ -185,17 +151,23 @@ const styles = StyleSheet.create({
   asterisk: {
     marginTop: 2,
   },
-  pickerWrapper: {
+  dropdown: {
+    ...Input,
     borderRadius: Radius.md,
-    position: 'relative',
+    minHeight: 48,
   },
-  iconOverlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: Spacing.md,
-    justifyContent: 'center',
-    alignItems: 'center',
+  dropdownContainer: {
+    borderWidth: Border.thin,
+    borderRadius: Radius.md,
+  },
+  placeholderStyle: {
+    ...TextStyles.bodySmall,
+  },
+  selectedTextStyle: {
+    ...TextStyles.bodySmall,
+  },
+  itemText: {
+    ...TextStyles.bodySmall,
   },
   error: {
     ...TextStyles.label,

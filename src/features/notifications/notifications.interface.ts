@@ -1,10 +1,15 @@
 export type NotificationType =
   | 'invite.received'
   | 'expense.created'
+  | 'expense.deleted'
+  | 'upcoming.expense'
   | 'settlement.submitted'
   | 'settlement.confirmed'
   | 'settlement.disputed'
   | 'member.joined'
+  | 'member.removed'
+  | 'pool.created'
+  | 'pool.settled'
   | string;
 
 export interface Notification {

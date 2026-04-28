@@ -42,4 +42,12 @@ export const InvitesService = {
       throw mapAxiosErrorToAppError(error);
     }
   },
+
+  joinGroupByCode: async (code: string): Promise<void> => {
+    try {
+      await customAxios.post(API_ENDPOINTS.GROUP_JOIN_BY_CODE, { code });
+    } catch (error) {
+      throw mapAxiosErrorToAppError(error);
+    }
+  },
 };

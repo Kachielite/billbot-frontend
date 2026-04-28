@@ -1,4 +1,11 @@
-import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  type StyleProp,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import React from 'react';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,22 +26,29 @@ const ScreenContainer = ({
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      {useScrollView ? (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
-        >
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={[styles.content, contentContainerStyle]}>{children}</View>
-      )}
+      <KeyboardAvoidingView style={styles.keyboardAvoid} behavior="padding">
+        {useScrollView ? (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
+          >
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={[styles.content, contentContainerStyle]}>{children}</View>
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  keyboardAvoid: {
     flex: 1,
   },
   content: {

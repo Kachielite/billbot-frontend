@@ -38,7 +38,7 @@ export default function InviteMembersHeader({ onDone }: Props) {
         </View>
       </View>
       <TouchableOpacity onPress={onDone}>
-        <Text style={[TextStyles.headingSmall, { color: colors.text.disabled }]}>Done</Text>
+        <Text style={[TextStyles.headingSmall, { color: colors.primary }]}>Done</Text>
       </TouchableOpacity>
     </View>
   );

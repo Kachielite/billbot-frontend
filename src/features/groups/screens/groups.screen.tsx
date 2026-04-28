@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,14 +12,13 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useGroups from '@/features/groups/hooks/use-groups';
 import GroupCard from '@/features/groups/components/group-card';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 import type { Group } from '@/features/groups/groups.interface';
-import useGroupsStore from '@/features/groups/groups.state';
 
 const SKELETON_COUNT = 5;
 
@@ -26,7 +26,7 @@ const GroupsScreen = () => {
   const colors = useThemeColors();
   const nav = useNavigation() as any;
 
-  const { groups, pagination, isLoading, page, setPage } = useGroups();
+  const { groups, pagination, isLoading, page, setPage, refetch } = useGroups();
 
   // Accumulate pages for infinite scroll
   const [allGroups, setAllGroups] = useState<Group[]>([]);
@@ -49,19 +49,42 @@ const GroupsScreen = () => {
 
   const isInitialLoad = isLoading && page === 1;
 
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    setAllGroups([]);
+    seenIdsRef.current.clear();
+    setPage(1);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch, setPage]);
+
   return (
     <ScreenContainer useScrollView={false}>
       {/* ── Header ───────────────────────────────────────────────── */}
       <View style={styles.header}>
         <Text style={[TextStyles.headingLarge, { color: colors.text.primary }]}>Groups</Text>
-        <TouchableOpacity
-          onPress={() => nav.navigate('NewGroup')}
-          style={[styles.newBtn, { backgroundColor: colors.primary }]}
-          accessibilityLabel="Create new group"
-        >
-          <Ionicons name="add" size={20} color={colors.onPrimary} />
-          <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            onPress={() => nav.navigate('JoinGroupByCode')}
+            style={[
+              styles.joinBtn,
+              { backgroundColor: colors.surface, borderColor: colors.border.default },
+            ]}
+            accessibilityLabel="Join a group"
+          >
+            <Ionicons name="people-outline" size={16} color={colors.text.primary} />
+            <Text style={[TextStyles.label, { color: colors.text.primary }]}>Join</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => nav.navigate('NewGroup')}
+            style={[styles.newBtn, { backgroundColor: colors.primary }]}
+            accessibilityLabel="Create new group"
+          >
+            <Ionicons name="add" size={20} color={colors.onPrimary} />
+            <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* ── List ─────────────────────────────────────────────────── */}
@@ -80,6 +103,14 @@ const GroupsScreen = () => {
           showsVerticalScrollIndicator={false}
           onEndReached={loadMore}
           onEndReachedThreshold={0.4}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
           ListFooterComponent={
             isFetchingMore ? (
               <ActivityIndicator size="small" color={colors.primary} style={styles.footerSpinner} />
@@ -106,6 +137,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  joinBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.full,
+    borderWidth: Border.thin,
   },
   newBtn: {
     flexDirection: 'row',

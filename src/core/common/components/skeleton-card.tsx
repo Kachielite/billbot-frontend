@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, View, ViewStyle, StyleProp } from 'react-native';
+import { Animated, Easing, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { GlassView } from 'expo-glass-effect';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 

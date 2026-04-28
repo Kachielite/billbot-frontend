@@ -1,20 +1,18 @@
 import {
-  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
-  Platform,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Modal,
 } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
-import { Border, Card, Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Card, Spacing } from '@/core/common/constants/theme';
 import { GroupMember } from '@/features/groups/groups.interface';
 import CustomDropdown, { DropdownOption } from '@/core/common/components/form/custom-dropdown';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
@@ -89,10 +87,7 @@ export default function SubmitSettlementModal({ visible, onClose, poolId, member
           <View style={{ width: 34 }} />
         </View>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={{ flex: 1 }}
-        >
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           <ScrollView
             contentContainerStyle={styles.form}
             keyboardShouldPersistTaps="handled"

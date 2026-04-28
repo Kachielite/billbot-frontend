@@ -1,4 +1,4 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { GlassView } from 'expo-glass-effect';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Expense } from '@/features/expenses/expenses.interface';
+import { formatAmount } from '@/core/common/utils/currency';
 import moment from 'moment';
 
 const FREQUENCY_LABEL: Record<string, string> = {
@@ -24,10 +25,7 @@ export default function ExpenseHero({ expense }: Props) {
   const colors = useThemeColors();
   const emoji = expense.categoryEmoji ?? '💸';
   const description = expense.description ?? 'No description';
-  const amount = expense.amount.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const amount = formatAmount(expense.amount);
 
   return (
     <GlassView

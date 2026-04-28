@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
@@ -45,97 +45,101 @@ export default function NewGroupScreen() {
   });
 
   return (
-    <ScreenContainer>
-      <NewGroupHeader />
-      {/* ── Preview ────────────────────────────────────────────────── */}
-      <View style={styles.previewContainer}>
-        <View
-          style={[styles.iconPreview, { backgroundColor: selectedColor + iconBackgroundOpacity }]}
-        >
-          <Text style={styles.iconPreviewEmoji}>{selectedIcon}</Text>
-        </View>
-        <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
-          {groupName || 'Group name'}
-        </Text>
-        <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>Preview</Text>
-      </View>
-
-      {/* ── Group Name ─────────────────────────────────────────────── */}
-      <View style={styles.section}>
-        <CustomTextInput
-          label="GROUP NAME"
-          id="name"
-          formController={form}
-          hint="e.g. Family, Lagos Trip, Office lunch"
-          required
-        />
-      </View>
-
-      {/* ── Description ────────────────────────────────────────────── */}
-      <View style={styles.section}>
-        <CustomTextInput
-          label="DESCRIPTION (optional)"
-          id="description"
-          formController={form}
-          placeholder="What's this group for?"
-        />
-      </View>
-
-      {/* ── Icon selector ──────────────────────────────────────────── */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
-          ICON
-        </Text>
-        <GroupIconSelector
-          icons={icons}
-          selectedIcon={selectedIcon}
-          selectedColor={selectedColor}
-          onIconsChange={setIcons}
-          onSelectIcon={setSelectedIcon}
-        />
-      </View>
-
-      {/* ── Color selector ─────────────────────────────────────────── */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
-          COLOR
-        </Text>
-        <View style={styles.colorRow}>
-          {groupColors.map((swatch) => {
-            const isSelected = selectedColor === swatch.fill;
-            return (
-              <TouchableOpacity
-                key={swatch.fill}
-                onPress={() => setSelectedColor(swatch.fill)}
-                style={[
-                  styles.colorCircle,
-                  { backgroundColor: swatch.fill },
-                  isSelected && styles.colorCircleSelected,
-                ]}
-              >
-                {isSelected && <Ionicons name="checkmark" size={18} color={swatch.on} />}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      {/* ── Continue button ────────────────────────────────────────── */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={handleContinue}
-          disabled={isCreating}
-          style={[styles.continueBtn, { backgroundColor: colors.primary }]}
-        >
-          <AntDesign name="user-add" size={24} color={colors.text.inverse} />
-          <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
-            Continue · invite members
+    <ScreenContainer useScrollView={false}>
+      <NewGroupHeader isFormValid={form.formState.isValid} onNext={handleContinue} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          gap: Spacing.xxl,
+        }}
+      >
+        {/* ── Preview ────────────────────────────────────────────────── */}
+        <View style={styles.previewContainer}>
+          <View
+            style={[styles.iconPreview, { backgroundColor: selectedColor + iconBackgroundOpacity }]}
+          >
+            <Text style={styles.iconPreviewEmoji}>{selectedIcon}</Text>
+          </View>
+          <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
+            {groupName || 'Group name'}
           </Text>
-        </TouchableOpacity>
-        <Text style={[TextStyles.caption, { color: colors.text.secondary, textAlign: 'center' }]}>
-          Members come next. Groups hold your tabs — monthly
+          <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>Preview</Text>
+        </View>
+        {/* ── Group Name ─────────────────────────────────────────────── */}
+        <View style={styles.section}>
+          <CustomTextInput
+            label="GROUP NAME"
+            id="name"
+            formController={form}
+            hint="e.g. Family, Lagos Trip, Office lunch"
+            required
+          />
+        </View>
+
+        {/* ── Description ────────────────────────────────────────────── */}
+        <View style={styles.section}>
+          <CustomTextInput
+            label="DESCRIPTION (optional)"
+            id="description"
+            formController={form}
+            placeholder="What's this group for?"
+          />
+        </View>
+
+        {/* ── Icon selector ──────────────────────────────────────────── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
+            ICON
+          </Text>
+          <GroupIconSelector
+            icons={icons}
+            selectedIcon={selectedIcon}
+            selectedColor={selectedColor}
+            onIconsChange={setIcons}
+            onSelectIcon={setSelectedIcon}
+          />
+        </View>
+
+        {/* ── Color selector ─────────────────────────────────────────── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, TextStyles.label, { color: colors.text.secondary }]}>
+            COLOR
+          </Text>
+          <View style={styles.colorRow}>
+            {groupColors.map((swatch) => {
+              const isSelected = selectedColor === swatch.fill;
+              return (
+                <TouchableOpacity
+                  key={swatch.fill}
+                  onPress={() => setSelectedColor(swatch.fill)}
+                  style={[
+                    styles.colorCircle,
+                    { backgroundColor: swatch.fill },
+                    isSelected && styles.colorCircleSelected,
+                  ]}
+                >
+                  {isSelected && <Ionicons name="checkmark" size={18} color={swatch.on} />}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      </ScrollView>
+      {/* ── Continue button ────────────────────────────────────────── */}
+      <TouchableOpacity
+        onPress={handleContinue}
+        disabled={!form.formState.isValid || isCreating}
+        style={[
+          styles.continueBtn,
+          { backgroundColor: colors.primary },
+          (!form.formState.isValid || isCreating) && { opacity: 0.45 },
+        ]}
+      >
+        <AntDesign name="user-add" size={24} color={colors.text.inverse} />
+        <Text style={[TextStyles.button, { color: colors.onPrimary }]}>
+          Continue · invite members
         </Text>
-      </View>
+      </TouchableOpacity>
     </ScreenContainer>
   );
 }

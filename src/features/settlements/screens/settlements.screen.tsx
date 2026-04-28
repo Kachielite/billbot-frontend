@@ -71,7 +71,7 @@ export default function SettlementsScreen({ route }: Props) {
           style={[styles.newBtn, { backgroundColor: colors.primary }]}
         >
           <Ionicons name="add" size={20} color={colors.onPrimary} />
-          <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Record</Text>
+          <Text style={[TextStyles.label, { color: colors.onPrimary }]}>New</Text>
         </TouchableOpacity>
       </View>
 

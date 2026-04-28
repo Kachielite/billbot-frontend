@@ -2,11 +2,15 @@
 
 ## Purpose of This Document
 
-This document instructs Claude Code on exactly what to build in the `billbot-frontend` React Native project. The AGENTS.md file in the repository is the structural enforcement policy and must be followed at all times.
+This document instructs Claude Code on exactly what to build in the `billbot-frontend` React Native project. The
+AGENTS.md file in the repository is the structural enforcement policy and must be followed at all times.
 
-**What to build:** All feature scaffolding — services, interfaces, DTOs (with Zod schemas), mappers, state, hooks, navigation types, core network layer, constants, and utils. Create empty `screens/` and `components/` folders inside each feature but do not create any files inside them.
+**What to build:** All feature scaffolding — services, interfaces, DTOs (with Zod schemas), mappers, state, hooks,
+navigation types, core network layer, constants, and utils. Create empty `screens/` and `components/` folders inside
+each feature but do not create any files inside them.
 
-**What not to build:** No screen files, no UI components, no JSX anywhere. The developer will implement those separately.
+**What not to build:** No screen files, no UI components, no JSX anywhere. The developer will implement those
+separately.
 
 ---
 
@@ -66,7 +70,8 @@ npm install date-fns
 
 ## Hook Patterns — Read This Before Writing Any Hook
 
-There are two hook patterns used throughout the codebase. Apply the correct one based on whether the hook reads data or mutates it.
+There are two hook patterns used throughout the codebase. Apply the correct one based on whether the hook reads data or
+mutates it.
 
 ### GET hooks — use `useQuery`
 
@@ -88,7 +93,8 @@ export default useGroups;
 
 ### POST / PUT / DELETE hooks — use `useForm` + `useMutation`
 
-Every mutation hook that takes user input **must** use `useForm` with a Zod schema sourced from the feature's `.dto.ts` file. Follow this pattern exactly:
+Every mutation hook that takes user input **must** use `useForm` with a Zod schema sourced from the feature's `.dto.ts`
+file. Follow this pattern exactly:
 
 ```typescript
 import { useForm } from 'react-hook-form';
@@ -144,7 +150,8 @@ export default useCreateGroup;
 - Always call `queryClient.invalidateQueries` with the relevant `QUERY_KEYS` on success
 - Always show a `Toast` on both success and error
 - Always `form.reset()` on success
-- Action-only mutations (confirm, delete, mark-read) with no user input fields do not use `useForm` — they use `useMutation` only
+- Action-only mutations (confirm, delete, mark-read) with no user input fields do not use `useForm` — they use
+  `useMutation` only
 
 ---
 
@@ -193,7 +200,8 @@ export interface GroupDetailDto extends GroupDto {
 }
 ```
 
-Apply this pattern to every `.dto.ts` file — Zod schema + inferred type for every request body, plain interface for every response shape.
+Apply this pattern to every `.dto.ts` file — Zod schema + inferred type for every request body, plain interface for
+every response shape.
 
 ---
 
@@ -366,7 +374,8 @@ src/
 
 ### `src/core/common/constants/theme.ts`
 
-Re-export the theme object from `billbot.theme.json` as a typed TypeScript constant covering light/dark color tokens, typography scale, spacing, radius, and elevation.
+Re-export the theme object from `billbot.theme.json` as a typed TypeScript constant covering light/dark color tokens,
+typography scale, spacing, radius, and elevation.
 
 ```typescript
 export const theme = { ... } as const;
@@ -531,7 +540,8 @@ Axios instance with:
 
 - Base URL from `ENV.API_BASE_URL`
 - Request interceptor: reads session token from AsyncStorage, attaches `Authorization: Bearer <token>`
-- Response interceptor: on 401, clears token from storage and throws `UnauthorizedError`; on other non-2xx, throws `AppError` with `statusCode` and `message` extracted from the response body
+- Response interceptor: on 401, clears token from storage and throws `UnauthorizedError`; on other non-2xx, throws
+  `AppError` with `statusCode` and `message` extracted from the response body
 
 ```typescript
 // export const apiClient: AxiosInstance
@@ -619,7 +629,9 @@ declare global {
 
 ### `src/navigation/RootNavigator.tsx`
 
-Root stack navigator. Reads `isAuthenticated` from `auth.state`. Renders `AuthNavigator` when signed out, `MainNavigator` when signed in. Modal screens registered at root level. Use `const PlaceholderScreen = () => null` for all screen references.
+Root stack navigator. Reads `isAuthenticated` from `auth.state`. Renders `AuthNavigator` when signed out,
+`MainNavigator` when signed in. Modal screens registered at root level. Use `const PlaceholderScreen = () => null` for
+all screen references.
 
 ### `src/navigation/AuthNavigator.tsx`
 
@@ -627,7 +639,9 @@ Stack navigator for `SignIn` and `Onboarding`. Placeholder screens.
 
 ### `src/navigation/MainNavigator.tsx`
 
-Bottom tab navigator — 4 tabs: Home, Activity, Groups, Profile. Active tint from `theme.light.primary`. Groups tab uses its own nested stack navigator (defined in this file). Notification bell rendered as header right button on Home and Activity tabs.
+Bottom tab navigator — 4 tabs: Home, Activity, Groups, Profile. Active tint from `theme.light.primary`. Groups tab uses
+its own nested stack navigator (defined in this file). Notification bell rendered as header right button on Home and
+Activity tabs.
 
 ---
 
@@ -902,7 +916,8 @@ export interface GroupDetail extends Group {
 
 - `use-groups.ts` — `useQuery` → `{ groups, isLoading, error, refetch }`
 - `use-group-detail.ts` — `useQuery([QUERY_KEYS.GROUP_DETAIL, groupId], ...)` → `{ group, isLoading, error, refetch }`
-- `use-create-group.ts` — `useForm<CreateGroupSchemaType>` + `useMutation`, invalidates `QUERY_KEYS.GROUPS` on success → `{ form, isCreating, createGroup }`
+- `use-create-group.ts` — `useForm<CreateGroupSchemaType>` + `useMutation`, invalidates `QUERY_KEYS.GROUPS` on success →
+  `{ form, isCreating, createGroup }`
 - `use-delete-group.ts` — `useMutation` only → `{ deleteGroup, isDeleting }`
 - `use-remove-member.ts` — `useMutation` only → `{ removeMember, isRemoving }`
 
@@ -977,8 +992,10 @@ export interface Invite {
 **Hooks:**
 
 - `use-list-invites.ts` — `useQuery` → `{ invites, isLoading, error, refetch }`
-- `use-create-invite.ts` — `useForm<CreateInviteSchemaType>` + `useMutation`, invalidates `GROUP_INVITES` → `{ form, isInviting, createInvite }`
-- `use-join-group.ts` — `useForm<JoinGroupSchemaType>` + `useMutation`, invalidates `GROUPS` on success → `{ form, isJoining, joinGroup }`
+- `use-create-invite.ts` — `useForm<CreateInviteSchemaType>` + `useMutation`, invalidates `GROUP_INVITES` →
+  `{ form, isInviting, createInvite }`
+- `use-join-group.ts` — `useForm<JoinGroupSchemaType>` + `useMutation`, invalidates `GROUPS` on success →
+  `{ form, isJoining, joinGroup }`
 - `use-cancel-invite.ts` — `useMutation` only → `{ cancelInvite, isCancelling }`
 
 ---
@@ -1067,8 +1084,10 @@ export interface PoolDetail extends Pool {
 
 - `use-group-pools.ts` — `useQuery` → `{ pools, isLoading, error, refetch }`
 - `use-pool-detail.ts` — `useQuery` → `{ pool, isLoading, error, refetch }`
-- `use-create-pool.ts` — `useForm<CreatePoolSchemaType>` + `useMutation`, invalidates `GROUP_POOLS` → `{ form, isCreating, createPool }`
-- `use-update-pool.ts` — `useForm<UpdatePoolSchemaType>` + `useMutation`, invalidates `POOL_DETAIL` → `{ form, isUpdating, updatePool }`
+- `use-create-pool.ts` — `useForm<CreatePoolSchemaType>` + `useMutation`, invalidates `GROUP_POOLS` →
+  `{ form, isCreating, createPool }`
+- `use-update-pool.ts` — `useForm<UpdatePoolSchemaType>` + `useMutation`, invalidates `POOL_DETAIL` →
+  `{ form, isUpdating, updatePool }`
 - `use-pool-members.ts` — `useMutation` only for both add and remove → `{ addMember, removeMember, isLoading }`
 
 ---
@@ -1210,8 +1229,12 @@ export interface ParseReceiptResult {
 
 - `use-pool-expenses.ts` — `useQuery` paginated → `{ expenses, isLoading, error, refetch }`
 - `use-expense-detail.ts` — `useQuery` → `{ expense, isLoading, error }`
-- `use-log-expense.ts` — `useForm<LogExpenseSchemaType>` + `useMutation`, invalidates `POOL_EXPENSES` and `POOL_BALANCES` → `{ form, isLogging, logExpense }`. The mutation receives the form data and any staged receipt image separately
-- `use-parse-receipt.ts` — `useMutation` only (user picks an image, not a form field) → `{ parseReceipt, result, isParsing }`. On success, calls `expenses.state.setDraftExpense({ parsedReceipt, receiptUrl })`
+- `use-log-expense.ts` — `useForm<LogExpenseSchemaType>` + `useMutation`, invalidates `POOL_EXPENSES` and
+  `POOL_BALANCES` → `{ form, isLogging, logExpense }`. The mutation receives the form data and any staged receipt image
+  separately
+- `use-parse-receipt.ts` — `useMutation` only (user picks an image, not a form field) →
+  `{ parseReceipt, result, isParsing }`. On success, calls
+  `expenses.state.setDraftExpense({ parsedReceipt, receiptUrl })`
 - `use-delete-expense.ts` — `useMutation` only → `{ deleteExpense, isDeleting }`
 - `use-cancel-recurrence.ts` — `useMutation` only → `{ cancelRecurrence, isCancelling }`
 
@@ -1268,7 +1291,8 @@ export interface PoolBalances {
 
 **`balances.service.ts`** — `getPoolBalances(poolId): Promise<PoolBalances>` — GET /pools/:poolId/balances
 
-**`hooks/use-pool-balances.ts`** — `useQuery` → `{ balances, memberSummary, myNetBalance, myDebts, isLoading, error, refetch }`
+**`hooks/use-pool-balances.ts`** — `useQuery` →
+`{ balances, memberSummary, myNetBalance, myDebts, isLoading, error, refetch }`
 Derives `myNetBalance` and `myDebts` from the current user id (read from `auth.state`).
 
 ---
@@ -1348,9 +1372,12 @@ export interface Settlement {
 
 - `use-pool-settlements.ts` — `useQuery` → `{ settlements, isLoading, error, refetch }`
 - `use-settlement-detail.ts` — `useQuery` → `{ settlement, isLoading, error }`
-- `use-submit-settlement.ts` — `useForm<SubmitSettlementSchemaType>` + `useMutation`, invalidates `POOL_SETTLEMENTS` and `POOL_BALANCES` → `{ form, isSubmitting, submitSettlement }`. Proof image is passed separately into the mutation alongside form data
+- `use-submit-settlement.ts` — `useForm<SubmitSettlementSchemaType>` + `useMutation`, invalidates `POOL_SETTLEMENTS` and
+  `POOL_BALANCES` → `{ form, isSubmitting, submitSettlement }`. Proof image is passed separately into the mutation
+  alongside form data
 - `use-confirm-settlement.ts` — `useMutation` only → `{ confirmSettlement, isConfirming }`
-- `use-dispute-settlement.ts` — `useForm<DisputeSettlementSchemaType>` + `useMutation` → `{ form, isDisputing, disputeSettlement }`
+- `use-dispute-settlement.ts` — `useForm<DisputeSettlementSchemaType>` + `useMutation` →
+  `{ form, isDisputing, disputeSettlement }`
 
 ---
 
@@ -1419,8 +1446,10 @@ export interface Notification {
 **Hooks:**
 
 - `use-notifications.ts` — `useQuery` → `{ notifications, unreadCount, isLoading, error, refetch }`
-- `use-mark-read.ts` — `useMutation` only, decrements `notifications.state.unreadCount` on success → `{ markRead, isMarking }`
-- `use-mark-all-read.ts` — `useMutation` only, clears `notifications.state.unreadCount` on success → `{ markAllRead, isMarking }`
+- `use-mark-read.ts` — `useMutation` only, decrements `notifications.state.unreadCount` on success →
+  `{ markRead, isMarking }`
+- `use-mark-all-read.ts` — `useMutation` only, clears `notifications.state.unreadCount` on success →
+  `{ markAllRead, isMarking }`
 
 ---
 
@@ -1539,7 +1568,8 @@ export interface Webhook {
 **Hooks:**
 
 - `use-group-webhooks.ts` — `useQuery` → `{ webhooks, isLoading, error, refetch }`
-- `use-register-webhook.ts` — `useForm<RegisterWebhookSchemaType>` + `useMutation`, invalidates `GROUP_WEBHOOKS` → `{ form, isRegistering, registerWebhook }`
+- `use-register-webhook.ts` — `useForm<RegisterWebhookSchemaType>` + `useMutation`, invalidates `GROUP_WEBHOOKS` →
+  `{ form, isRegistering, registerWebhook }`
 - `use-delete-webhook.ts` — `useMutation` only → `{ deleteWebhook, isDeleting }`
 
 ---

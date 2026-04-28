@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { TextStyles } from '@/core/common/constants/fonts';
 import { Radius, Spacing } from '@/core/common/constants/theme';
@@ -8,6 +8,8 @@ import useGetName from '@/core/common/hooks/use-get-name';
 import useProfile from '@/features/user/hooks/use-profile';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
+import { formatAmount } from '@/core/common/utils/currency';
+import EmptyState from '@/core/common/components/empty-state';
 
 type Props = {
   balances: BalanceEntry[];
@@ -47,7 +49,7 @@ export default function PoolSettlement({
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Breakdown</Text>
-            <Tooltip description="Showing who owes who based on the expenses added to this pool. The amounts shown here are what each person owes or is owed, and may not reflect the total amount they paid or owe for the entire pool." />
+            <Tooltip description="Showing who owes who based on the expenses added to this tab. The amounts shown here are what each person owes or is owed, and may not reflect the total amount they paid or owe for the entire tab." />
           </View>
           {onViewSettlements && (
             <TouchableOpacity onPress={onViewSettlements}>
@@ -56,106 +58,112 @@ export default function PoolSettlement({
           )}
         </View>
       </View>
-      <View
-        style={[
-          styles.summaryContainer,
-          {
-            backgroundColor: colors.surface,
-            borderColor: colors.border.default,
-          },
-        ]}
-      >
-        {isLoading
-          ? // Render skeleton rows that mirror the settlement layout
-            Array.from({ length: 4 }).map((_, i) => (
-              <View
-                style={[
-                  styles.breakdownEntry,
-                  i < 3 && {
-                    paddingBottom: Spacing.sm,
-                    marginBottom: Spacing.sm,
-                    borderBottomWidth: 1,
-                    borderBottomColor: colors.border.subtle,
-                  },
-                ]}
-                key={`skel-${i}`}
-              >
-                <View style={styles.breakdownEntryDetailsSkeleton}>
-                  <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <SkeletonBox
-                      width={140}
-                      height={18}
-                      bg={colors.surface}
-                      style={{ borderRadius: Radius.sm }}
-                    />
-                  </View>
-                </View>
-
-                <View style={styles.divider} />
-
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
-                  {/* pill skeleton - square on the side facing the divider */}
-                  <SkeletonBox
-                    width={110}
-                    height={36}
-                    bg={colors.surface}
-                    style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                  />
-                </View>
-              </View>
-            ))
-          : balances.map((entry, index) => {
-              const from = entry.from.name;
-              const fromId = entry.from.id;
-              const to = entry.to.name;
-              const toId = entry.to.id;
-              const currency = entry.currency;
-              const amount = entry.amount.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              });
-              return (
+      {!isLoading && balances.length === 0 ? (
+        <EmptyState title="All settled up" subtitle="No outstanding balances in this tab." />
+      ) : (
+        <View
+          style={[
+            styles.summaryContainer,
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border.default,
+            },
+          ]}
+        >
+          {isLoading
+            ? // Render skeleton rows that mirror the settlement layout
+              Array.from({ length: 4 }).map((_, i) => (
                 <View
                   style={[
                     styles.breakdownEntry,
-                    index < balances.length - 1 && {
-                      borderBottomWidth: 1,
-                      borderBottomColor: colors.border.subtle,
+                    i < 3 && {
                       paddingBottom: Spacing.sm,
                       marginBottom: Spacing.sm,
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.border.subtle,
                     },
                   ]}
-                  key={index}
+                  key={`skel-${i}`}
                 >
-                  <View style={styles.breakdownEntryDetails}>
-                    <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
-                      {getName({ id: fromId, name: from })}
-                    </Text>
-                    <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>owes</Text>
-                    <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
-                      {getName({ id: toId, name: to })}
-                    </Text>
+                  <View style={styles.breakdownEntryDetailsSkeleton}>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                      <SkeletonBox
+                        width={140}
+                        height={18}
+                        bg={colors.surface}
+                        style={{ borderRadius: Radius.sm }}
+                      />
+                    </View>
                   </View>
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={[TextStyles.amountSmall, { color: colors.error }]}>
-                      {currency} {amount}
-                    </Text>
-                    {profile?.id === entry.from.id && (
-                      <TouchableOpacity
-                        style={[
-                          styles.settleBtn,
-                          { backgroundColor: colors.primaryContainer, borderColor: colors.primary },
-                        ]}
-                        onPress={() => onSettlePress?.(toId, entry.amount)}
-                      >
-                        <Text style={[TextStyles.label, { color: colors.primary }]}>Settle</Text>
-                      </TouchableOpacity>
-                    )}
+
+                  <View style={styles.divider} />
+
+                  <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                    {/* pill skeleton - square on the side facing the divider */}
+                    <SkeletonBox
+                      width={110}
+                      height={36}
+                      bg={colors.surface}
+                      style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    />
                   </View>
                 </View>
-              );
-            })}
-      </View>
+              ))
+            : balances.map((entry, index) => {
+                const from = entry.from.name;
+                const fromId = entry.from.id;
+                const to = entry.to.name;
+                const toId = entry.to.id;
+                const currency = entry.currency;
+                const amount = formatAmount(entry.amount);
+                return (
+                  <View
+                    style={[
+                      styles.breakdownEntry,
+                      index < balances.length - 1 && {
+                        borderBottomWidth: 1,
+                        borderBottomColor: colors.border.subtle,
+                        paddingBottom: Spacing.sm,
+                        marginBottom: Spacing.sm,
+                      },
+                    ]}
+                    key={index}
+                  >
+                    <View style={styles.breakdownEntryDetails}>
+                      <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
+                        {getName({ id: fromId, name: from })}
+                      </Text>
+                      <Text style={[TextStyles.caption, { color: colors.text.disabled }]}>
+                        owes
+                      </Text>
+                      <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]}>
+                        {getName({ id: toId, name: to })}
+                      </Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={[TextStyles.amountSmall, { color: colors.error }]}>
+                        {currency} {amount}
+                      </Text>
+                      {profile?.id === entry.from.id && (
+                        <TouchableOpacity
+                          style={[
+                            styles.settleBtn,
+                            {
+                              backgroundColor: colors.primaryContainer,
+                              borderColor: colors.primary,
+                            },
+                          ]}
+                          onPress={() => onSettlePress?.(toId, entry.amount)}
+                        >
+                          <Text style={[TextStyles.label, { color: colors.primary }]}>Settle</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+                );
+              })}
+        </View>
+      )}
     </View>
   );
 }

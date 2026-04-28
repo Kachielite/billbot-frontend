@@ -8,7 +8,8 @@ import useGetName from '@/core/common/hooks/use-get-name';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
 import useProfile from '@/features/user/hooks/use-profile';
-import useUserStore from '@/features/user/user.state';
+import { formatAmount } from '@/core/common/utils/currency';
+import EmptyState from '@/core/common/components/empty-state';
 
 type Props = {
   memberSummary: MemberSummary[];
@@ -19,19 +20,15 @@ const POSITIVE_BG = '#5DBF7E';
 const NEGATIVE_BG = '#D96B6B';
 const PILL_TEXT = '#FFFFFF';
 
-function formatAmount(amount: number, currency: string = '$'): string {
-  const abs = Math.abs(amount).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  return (amount >= 0 ? '+ ' : '- ') + currency + abs;
+function formatMemberAmount(amount: number, currency: string = '$'): string {
+  return (amount >= 0 ? '+ ' : '- ') + currency + formatAmount(Math.abs(amount));
 }
 
 export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
   const { profile, isLoading: isLoadingCurrency } = useProfile();
   const colors = useThemeColors();
   const getName = useGetName();
-  const currency = profile?.currency || '$';
+  const currency = profile?.currency?.symbol || '$';
 
   if (isLoading || isLoadingCurrency) {
     // Render a skeleton that mirrors the members summary layout: title + rows with left/right halves
@@ -105,6 +102,21 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
     );
   }
 
+  if (memberSummary.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Summary</Text>
+          <Tooltip description="See how much each member owes or is owed in this tab, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
+        </View>
+        <EmptyState
+          title="No summary yet"
+          subtitle="Add expenses to see how amounts are split across members."
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View
@@ -116,7 +128,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
         }}
       >
         <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Summary</Text>
-        <Tooltip description="See how much each member owes or is owed in this pool, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
+        <Tooltip description="See how much each member owes or is owed in this tab, based on all the expenses and payments recorded. Red indicates a member owes money; green indicates a member is owed money." />
       </View>
       <View
         style={[
@@ -134,7 +146,7 @@ export default function PoolMemberSummary({ memberSummary, isLoading }: Props) {
           const displayName = item.user.name;
 
           // For positive/negative we render a colored pill; for zero show a simple "✅ Settled" label
-          const label = isZero ? '✅ Settled' : formatAmount(net, currency);
+          const label = isZero ? '✅ Settled' : formatMemberAmount(net, currency);
           const pillBg = isPositive ? POSITIVE_BG : NEGATIVE_BG;
 
           // Square the corner that sits against the divider line for pills

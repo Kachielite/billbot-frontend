@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, ViewStyle, StyleProp } from 'react-native';
-import { Spacing, Radius } from '@/core/common/constants/theme';
+import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { Radius, Spacing } from '@/core/common/constants/theme';
 
 type Props = {
   width?: number | string;

@@ -1,4 +1,4 @@
-import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     position: 'absolute',
-    top: Spacing.xl,
+    top: Spacing.xxxl,
     right: Spacing.lg,
     zIndex: 10,
     width: 40,

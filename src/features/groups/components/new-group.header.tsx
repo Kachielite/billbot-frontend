@@ -6,7 +6,12 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Radius, Shadow, Spacing } from '@/core/common/constants/theme';
 import { useNavigation } from '@react-navigation/native';
 
-export default function NewGroupHeader() {
+interface Props {
+  isFormValid: boolean;
+  onNext: () => void;
+}
+
+export default function NewGroupHeader({ isFormValid, onNext }: Props) {
   const navigation = useNavigation();
   const colors = useThemeColors();
   return (
@@ -34,8 +39,15 @@ export default function NewGroupHeader() {
           <Text style={[TextStyles.headingLarge, { color: colors.text.secondary }]}>New group</Text>
         </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('InviteMembers')}>
-        <Text style={[TextStyles.headingSmall, { color: colors.text.disabled }]}>Next</Text>
+      <TouchableOpacity onPress={onNext} disabled={!isFormValid}>
+        <Text
+          style={[
+            TextStyles.headingSmall,
+            { color: isFormValid ? colors.primary : colors.text.disabled },
+          ]}
+        >
+          Next
+        </Text>
       </TouchableOpacity>
     </View>
   );

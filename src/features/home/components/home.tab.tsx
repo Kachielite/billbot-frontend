@@ -18,10 +18,13 @@ export default function HomeTab({ onCancel }: { onCancel: () => void }) {
   const [selectedGroup, setSelectedGroup] = React.useState<Group | null>(null);
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = React.useState<{ label: string; value: string }[]>([]);
+  const sortedGroups = React.useMemo(() => {
+    return [...groups].sort((a, b) => a.name.localeCompare(b.name));
+  }, [groups]);
 
   React.useEffect(() => {
-    setItems(groups.map((group) => ({ label: group.name, value: group.id })));
-  }, [groups]);
+    setItems(sortedGroups.map((group) => ({ label: group.name, value: group.id })));
+  }, [sortedGroups]);
 
   return (
     <View style={styles.container}>
@@ -89,6 +92,7 @@ export default function HomeTab({ onCancel }: { onCancel: () => void }) {
           listItemLabelStyle={[styles.itemText, { color: colors.text.primary }]}
           selectedItemContainerStyle={{ backgroundColor: colors.primaryContainer }}
           selectedItemLabelStyle={{ color: colors.primary }}
+          tickIconStyle={{ tintColor: colors.text.primary } as any}
           textStyle={[styles.selectedTextStyle, { color: colors.text.primary }]}
           placeholderStyle={[styles.placeholderStyle, { color: colors.text.inverse }]}
           zIndex={3000}

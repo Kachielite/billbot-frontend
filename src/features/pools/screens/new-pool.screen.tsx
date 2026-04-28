@@ -5,12 +5,14 @@ import NewPoolForm from '@/features/pools/components/new-pool.form';
 import type { StaticScreenProps } from '@react-navigation/native';
 import CustomFormSheet from '@/core/common/components/layout/custom-formsheet';
 import InfoBox from '@/core/common/components/info-box';
+import useGroupDetail from '@/features/groups/hooks/use-group-detail';
 
 type Props = StaticScreenProps<{ groupId: string }>;
 
 export default function NewPoolScreen({ route }: Props) {
   const { groupId } = route.params;
   const { form, createPoolHandler, isCreating } = useCreatePool(groupId);
+  useGroupDetail(groupId);
 
   return (
     <CustomFormSheet>

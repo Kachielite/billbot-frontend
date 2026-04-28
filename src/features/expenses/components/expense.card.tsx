@@ -6,6 +6,7 @@ import React from 'react';
 import moment from 'moment';
 import { Expense } from '@/features/expenses/expenses.interface';
 import { useNavigation } from '@react-navigation/native';
+import { formatAmount } from '@/core/common/utils/currency';
 
 export const ExpenseCard = ({ expense }: { expense: Expense }) => {
   const navigation = useNavigation();
@@ -18,10 +19,7 @@ export const ExpenseCard = ({ expense }: { expense: Expense }) => {
   const swatch = colors.groupColors[seed % colors.groupColors.length];
 
   const description = expense.description ?? 'No description';
-  const amount = `${expense.currency || '$'} ${expense.amount.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+  const amount = `${expense.currency || '$'} ${formatAmount(expense.amount)}`;
   const splits = expense.splits?.length ?? 0;
   const splitLabel = `Split ${splits} ${splits === 1 ? 'way' : 'ways'}`;
   const dateLabel = moment(expense.createdAt).format('MMMM D');

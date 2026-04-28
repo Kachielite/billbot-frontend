@@ -78,7 +78,7 @@ export default function ExpensesScreen({ route }: Props) {
                 { color: colors.text.secondary, textTransform: 'uppercase' },
               ]}
             >
-              {selectedPool?.name || 'Pool'}
+              {selectedPool?.name || 'Tab'}
             </Text>
             <Text style={[TextStyles.headingMedium, { color: colors.text.primary }]}>EXPENSES</Text>
           </View>

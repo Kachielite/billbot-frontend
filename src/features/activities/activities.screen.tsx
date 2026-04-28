@@ -5,6 +5,7 @@ import {
   NativeSyntheticEvent,
   Platform,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -169,11 +170,19 @@ export default function ActivitiesScreen() {
     isFetching,
     hasMore,
     loadMore,
+    refetch,
     groupId,
     setGroupId,
     setFrom,
     setTo,
   } = useActivities(30);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   const sections = React.useMemo(() => groupByDate(allItems), [allItems]);
 
@@ -295,13 +304,26 @@ export default function ActivitiesScreen() {
             paddingBottom: Platform.OS === 'ios' ? Spacing.xxl : 100,
             gap: Spacing.xl,
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
         >
           {sections.map(({ title, data }) => (
             <View key={title} style={styles.section}>
               <Text style={[TextStyles.label, { color: colors.text.disabled }]}>
                 {title.toUpperCase()}
               </Text>
-              <View style={[styles.groupCard, { backgroundColor: colors.surface }]}>
+              <View
+                style={[
+                  styles.groupCard,
+                  { backgroundColor: colors.surface, borderColor: colors.border.default },
+                ]}
+              >
                 {data.map((activity, index) => (
                   <ActivityCard
                     key={activity.id}
@@ -417,7 +439,7 @@ export default function ActivitiesScreen() {
                     {
                       backgroundColor:
                         draftPreset === p.key ? colors.primaryContainer : colors.surface,
-                      borderColor: draftPreset === p.key ? colors.primary : colors.border.subtle,
+                      borderColor: draftPreset === p.key ? colors.primary : colors.border.default,
                     },
                   ]}
                   onPress={() => setDraftPreset(p.key)}
@@ -494,6 +516,7 @@ const styles = StyleSheet.create({
   },
   groupCard: {
     borderRadius: Radius.lg,
+    borderWidth: Border.thin,
   },
   footerLoader: {
     paddingVertical: Spacing.lg,

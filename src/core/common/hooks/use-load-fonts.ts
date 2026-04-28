@@ -9,8 +9,6 @@ import {
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
-SplashScreen.preventAutoHideAsync();
-
 const useLoadFonts = () => {
   const [loaded, error] = useFonts({
     PlusJakartaSans_400Regular,

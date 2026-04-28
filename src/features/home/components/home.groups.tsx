@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import React from 'react';
-import { Radius, Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import { TextStyles } from '@/core/common/constants/fonts';
 import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import useGroups from '@/features/groups/hooks/use-groups';
@@ -9,6 +9,7 @@ import EmptyState from '@/core/common/components/empty-state';
 import { useNavigation } from '@react-navigation/native';
 import { Group } from '@/features/groups/groups.interface';
 import useGroupsStore from '@/features/groups/groups.state';
+import { formatAmount } from '@/core/common/utils/currency';
 
 const DEFAULT_EMOJI_BG = '#9370DB';
 
@@ -42,7 +43,7 @@ const GroupCard = ({ group }: { group: Group }) => {
       <View
         style={[
           groupCardStyles.groupCard,
-          { backgroundColor: colors.surface, borderColor: colors.border.subtle },
+          { backgroundColor: colors.surface, borderColor: colors.border.default },
         ]}
       >
         <View style={groupCardStyles.groupInfoContainer}>
@@ -63,11 +64,7 @@ const GroupCard = ({ group }: { group: Group }) => {
         </View>
         <View>
           <Text style={[TextStyles.amountSmall, { color: amountColor }]}>
-            {prefix} {currency}{' '}
-            {amountToDisplay.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {prefix} {currency} {formatAmount(amountToDisplay)}
           </Text>
           <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>{amountLabel}</Text>
         </View>
@@ -83,6 +80,7 @@ const groupCardStyles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.md,
     borderRadius: Radius.lg,
+    borderWidth: Border.thin,
     minWidth: 170,
   },
   groupInfoContainer: {

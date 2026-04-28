@@ -6,6 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { Activity } from '@/features/activities/activities.interface';
 import { getActivityEmoji } from '@/core/common/constants/activity-icons';
 import moment from 'moment';
+import { formatAmount } from '@/core/common/utils/currency';
 
 type Props = {
   activity: Activity;
@@ -23,17 +24,11 @@ const buildMessage = (activity: Activity): string => {
     case 'expense.deleted':
       return `${actorName} deleted an expense`;
     case 'settlement.submitted': {
-      const amt = Number(meta.amount).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
+      const amt = formatAmount(Number(meta.amount));
       return `${actorName} submitted a payment of ${meta.currency} ${amt}`;
     }
     case 'settlement.confirmed': {
-      const amt = Number(meta.amount).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
+      const amt = formatAmount(Number(meta.amount));
       return `${actorName} confirmed payment of ${meta.currency} ${amt}`;
     }
     case 'settlement.disputed':

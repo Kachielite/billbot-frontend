@@ -46,7 +46,8 @@ billbot-frontend/
 
 ### Root Files
 
-- Keep framework and tool config at root only (`app.json`, `babel.config.js`, `tsconfig.json`, `eslint.config.js`, `package.json`).
+- Keep framework and tool config at root only (`app.json`, `babel.config.js`, `tsconfig.json`, `eslint.config.js`,
+  `package.json`).
 - Do not add feature business logic in root.
 
 ### `src/`
@@ -88,7 +89,8 @@ Do not move files from one feature to another without explicit user approval.
 
 ## Import Rules
 
-- Prefer alias-based imports from `@/` for cross-folder imports (`@` maps to `src` in both `tsconfig.json` and `babel.config.js`).
+- Prefer alias-based imports from `@/` for cross-folder imports (`@` maps to `src` in both `tsconfig.json` and
+  `babel.config.js`).
 - Use relative imports only for same-folder or direct child-folder files.
 - Avoid deep relative paths like `../../../` when `@/` can be used.
 

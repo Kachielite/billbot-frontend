@@ -6,6 +6,7 @@ import useThemeColors from '@/core/common/hooks/use-theme-colors';
 import { useNavigation } from '@react-navigation/native';
 import { Group } from '@/features/groups/groups.interface';
 import useGroupsStore from '@/features/groups/groups.state';
+import { formatAmount } from '@/core/common/utils/currency';
 
 const DEFAULT_EMOJI_BG = '#9370DB';
 
@@ -58,11 +59,7 @@ const GroupCard = ({ group }: { group: Group }) => {
         {/* right — balance */}
         <View style={styles.right}>
           <Text style={[TextStyles.amountMedium, { color: amountColor }]}>
-            {prefix} {currency ?? ''}{' '}
-            {amountToDisplay.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {prefix} {currency ?? ''} {formatAmount(amountToDisplay)}
           </Text>
           <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>{amountLabel}</Text>
         </View>

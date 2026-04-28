@@ -102,8 +102,8 @@ export default function ExpenseDetailHeader({
                 else if (item.label === 'Cancel Recurrence') setPendingAction('cancel');
               }}
             >
-              <Ionicons name={item.icon} size={17} color={colors.error} />
-              <Text style={[TextStyles.bodySmall, { color: colors.error }]}>{item.label}</Text>
+              <Ionicons name={item.icon} size={20} color={colors.error} />
+              <Text style={[TextStyles.bodyMedium, { color: colors.error }]}>{item.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -155,6 +155,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.md,
   },
 });

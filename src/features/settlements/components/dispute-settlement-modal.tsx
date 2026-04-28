@@ -1,11 +1,10 @@
 import {
   KeyboardAvoidingView,
-  Platform,
+  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Modal,
 } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -51,14 +50,13 @@ export default function DisputeSettlementModal({ visible, onClose, settlement, p
           <TouchableOpacity onPress={handleClose} hitSlop={12} style={styles.closeBtn}>
             <Ionicons name="close" size={22} color={colors.text.primary} />
           </TouchableOpacity>
-          <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Dispute Payment</Text>
+          <Text style={[TextStyles.headingSmall, { color: colors.text.primary }]}>
+            DISPUTE SETTLEMENT
+          </Text>
           <View style={{ width: 34 }} />
         </View>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={{ flex: 1 }}
-        >
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           <View style={styles.form}>
             <Text style={[TextStyles.bodySmall, { color: colors.text.secondary }]}>
               Let the payer know why you cannot confirm this payment.
