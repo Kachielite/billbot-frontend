@@ -30,7 +30,23 @@ export default function ExpenseSplits({ splits, currency }: Props) {
           const displayName = split.name
             ? getName({ id: split.owedBy ?? '', name: split.name })
             : 'Unknown';
-          const amount = formatAmount(split.amount);
+          const isSettled = split.amountRemaining === 0;
+          const isPartial = !isSettled && split.amountRemaining < split.amount;
+
+          const badgeBackground = isSettled
+            ? colors.status.settledContainer
+            : isPartial
+              ? colors.status.infoContainer
+              : colors.status.pendingContainer;
+
+          const badgeText = isSettled
+            ? colors.status.onSettledContainer
+            : isPartial
+              ? colors.status.onInfoContainer
+              : colors.status.onPendingContainer;
+
+          const badgeLabel = isSettled ? 'Settled' : isPartial ? 'Partially Owing' : 'Owing';
+          const displayAmount = isSettled ? split.amount : split.amountRemaining;
 
           return (
             <View
@@ -60,30 +76,10 @@ export default function ExpenseSplits({ splits, currency }: Props) {
 
               <View style={styles.splitRight}>
                 <Text style={[TextStyles.amountSmall, { color: colors.text.primary }]}>
-                  {currency} {amount}
+                  {currency} {formatAmount(displayAmount)}
                 </Text>
-                <View
-                  style={[
-                    styles.badge,
-                    {
-                      backgroundColor: split.settled
-                        ? colors.status.settledContainer
-                        : colors.status.pendingContainer,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      TextStyles.captionBold,
-                      {
-                        color: split.settled
-                          ? colors.status.onSettledContainer
-                          : colors.status.onPendingContainer,
-                      },
-                    ]}
-                  >
-                    {split.settled ? 'Settled' : 'Pending'}
-                  </Text>
+                <View style={[styles.badge, { backgroundColor: badgeBackground }]}>
+                  <Text style={[TextStyles.captionBold, { color: badgeText }]}>{badgeLabel}</Text>
                 </View>
               </View>
             </View>

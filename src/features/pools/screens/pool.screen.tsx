@@ -3,6 +3,7 @@ import React from 'react';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
+import useRefetchOnFocus from '@/core/common/hooks/use-refetch-on-focus';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
 import usePoolDetail from '@/features/pools/hooks/use-pool-detail';
 import useDeletePool from '@/features/pools/hooks/use-delete-pool';
@@ -26,18 +27,25 @@ export default function PoolScreen({ route }: Props) {
   const navigation = useNavigation() as any;
   const { canGoBack, goBack } = navigation;
 
-  const { pool, isLoading } = usePoolDetail(poolId);
+  const { pool, isLoading, refetch: refetchPool } = usePoolDetail(poolId);
   const {
     isLoading: isLoadingBalance,
     memberSummary,
     totalAmount,
     amountCollected,
     balances,
+    refetch: refetchBalances,
   } = usePoolBalances(poolId);
-  const { group } = useGroupDetail(pool?.groupId ?? '');
+  const { group, refetch: refetchGroup } = useGroupDetail(pool?.groupId ?? '');
   const { profile } = useProfile();
   const { deletePool, isDeleting } = useDeletePool(poolId, pool?.groupId ?? '');
-  const { isLoading: isLoadingExpenses, pagination } = usePoolExpenses(poolId);
+  const {
+    isLoading: isLoadingExpenses,
+    pagination,
+    refetch: refetchExpenses,
+  } = usePoolExpenses(poolId);
+
+  useRefetchOnFocus([refetchPool, refetchBalances, refetchGroup, refetchExpenses]);
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 

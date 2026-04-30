@@ -7,7 +7,7 @@ import useExpensesStore from '@/features/expenses/expenses.state';
 
 const useExpenseDetail = (poolId: string, expenseId: string) => {
   const { setSelectedExpense } = useExpensesStore();
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     [QUERY_KEYS.EXPENSE_DETAIL, poolId, expenseId],
     () => ExpensesService.getExpense(poolId, expenseId),
     {
@@ -21,7 +21,7 @@ const useExpenseDetail = (poolId: string, expenseId: string) => {
     },
   );
 
-  return { expense: data ?? null, isLoading, error };
+  return { expense: data ?? null, isLoading, error, refetch };
 };
 
 export default useExpenseDetail;

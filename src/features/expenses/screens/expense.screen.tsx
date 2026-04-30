@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import useRefetchOnFocus from '@/core/common/hooks/use-refetch-on-focus';
 import ScreenContainer from '@/core/common/components/layout/screen-container';
 import ScreenLoader from '@/core/common/components/screen.loader';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
@@ -45,9 +46,11 @@ export default function ExpenseScreen({ route }: Props) {
   const colors = useThemeColors();
   const getName = useGetName();
 
-  const { isLoading, expense } = useExpenseDetail(poolId, expenseId);
-  const { pool } = usePoolDetail(poolId);
-  const { group } = useGroupDetail(pool?.groupId ?? '');
+  const { isLoading, expense, refetch: refetchExpense } = useExpenseDetail(poolId, expenseId);
+  const { pool, refetch: refetchPool } = usePoolDetail(poolId);
+  const { group, refetch: refetchGroup } = useGroupDetail(pool?.groupId ?? '');
+
+  useRefetchOnFocus([refetchExpense, refetchPool, refetchGroup]);
   const { categories } = useCategories();
   const { deleteExpense, isDeleting } = useDeleteExpense(poolId);
   const { cancelRecurrence, isCancelling } = useCancelRecurrence(poolId);

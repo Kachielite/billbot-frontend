@@ -3,6 +3,8 @@ export interface Split {
   expenseId: string;
   owedBy: string | null;
   amount: number;
+  amountSettled: number;
+  amountRemaining: number;
   settled: boolean;
   settledAt: Date | null;
   name: string | null;

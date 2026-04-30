@@ -12,6 +12,7 @@ import GroupTabs from '@/features/groups/components/group.tab';
 import ConfirmDeleteModal from '@/core/common/components/confirm-delete-modal';
 import ScreenLoader from '@/core/common/components/screen.loader';
 import { Spacing } from '@/core/common/constants/theme';
+import useRefetchOnFocus from '@/core/common/hooks/use-refetch-on-focus';
 
 type Props = StaticScreenProps<{ groupId: string; fromQuickActions?: boolean }>;
 
@@ -20,8 +21,10 @@ export default function GroupScreen({ route }: Props) {
   const fromQuickActions = Boolean(route.params.fromQuickActions);
   const navigation = useNavigation();
   const { canGoBack, goBack, navigate } = navigation;
-  const { group, isLoading } = useGroupDetail(groupId);
+  const { group, isLoading, refetch } = useGroupDetail(groupId);
   const { deleteGroup, isDeleting } = useDeleteGroup();
+
+  useRefetchOnFocus([refetch]);
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const hasHandledQuickAction = React.useRef(false);

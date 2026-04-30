@@ -52,6 +52,8 @@ export interface SplitDto {
   expense_id: string;
   owed_by: string | null;
   amount: string;
+  amountSettled: string;
+  amountRemaining: string;
   settled: boolean;
   settled_at: string | null;
   name: string | null;

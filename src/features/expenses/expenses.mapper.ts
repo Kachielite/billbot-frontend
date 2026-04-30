@@ -6,6 +6,8 @@ export const mapSplitFromDto = (dto: SplitDto): Split => ({
   expenseId: dto.expense_id,
   owedBy: dto.owed_by,
   amount: parseFloat(dto.amount),
+  amountSettled: parseFloat(dto.amountSettled),
+  amountRemaining: parseFloat(dto.amountRemaining),
   settled: dto.settled,
   settledAt: dto.settled_at ? new Date(dto.settled_at) : null,
   name: dto.name,
