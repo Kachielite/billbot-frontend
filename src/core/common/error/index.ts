@@ -30,12 +30,6 @@ export const mapAxiosErrorToAppError = (error: unknown): AppError => {
     const resp = axiosError.response;
     const data = resp?.data as any;
 
-    console.log('Mapping axios error to AppError:', {
-      status: resp?.status,
-      responseData: data,
-      message: axiosError.message,
-    });
-
     // If the server returned a structured error (matches IErrorResponse), use it
     if (data?.statusCode && data?.message) {
       const status = resp?.status ?? 500;
