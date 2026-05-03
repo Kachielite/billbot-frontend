@@ -1,22 +1,24 @@
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Toast } from 'toastify-react-native';
 import { QUERY_KEYS } from '@/core/common/constants/query-keys';
-import { AppError } from '@/core/common/error';
 import { UserService } from '../user.service';
+import { UserSummary } from '../user.interface';
 
-const useSearchUser = (phone: string) => {
-  const { data, isLoading, error } = useQuery(
-    [QUERY_KEYS.USER_SEARCH, phone],
-    () => UserService.searchByPhone(phone),
-    {
-      enabled: phone.length > 6,
-      onError: (err: AppError) => {
-        Toast.error(err.message || 'User not found');
-      },
-    },
+const useSearchUser = (query: string) => {
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const { data, isLoading } = useQuery<UserSummary[]>(
+    [QUERY_KEYS.USER_SEARCH, debouncedQuery],
+    () => UserService.searchUsers(debouncedQuery),
+    { enabled: debouncedQuery.length >= 2 },
   );
 
-  return { result: data ?? null, isLoading, error };
+  return { results: data ?? [], isLoading };
 };
 
 export default useSearchUser;
