@@ -24,7 +24,7 @@ type Props = StaticScreenProps<{ poolId: string }>;
 
 export default function PoolScreen({ route }: Props) {
   const { poolId } = route.params;
-  const navigation = useNavigation() as any;
+  const navigation = useNavigation();
   const { canGoBack, goBack } = navigation;
 
   const { pool, isLoading, refetch: refetchPool } = usePoolDetail(poolId);
@@ -100,14 +100,7 @@ export default function PoolScreen({ route }: Props) {
           isLoading={isLoadingBalance || isLoadingExpenses}
         />
         <PoolMemberSummary memberSummary={memberSummary} isLoading={isLoadingBalance} />
-        <PoolSettlement
-          isLoading={isLoadingBalance}
-          balances={balances}
-          onSettlePress={(toUserId, amount) =>
-            navigation.navigate('RecordPayment', { poolId, toUserId, amount })
-          }
-          onViewSettlements={() => navigation.navigate('Settlements', { poolId })}
-        />
+        <PoolSettlement poolId={poolId} isLoading={isLoadingBalance} balances={balances} />
         <PoolExpenses
           expenses={pagination?.items.slice(0, 6) ?? []}
           isLoading={isLoadingExpenses}

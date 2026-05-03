@@ -10,23 +10,34 @@ import SkeletonBox from '@/core/common/components/skeleton-box';
 import Tooltip from '@/core/common/components/tooltip';
 import { formatAmount } from '@/core/common/utils/currency';
 import EmptyState from '@/core/common/components/empty-state';
+import usePoolSettlements from '@/features/settlements/hooks/use-pool-settlements';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
   balances: BalanceEntry[];
   isLoading: boolean;
-  onSettlePress?: (toUserId: string, amount: number) => void;
-  onViewSettlements?: () => void;
+  poolId: string;
 };
 
-export default function PoolSettlement({
-  balances,
-  isLoading,
-  onSettlePress,
-  onViewSettlements,
-}: Props) {
+export default function PoolSettlement({ balances, isLoading, poolId }: Props) {
+  const navigation = useNavigation();
   const colors = useThemeColors();
   const getName = useGetName();
   const { profile } = useProfile();
+  const { settlements, isLoading: isLoadingSettlement } = usePoolSettlements(poolId);
+
+  const settlementStatus = React.useCallback(
+    (toUser: string, fromUser: string, amount: number) => {
+      const settlementInQuestion = settlements?.find(
+        (s) => s.toUser === toUser && s.fromUser === fromUser && s.amount === amount,
+      );
+      if (settlementInQuestion) {
+        return settlementInQuestion.status;
+      }
+      return null;
+    },
+    [settlements],
+  );
 
   return (
     <View style={styles.container}>
@@ -51,14 +62,13 @@ export default function PoolSettlement({
             <Text style={[TextStyles.subtitle, { color: colors.text.primary }]}>Breakdown</Text>
             <Tooltip description="Showing who owes who based on the expenses added to this tab. The amounts shown here are what each person owes or is owed, and may not reflect the total amount they paid or owe for the entire tab." />
           </View>
-          {onViewSettlements && (
-            <TouchableOpacity onPress={onViewSettlements}>
-              <Text style={[TextStyles.label, { color: colors.primary }]}>View Settlements</Text>
-            </TouchableOpacity>
-          )}
+
+          <TouchableOpacity onPress={() => navigation.navigate('Settlements', { poolId })}>
+            <Text style={[TextStyles.label, { color: colors.primary }]}>View Settlements</Text>
+          </TouchableOpacity>
         </View>
       </View>
-      {!isLoading && balances.length === 0 ? (
+      {!(isLoading || isLoadingSettlement) && balances.length === 0 ? (
         <EmptyState title="All settled up" subtitle="No outstanding balances in this tab." />
       ) : (
         <View
@@ -70,7 +80,7 @@ export default function PoolSettlement({
             },
           ]}
         >
-          {isLoading
+          {isLoading || isLoadingSettlement
             ? // Render skeleton rows that mirror the settlement layout
               Array.from({ length: 4 }).map((_, i) => (
                 <View
@@ -116,6 +126,8 @@ export default function PoolSettlement({
                 const toId = entry.to.id;
                 const currency = entry.currency;
                 const amount = formatAmount(entry.amount);
+                const settlementState = settlementStatus(toId, fromId, entry.amount);
+
                 return (
                   <View
                     style={[
@@ -144,20 +156,43 @@ export default function PoolSettlement({
                       <Text style={[TextStyles.amountSmall, { color: colors.error }]}>
                         {currency} {amount}
                       </Text>
-                      {profile?.id === entry.from.id && (
-                        <TouchableOpacity
-                          style={[
-                            styles.settleBtn,
-                            {
-                              backgroundColor: colors.primaryContainer,
-                              borderColor: colors.primary,
-                            },
-                          ]}
-                          onPress={() => onSettlePress?.(toId, entry.amount)}
-                        >
-                          <Text style={[TextStyles.label, { color: colors.primary }]}>Settle</Text>
-                        </TouchableOpacity>
-                      )}
+                      {settlementState === 'pending_verification' &&
+                        profile?.id === entry.from.id && (
+                          <Text
+                            style={[
+                              TextStyles.caption,
+                              styles.settleBtn,
+                              {
+                                color: colors.status.onPendingContainer,
+                                backgroundColor: colors.status.pendingContainer,
+                                borderColor: colors.status.pending,
+                              },
+                            ]}
+                          >
+                            Pending verification
+                          </Text>
+                        )}
+                      {settlementState !== 'pending_verification' &&
+                        profile?.id === entry.from.id && (
+                          <TouchableOpacity
+                            style={[
+                              styles.settleBtn,
+                              {
+                                backgroundColor: colors.primaryContainer,
+                                borderColor: colors.primary,
+                              },
+                            ]}
+                            onPress={() => {
+                              const toUserId = toId;
+                              const amount = entry.amount;
+                              navigation.navigate('RecordPayment', { poolId, toUserId, amount });
+                            }}
+                          >
+                            <Text style={[TextStyles.label, { color: colors.primary }]}>
+                              Settle
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                     </View>
                   </View>
                 );
