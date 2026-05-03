@@ -13,9 +13,9 @@ export interface IErrorMessage {
 
 export class AppError extends Error {
   public status: number;
-  public code: number;
+  public code: string;
 
-  constructor(status: number, code: number, message: string) {
+  constructor(status: number, code: string, message: string) {
     super(message);
     this.status = status;
     this.code = code;
@@ -30,21 +30,27 @@ export const mapAxiosErrorToAppError = (error: unknown): AppError => {
     const resp = axiosError.response;
     const data = resp?.data as any;
 
+    console.log('Mapping axios error to AppError:', {
+      status: resp?.status,
+      responseData: data,
+      message: axiosError.message,
+    });
+
     // If the server returned a structured error (matches IErrorResponse), use it
-    if (data?.error?.code && data?.error?.message) {
+    if (data?.statusCode && data?.message) {
       const status = resp?.status ?? 500;
-      const code = Number(data.error.code) || 0;
-      const message = String(data.error.message);
+      const code = data?.error ?? 'Unknown Error';
+      const message = data.message || 'An error occurred';
       return new AppError(status, code, message);
     }
 
     // Otherwise create a generic AppError using status/message if available
     const status = resp?.status ?? 500;
     const message = axiosError.message || 'Network or server error';
-    return new AppError(status, 0, message);
+    return new AppError(status, '', message);
   }
 
   // Non-axios errors
   const genericMessage = error instanceof Error ? error.message : 'Unknown error';
-  return new AppError(500, 0, genericMessage);
+  return new AppError(500, '', genericMessage);
 };
