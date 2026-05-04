@@ -12,6 +12,8 @@ import {
 } from '@react-navigation/native';
 import ToastProvider from 'toastify-react-native';
 import useThemeStore from '@/core/common/state/theme.state';
+import useAuthStore from '@/features/auth/auth.state';
+import useOnesignal from '@/features/notifications/hooks/use-onesignal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,9 +26,12 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App() {
+function AppInner() {
   const { loaded, error } = useLoadFonts();
   const { themeMode } = useThemeStore();
+  const token = useAuthStore((state) => state.token);
+
+  useOnesignal(token !== null);
 
   React.useEffect(() => {
     if (themeMode) Appearance.setColorScheme(themeMode);
@@ -42,9 +47,17 @@ export default function App() {
   if (!loaded && !error) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <Navigation theme={currentTheme} />
       <ToastProvider />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppInner />
     </QueryClientProvider>
   );
 }

@@ -39,6 +39,10 @@ export const API_ENDPOINTS = {
   NOTIFICATIONS: '/notifications',
   NOTIFICATION_READ: (id: string) => `/notifications/${id}/read`,
   NOTIFICATIONS_READ_ALL: '/notifications/read-all',
+  NOTIFICATIONS_DEVICE_TOKEN: '/notifications/device-token',
+  NOTIFICATIONS_DEVICE_TOKEN_DELETE: (playerId: string) =>
+    `/notifications/device-token/${playerId}`,
+  NOTIFICATIONS_PREFERENCES: '/notifications/preferences',
   CATEGORIES: '/categories',
   CATEGORY_DETAIL: (categoryId: string) => `/categories/${categoryId}`,
   GROUP_WEBHOOKS: (groupId: string) => `/groups/${groupId}/webhooks`,

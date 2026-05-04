@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/native-stack';
 import type { Theme } from '@react-navigation/native';
 import { createStaticNavigation } from '@react-navigation/native';
+import { navigationRef } from './navigation-ref';
 import AuthScreen from '@/features/auth/auth.screen';
 import { createBottomTabNavigator, createBottomTabScreen } from '@react-navigation/bottom-tabs';
 import HomeScreen from '@/features/home/home.screen';
@@ -34,6 +35,7 @@ import RecordPaymentScreen from '@/features/settlements/screens/record-payment.s
 import SettleUpHomeScreen from '@/features/settlements/screens/settle-up-home.screen';
 import DisputeSettlementScreen from '@/features/settlements/screens/dispute-settlement.screen';
 import NotificationsScreen from '@/features/notifications/screens/notifications.screen';
+import NotificationPreferencesScreen from '@/features/notifications/screens/notification-preferences.screen';
 import JoinGroupTokenScreen from '@/features/invites/screens/join-group-token.screen';
 import JoinGroupCodeScreen from '@/features/invites/screens/join-group-code.screen';
 import TermsOfServiceScreen from '@/features/user/screens/terms-of-service.screen';
@@ -244,6 +246,12 @@ const createAuthenticatedStack = (sheetBackgroundColor: string) =>
           headerShown: false,
         },
       },
+      NotificationPreferences: {
+        screen: NotificationPreferencesScreen,
+        options: {
+          headerShown: false,
+        },
+      },
       JoinGroupByToken: {
         screen: JoinGroupTokenScreen,
         options: {
@@ -304,9 +312,9 @@ export function Navigation({ theme }: NavigationProps): React.JSX.Element {
   );
 
   return token !== null ? (
-    <TabsNavigation theme={theme} />
+    <TabsNavigation ref={navigationRef} theme={theme} />
   ) : (
-    <UnauthenticatedNavigation theme={theme} />
+    <UnauthenticatedNavigation ref={navigationRef} theme={theme} />
   );
 }
 
