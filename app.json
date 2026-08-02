@@ -86,7 +86,9 @@
         {
           "mode": "development"
         }
-      ]
+      ],
+      "./plugins/withPodfileModularHeaders",
+      "./plugins/withOneSignalUseFrameworks"
     ],
     "extra": {
       "eas": {
