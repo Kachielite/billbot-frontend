@@ -32,7 +32,7 @@ export const SettlementsService = {
   submitSettlement: async (
     poolId: string,
     data: SubmitSettlementSchemaType,
-    proof: Asset,
+    proof?: Asset,
   ): Promise<Settlement> => {
     try {
       const formData = new FormData();

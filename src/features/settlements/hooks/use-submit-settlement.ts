@@ -18,7 +18,7 @@ const useSubmitSettlement = (poolId: string) => {
 
   const { isLoading: isSubmitting, mutateAsync: submitSettlement } = useMutation(
     'submit-settlement',
-    async ({ data, proof }: { data: SubmitSettlementSchemaType; proof: Asset }) =>
+    async ({ data, proof }: { data: SubmitSettlementSchemaType; proof?: Asset }) =>
       SettlementsService.submitSettlement(poolId, data, proof),
     {
       onSuccess: () => {

@@ -31,7 +31,6 @@ export default function RecordPaymentScreen({ route }: Props) {
 
   const { form, isSubmitting, submitSettlement } = useSubmitSettlement(poolId);
   const [proof, setProof] = React.useState<Asset | null>(null);
-  const [proofError, setProofError] = React.useState<string | null>(null);
 
   const otherMembers: DropdownOption<string>[] = members
     .filter((m) => m.userId !== profile?.id)
@@ -47,7 +46,6 @@ export default function RecordPaymentScreen({ route }: Props) {
       const res = await launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 });
       if (res.assets && res.assets.length > 0) {
         setProof(res.assets[0]);
-        setProofError(null);
       }
     } catch {
       // ignore
@@ -55,11 +53,7 @@ export default function RecordPaymentScreen({ route }: Props) {
   }
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    if (!proof) {
-      setProofError('Proof of payment is required');
-      return;
-    }
-    await submitSettlement({ data, proof });
+    await submitSettlement({ data, proof: proof ?? undefined });
     if (navigation.canGoBack()) navigation.goBack();
   });
 
@@ -120,7 +114,8 @@ export default function RecordPaymentScreen({ route }: Props) {
         {/* ── Proof picker ── */}
         <View style={styles.proofSection}>
           <Text style={[TextStyles.label, { color: colors.text.primary }]}>
-            PROOF OF PAYMENT <Text style={{ color: colors.primary }}>*</Text>
+            PROOF OF PAYMENT{' '}
+            <Text style={[TextStyles.label, { color: colors.text.disabled }]}>(optional)</Text>
           </Text>
           <TouchableOpacity
             onPress={pickProof}
@@ -129,7 +124,7 @@ export default function RecordPaymentScreen({ route }: Props) {
               styles.proofPicker,
               {
                 backgroundColor: colors.surface,
-                borderColor: proofError ? colors.error : colors.border.default,
+                borderColor: colors.border.default,
                 borderWidth: 1,
                 borderRadius: Radius.md,
               },
@@ -146,9 +141,6 @@ export default function RecordPaymentScreen({ route }: Props) {
               </View>
             )}
           </TouchableOpacity>
-          {proofError && (
-            <Text style={[TextStyles.error, { color: colors.error }]}>{proofError}</Text>
-          )}
         </View>
 
         <CustomButton
