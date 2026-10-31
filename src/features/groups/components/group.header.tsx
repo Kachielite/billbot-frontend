@@ -31,6 +31,7 @@ export default function GroupHeader({ groupId, members = [], onDeletePress }: Gr
   const { profile } = useProfile();
 
   const isAdmin = !!profile && members.some((m) => m.userId === profile.id && m.role === 'admin');
+  const triggerRef = React.useRef<View>(null);
 
   return (
     <View style={[styles.container]}>
@@ -53,69 +54,72 @@ export default function GroupHeader({ groupId, members = [], onDeletePress }: Gr
       </View>
 
       {isAdmin && (
-        <Popover
-          isVisible={popoverOpen}
-          onRequestClose={() => setPopoverOpen(false)}
-          onCloseComplete={() => {
-            if (pendingDelete) {
-              setPendingDelete(false);
-              onDeletePress();
-            }
-          }}
-          placement={PopoverPlacement.BOTTOM}
-          from={(sourceRef, _openPopover) => (
-            <TouchableOpacity
-              ref={sourceRef as unknown as React.RefObject<View>}
-              style={[styles.optionBtn, { backgroundColor: colors.surface }]}
-              onPress={() => setPopoverOpen(true)}
-            >
-              <Ionicons name="ellipsis-horizontal-sharp" size={18} color={colors.text.primary} />
-            </TouchableOpacity>
-          )}
-          popoverStyle={[styles.popover, { backgroundColor: colors.surface }]}
-          backgroundStyle={{ backgroundColor: 'rgba(0,0,0,0.15)' }}
-        >
-          <View>
-            {MENU_ITEMS.map((item, index) => (
-              <TouchableOpacity
-                key={item.label}
-                style={[
-                  styles.menuItem,
-                  index < MENU_ITEMS.length - 1 && {
-                    borderBottomWidth: Border.thin,
-                    borderBottomColor: colors.border.subtle,
-                  },
-                ]}
-                onPress={() => {
-                  setPopoverOpen(false);
-                  if (item.label === 'Edit Group') {
-                    navigation.navigate('EditGroup', { groupId });
-                  } else if (item.label === 'Manage Members') {
-                    navigation.navigate('ManageMembers', { groupId });
-                  } else if (item.label === 'Delete Group') {
-                    setPendingDelete(true);
-                  } else if (item.label === 'Add Tab') {
-                    navigation.navigate('NewPool', { groupId });
-                  }
-                }}
-              >
-                <Ionicons
-                  name={item.icon}
-                  size={20}
-                  color={item.destructive ? colors.error : colors.text.secondary}
-                />
-                <Text
+        <>
+          <TouchableOpacity
+            ref={triggerRef}
+            style={[styles.optionBtn, { backgroundColor: colors.surface }]}
+            onPress={() => setPopoverOpen(true)}
+          >
+            <Ionicons name="ellipsis-horizontal-sharp" size={18} color={colors.text.primary} />
+          </TouchableOpacity>
+
+          <Popover
+            isVisible={popoverOpen}
+            from={triggerRef as unknown as React.RefObject<React.Component>}
+            onRequestClose={() => setPopoverOpen(false)}
+            onCloseComplete={() => {
+              if (pendingDelete) {
+                setPendingDelete(false);
+                onDeletePress();
+              }
+            }}
+            placement={PopoverPlacement.BOTTOM}
+            animationConfig={{ duration: 150 }}
+            popoverStyle={[styles.popover, { backgroundColor: colors.surface }]}
+            backgroundStyle={{ backgroundColor: 'rgba(0,0,0,0.15)' }}
+          >
+            <View>
+              {MENU_ITEMS.map((item, index) => (
+                <TouchableOpacity
+                  key={item.label}
                   style={[
-                    TextStyles.bodyMedium,
-                    { color: item.destructive ? colors.error : colors.text.primary },
+                    styles.menuItem,
+                    index < MENU_ITEMS.length - 1 && {
+                      borderBottomWidth: Border.thin,
+                      borderBottomColor: colors.border.subtle,
+                    },
                   ]}
+                  onPress={() => {
+                    setPopoverOpen(false);
+                    if (item.label === 'Edit Group') {
+                      navigation.navigate('EditGroup', { groupId });
+                    } else if (item.label === 'Manage Members') {
+                      navigation.navigate('ManageMembers', { groupId });
+                    } else if (item.label === 'Delete Group') {
+                      setPendingDelete(true);
+                    } else if (item.label === 'Add Tab') {
+                      navigation.navigate('NewPool', { groupId });
+                    }
+                  }}
                 >
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </Popover>
+                  <Ionicons
+                    name={item.icon}
+                    size={20}
+                    color={item.destructive ? colors.error : colors.text.secondary}
+                  />
+                  <Text
+                    style={[
+                      TextStyles.bodyMedium,
+                      { color: item.destructive ? colors.error : colors.text.primary },
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </Popover>
+        </>
       )}
     </View>
   );

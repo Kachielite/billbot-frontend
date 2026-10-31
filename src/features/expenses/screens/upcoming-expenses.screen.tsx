@@ -24,8 +24,7 @@ import EmptyState from '@/core/common/components/empty-state';
 import SkeletonBox from '@/core/common/components/skeleton-box';
 import { UpcomingExpense } from '@/features/expenses/expenses.interface';
 import useExpensesStore from '@/features/expenses/expenses.state';
-import usePoolsStore from '@/features/pools/pools.state';
-import { Pool } from '@/features/pools/pools.interface';
+import useGroupsStore from '@/features/groups/groups.state';
 
 // ── Date grouping (forward-looking) ──────────────────────────────────────────
 
@@ -65,7 +64,7 @@ export default function UpcomingExpensesScreen() {
 
   const { allItems, isLoading, isFetching, hasMore, loadMore, refetch } = useUpcomingExpenses(20);
   const { setDraftExpense } = useExpensesStore();
-  const { setSelectedPool } = usePoolsStore();
+  const { setSelectedGroup } = useGroupsStore();
 
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
@@ -77,7 +76,7 @@ export default function UpcomingExpensesScreen() {
   const sections = React.useMemo(() => groupByDue(allItems), [allItems]);
 
   const handleUpcomingPress = (upcoming: UpcomingExpense) => {
-    setSelectedPool({ id: upcoming.poolId } as Pool);
+    setSelectedGroup(null);
     setDraftExpense({
       amount: upcoming.amount,
       description: upcoming.description ?? undefined,
@@ -86,7 +85,7 @@ export default function UpcomingExpensesScreen() {
       isRecurring: true,
       recurrenceFrequency: upcoming.recurrenceFrequency,
     });
-    navigation.navigate('NewExpense' as never);
+    navigation.navigate('NewExpenseHome' as never);
   };
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {

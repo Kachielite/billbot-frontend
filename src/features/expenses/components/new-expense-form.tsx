@@ -1,9 +1,17 @@
-import { Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import ExpenseParseReceipt from '@/features/expenses/components/expense.parse-receipt';
 import { Controller } from 'react-hook-form';
 import CustomTextInput from '@/core/common/components/form/custom-text-input';
-import { Spacing } from '@/core/common/constants/theme';
+import { Border, Radius, Spacing } from '@/core/common/constants/theme';
 import useCategories from '@/features/categories/hooks/use-categories';
 import CustomDropdown from '@/core/common/components/form/custom-dropdown';
 import useExpensesStore from '@/features/expenses/expenses.state';
@@ -70,35 +78,66 @@ export default function NewExpenseForm({ form, poolId }: NewExpenseFormProps) {
 
         {/* ── Recurring row ── */}
         <View style={styles.recurringRow}>
-          {/* isRecurring toggle */}
           <View style={styles.toggleBlock}>
             <Text style={[TextStyles.label, { color: colors.text.primary }]}>RECURRING</Text>
             <Controller
               control={form.control}
               name="isRecurring"
               render={({ field: { value, onChange } }) => (
-                <View style={styles.switchWrapper}>
-                  <Switch
-                    value={!!value}
-                    onValueChange={onChange}
-                    trackColor={{ false: colors.border.default, true: colors.primary }}
-                    thumbColor={value ? colors.onPrimary : colors.surface}
-                    style={Platform.OS === 'android' ? styles.switchAndroid : undefined}
-                  />
-                </View>
+                <Switch
+                  value={!!value}
+                  onValueChange={(next) => {
+                    onChange(next);
+                    if (next) {
+                      form.setValue('recurrenceFrequency', 'daily');
+                    } else {
+                      form.setValue('recurrenceFrequency', undefined as any);
+                    }
+                  }}
+                  trackColor={{ false: colors.border.default, true: colors.primary }}
+                  thumbColor={value ? colors.onPrimary : colors.surface}
+                  style={Platform.OS === 'android' ? styles.switchAndroid : undefined}
+                />
               )}
             />
           </View>
 
-          {/* recurrenceFrequency dropdown */}
-          <View style={styles.frequencyBlock}>
-            <CustomDropdown
-              label="FREQUENCY"
-              id="recurrenceFrequency"
-              formController={form}
-              options={recurrenceOptions}
-              disabled={!isRecurring}
-              placeholder="Select frequency"
+          <View style={[styles.frequencyBlock, !isRecurring && styles.frequencyDisabled]}>
+            <Text style={[TextStyles.label, { color: colors.text.primary }]}>FREQUENCY</Text>
+            <Controller
+              control={form.control}
+              name="recurrenceFrequency"
+              render={({ field: { value, onChange } }) => (
+                <View style={styles.chipRow}>
+                  {recurrenceOptions.map((option) => {
+                    const selected = value === option.value && isRecurring;
+                    return (
+                      <TouchableOpacity
+                        key={option.value}
+                        onPress={() => onChange(option.value)}
+                        activeOpacity={0.7}
+                        disabled={!isRecurring}
+                        style={[
+                          styles.chip,
+                          {
+                            backgroundColor: selected ? colors.primary : colors.surface,
+                            borderColor: selected ? colors.primary : colors.border.default,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.chipText,
+                            { color: selected ? colors.onPrimary : colors.text.primary },
+                          ]}
+                        >
+                          {option.label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
             />
           </View>
         </View>
@@ -113,7 +152,7 @@ const styles = StyleSheet.create({
   },
   recurringRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: Spacing.md,
     marginTop: Spacing.md,
   },
@@ -122,15 +161,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
   },
-  switchWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.md,
+  frequencyBlock: {
+    flex: 1,
+    flexDirection: 'column',
+    gap: Spacing.sm,
+  },
+  frequencyDisabled: {
+    opacity: 0.4,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
   },
   switchAndroid: {
     transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }],
   },
-  frequencyBlock: {
-    flex: 1,
+  chip: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.xl,
+    borderWidth: Border.thin,
+  },
+  chipText: {
+    ...TextStyles.label,
   },
 });

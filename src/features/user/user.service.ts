@@ -58,12 +58,12 @@ export const UserService = {
     }
   },
 
-  searchByPhone: async (phone: string): Promise<UserSummary> => {
+  searchUsers: async (query: string): Promise<UserSummary[]> => {
     try {
-      const response = await customAxios.get<UserSummaryDto>(API_ENDPOINTS.USERS_SEARCH, {
-        params: { phone },
+      const response = await customAxios.get<UserSummaryDto[]>(API_ENDPOINTS.USERS_SEARCH, {
+        params: { query },
       });
-      return mapUserSummaryFromDto(response.data);
+      return response.data.map(mapUserSummaryFromDto);
     } catch (error) {
       throw mapAxiosErrorToAppError(error);
     }

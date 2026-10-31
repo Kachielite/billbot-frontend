@@ -159,6 +159,18 @@ const ProfileScreen = () => {
   const { currencies } = useCurrencies();
   const { setThemeMode } = useThemeStore();
   const { clearAuth } = useAuthStore();
+  const handleSignOut = React.useCallback(async () => {
+    try {
+      const { OneSignal } = await import('react-native-onesignal');
+      const { NotificationsService } =
+        await import('@/features/notifications/notifications.service');
+      const playerId = await OneSignal.User.pushSubscription.getIdAsync();
+      if (playerId) await NotificationsService.unregisterDeviceToken(playerId);
+    } catch {
+      // Non-critical
+    }
+    clearAuth();
+  }, [clearAuth]);
 
   const isDark = systemScheme === 'dark';
 
@@ -328,6 +340,11 @@ const ProfileScreen = () => {
         <Section title="PREFERENCES">
           <InfoRow icon="cash-outline" label="Currency" value={currencyLabel} />
           <InfoRow
+            icon="notifications-outline"
+            label="Notifications"
+            onPress={() => navigation.navigate('NotificationPreferences' as never)}
+          />
+          <InfoRow
             icon={isDark ? 'moon' : 'sunny-outline'}
             label="Dark Mode"
             isLast
@@ -381,7 +398,7 @@ const ProfileScreen = () => {
 
         {/* ── Sign out button ── */}
         <TouchableOpacity
-          onPress={clearAuth}
+          onPress={handleSignOut}
           style={[
             styles.signOutBtn,
             {

@@ -26,8 +26,10 @@ import useCancelInvite from '@/features/invites/hooks/use-cancel-invite';
 import useRemoveMember from '@/features/groups/hooks/use-remove-member';
 import useUpdateMemberRole from '@/features/groups/hooks/use-update-member-role';
 import useProfile from '@/features/user/hooks/use-profile';
+import useSearchUser from '@/features/user/hooks/use-search-user';
 import type { GroupMember } from '@/features/groups/groups.interface';
 import type { Invite } from '@/features/invites/invites.interface';
+import type { UserSummary } from '@/features/user/user.interface';
 import getInitials from '@/core/common/utils/get-initials';
 
 const AVATAR_SIZE = 45;
@@ -259,6 +261,79 @@ function MemberRow({
   );
 }
 
+// ── Search result row ─────────────────────────────────────────────────────────
+function SearchResultRow({
+  user,
+  colorIndex,
+  isLast,
+  onAdd,
+  isAdded,
+}: {
+  user: UserSummary;
+  colorIndex: number;
+  isLast: boolean;
+  onAdd: () => void;
+  isAdded: boolean;
+}) {
+  const colors = useThemeColors();
+  const swatch = colors.groupColors[colorIndex % colors.groupColors.length];
+
+  return (
+    <View
+      style={[
+        styles.row,
+        !isLast && { borderBottomWidth: 1, borderBottomColor: colors.border.default },
+      ]}
+    >
+      <View style={styles.rowInfo}>
+        {user.avatarUrl ? (
+          <Image
+            source={{ uri: user.avatarUrl }}
+            style={[styles.avatar, { borderColor: colors.surface }]}
+            resizeMode="cover"
+          />
+        ) : (
+          <View
+            style={[styles.avatar, { backgroundColor: swatch.fill, borderColor: colors.surface }]}
+          >
+            <Text style={[styles.initials, { color: swatch.on }]}>{getInitials(user.name)}</Text>
+          </View>
+        )}
+        <View style={{ flex: 1 }}>
+          <Text style={[TextStyles.bodyMedium, { color: colors.text.primary }]} numberOfLines={1}>
+            {user.name}
+          </Text>
+          {user.email && (
+            <Text style={[TextStyles.caption, { color: colors.text.secondary }]} numberOfLines={1}>
+              {user.email}
+            </Text>
+          )}
+        </View>
+      </View>
+      <TouchableOpacity
+        onPress={onAdd}
+        disabled={isAdded || !user.email}
+        style={[
+          styles.addBtn,
+          {
+            backgroundColor: isAdded ? colors.primaryContainer : colors.primary,
+            opacity: !user.email ? 0.4 : 1,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            TextStyles.label,
+            { color: isAdded ? colors.onPrimaryContainer : colors.onPrimary },
+          ]}
+        >
+          {isAdded ? 'Added' : 'Add'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 // ── Section empty placeholder ─────────────────────────────────────────────────
 function SectionEmpty({ message }: { message: string }) {
   const colors = useThemeColors();
@@ -285,20 +360,26 @@ export default function ManageMembersScreen() {
   const { updateMemberRole, isUpdatingRole } = useUpdateMemberRole(groupId);
   const { profile } = useProfile();
 
-  // ── Draft invite state ────────────────────────────────────────────────────
-  const addInputRef = useRef<TextInput>(null);
-  const [addValue, setAddValue] = useState('');
+  // ── Search + draft invite state ───────────────────────────────────────────
+  const searchInputRef = useRef<TextInput>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [pendingInvites, setPendingInvites] = useState<PendingEntry[]>([]);
+  const { results: searchResults, isLoading: isSearching } = useSearchUser(searchQuery);
+  const showDropdown = searchQuery.trim().length >= 2;
 
-  const addToPending = () => {
-    const trimmed = addValue.trim();
+  const addFromSearch = (user: UserSummary) => {
+    if (!user.email) return;
+    if (pendingInvites.some((e) => e.email === user.email)) return;
+    setPendingInvites((prev) => [...prev, { id: Date.now().toString(), email: user.email! }]);
+    setSearchQuery('');
+  };
+
+  const addFromQuery = () => {
+    const trimmed = searchQuery.trim();
     if (!trimmed) return;
-    if (pendingInvites.some((e) => e.email === trimmed)) {
-      setAddValue('');
-      return;
-    }
+    if (pendingInvites.some((e) => e.email === trimmed)) return;
     setPendingInvites((prev) => [...prev, { id: Date.now().toString(), email: trimmed }]);
-    setAddValue('');
+    setSearchQuery('');
   };
 
   const removePending = (id: string) =>
@@ -344,32 +425,75 @@ export default function ManageMembersScreen() {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scrollContent}
       >
-        {/* ── Invite input ── */}
-        <View
-          style={[
-            styles.inputRow,
-            { backgroundColor: colors.surface, borderColor: colors.border.default },
-          ]}
-        >
-          <TextInput
-            ref={addInputRef}
-            style={[styles.emailInput, { color: colors.text.primary }]}
-            placeholder="Enter email to invite"
-            placeholderTextColor={colors.text.disabled}
-            value={addValue}
-            onChangeText={setAddValue}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            returnKeyType="done"
-            onSubmitEditing={addToPending}
-          />
-          <TouchableOpacity
-            onPress={addToPending}
-            style={[styles.addBtn, { backgroundColor: colors.primary }]}
+        {/* ── Search input + dropdown ── */}
+        <View style={styles.searchWrapper}>
+          <View
+            style={[
+              styles.inputRow,
+              { backgroundColor: colors.surface, borderColor: colors.border.default },
+            ]}
           >
-            <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Add</Text>
-          </TouchableOpacity>
+            <Ionicons name="search-outline" size={18} color={colors.text.disabled} />
+            <TextInput
+              ref={searchInputRef}
+              style={[styles.emailInput, { color: colors.text.primary }]}
+              placeholder="Search members by name or email"
+              placeholderTextColor={colors.text.disabled}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="search"
+            />
+            {isSearching && <ActivityIndicator size="small" color={colors.primary} />}
+            {searchQuery.length > 0 && !isSearching && (
+              <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.iconBtn}>
+                <Ionicons name="close-circle" size={18} color={colors.text.disabled} />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {showDropdown && (
+            <View
+              style={[
+                styles.dropdown,
+                { backgroundColor: colors.surface, borderColor: colors.border.default },
+              ]}
+            >
+              {searchResults.length === 0 && !isSearching ? (
+                <View style={[styles.row, { justifyContent: 'space-between' }]}>
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={[TextStyles.bodyMedium, { color: colors.text.primary }]}
+                      numberOfLines={1}
+                    >
+                      {searchQuery.trim()}
+                    </Text>
+                    <Text style={[TextStyles.caption, { color: colors.text.secondary }]}>
+                      Invite by email
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={addFromQuery}
+                    style={[styles.addBtn, { backgroundColor: colors.primary }]}
+                  >
+                    <Text style={[TextStyles.label, { color: colors.onPrimary }]}>Add</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                searchResults.map((user, index) => (
+                  <SearchResultRow
+                    key={user.id}
+                    user={user}
+                    colorIndex={index}
+                    isLast={index === searchResults.length - 1}
+                    isAdded={pendingInvites.some((e) => e.email === user.email)}
+                    onAdd={() => addFromSearch(user)}
+                  />
+                ))
+              )}
+            </View>
+          )}
         </View>
 
         {/* ── Draft "To be invited" section ── */}
@@ -548,6 +672,9 @@ const styles = StyleSheet.create({
     gap: Spacing.xxl,
     paddingBottom: Spacing.xxl,
   },
+  searchWrapper: {
+    gap: Spacing.xs,
+  },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -567,6 +694,11 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
+  },
+  dropdown: {
+    borderRadius: Radius.lg,
+    borderWidth: Border.thin,
+    overflow: 'hidden',
   },
   section: {
     gap: Spacing.sm,

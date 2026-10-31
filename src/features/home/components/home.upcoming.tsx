@@ -11,8 +11,7 @@ import SkeletonBox from '@/core/common/components/skeleton-box';
 import EmptyState from '@/core/common/components/empty-state';
 import { formatAmount } from '@/core/common/utils/currency';
 import useExpensesStore from '@/features/expenses/expenses.state';
-import usePoolsStore from '@/features/pools/pools.state';
-import { Pool } from '@/features/pools/pools.interface';
+import useGroupsStore from '@/features/groups/groups.state';
 
 const UpcomingCard = ({
   upcoming,
@@ -70,10 +69,10 @@ export default function HomeUpcoming() {
   const navigation = useNavigation();
   const { upcomingExpenses, isLoading } = useUpcomingExpenses(5);
   const { setDraftExpense } = useExpensesStore();
-  const { setSelectedPool } = usePoolsStore();
+  const { setSelectedGroup } = useGroupsStore();
 
   const handleUpcomingPress = (upcoming: UpcomingExpense) => {
-    setSelectedPool({ id: upcoming.poolId } as Pool);
+    setSelectedGroup(null);
     setDraftExpense({
       amount: upcoming.amount,
       description: upcoming.description ?? undefined,
@@ -82,7 +81,7 @@ export default function HomeUpcoming() {
       isRecurring: true,
       recurrenceFrequency: upcoming.recurrenceFrequency,
     });
-    navigation.navigate('NewExpense' as never);
+    navigation.navigate('NewExpenseHome' as never);
   };
 
   return (

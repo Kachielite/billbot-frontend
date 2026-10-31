@@ -20,4 +20,5 @@ export const QUERY_KEYS = {
   GROUP_EXPENSES: 'group-expenses',
   GROUP_BALANCES: 'group-balances',
   CURRENCIES: 'currencies',
+  NOTIFICATION_PREFERENCES: 'notification-preferences',
 } as const;

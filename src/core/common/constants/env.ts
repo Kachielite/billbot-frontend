@@ -13,6 +13,7 @@ const ENV = {
   WEB_CLIENT_ID: process.env.EXPO_PUBLIC_WEB_CLIENT_ID as string,
   ANDROID_CLIENT_ID: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID as string,
   IOS_CLIENT_ID: process.env.EXPO_PUBLIC_IOS_CLIENT_ID as string,
+  ONESIGNAL_APP_ID: process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID as string,
 };
 
 export default ENV;
